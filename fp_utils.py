@@ -1,0 +1,624 @@
+from fp_constants import switches, freds, rotas, controladores_conhecidos, fluxos_monitorados, blockchain_table, IPCv4, KEYS_LOCATION, CHAVE_PRIVADA_SAWADM, CHAVE_PUBLICA_SAWADM
+from fp_rota import Rota, Rota_Node
+#para invocar scripts e comandos tc qdisc
+import subprocess
+import time
+import socket
+
+from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar_blockchain
+from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show
+from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm
+import psutil
+
+
+from traffic_classification.classificator import processar_pacotes, classificar_fluxo
+
+class BlockchainArgs:
+    def __init__(self, command=None, flowname=None, flowjson=None, auth_password=None, auth_user=None, username=None, url=None):
+        self.auth_password
+        self.auth_user
+        self.username
+        self.url
+        self.flowjson
+        self.flowname
+        self.command
+
+def check_domain_hosts_v4(ip_src):
+
+    meu_ip = get_meu_ip()
+
+    meu_prefix =calculate_network_prefix_ipv4(meu_ip)
+    ip_src_prefix = calculate_network_prefix_ipv4(ip_src)
+
+    if meu_prefix == ip_src_prefix:
+        return True
+
+    return False
+
+def criar_chave_sawtooth_keygen():
+# sawtooth keygen my_key
+    p = subprocess.Popen("sawtooth keygen controller_key")
+    return
+
+def criar_chave_sawadm():
+
+    chave_publica, chave_privada = criar_par_chaves_sawadm(KEYS_LOCATION)
+
+    CHAVE_PUBLICA_SAWADM = chave_publica
+    CHAVE_PRIVADA_SAWADM = chave_privada
+
+    return
+
+def get_chave_sawtooth_keygen():
+    # ler arquivo
+    key = ""
+    return key
+
+def get_chave_sawadm():
+
+    return CHAVE_PUBLICA_SAWADM, CHAVE_PRIVADA_SAWADM
+
+
+def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transacao):
+# python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
+    args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao, username='controller_key')
+    do_reg_flowqos(args)
+    return True
+
+def show_bloco_blockchain(ip_blockchain, port_blockchain, flowname):
+# python main_qos_cli.py show '192.168.0.0-192.168.0.1-5000-5002-tcp'
+    args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, username='controller_key')
+    do_show(args)
+    return
+
+def listar_todos_blocos_blockchain(ip_blockchain,port_blockchain):
+    # python main_qos_cli.py list
+    args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, username='controller_key')
+    do_list(args)
+    return
+
+def get_blockchain(dst_prefix):
+    return blockchain_table[dst_prefix]
+
+def save_blockchain(dst_prefix, endpoint_ip, porta):
+    blockchain_table[dst_prefix]= endpoint_ip+":"+porta
+    return
+
+
+def calculate_network_prefix_ipv4(ip_v4):
+    # supomos tudo /24 -> 192.168.1.10 -> 192.168.1.0
+    prefix = ip_v4.split(".")
+
+    return prefix[0]+"."+prefix[1]+"."+prefix[2]+".0"
+
+def get_meu_ip():
+    return IPCv4
+
+def criar_blockchain_api(nome_blockchain, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False):
+
+    # adicionar blockchain na tabla de blockchains
+    connections = psutil.net_connections(kind='inet')
+    portas_em_uso = [conn.laddr.port for conn in connections if conn.status == psutil.CONN_LISTEN]
+    portas_em_uso= list(set(portas_em_uso))
+    connections = None
+
+    REST_API_PORT= 8008
+    NETWORK_PORT = 8800
+    CONSENSUS_PORT = 5050
+    VALIDATOR_PORT = 4004
+
+    while(REST_API_PORT in portas_em_uso):
+        REST_API_PORT+=1
+    while(NETWORK_PORT in portas_em_uso):
+        NETWORK_PORT+=1
+    while(CONSENSUS_PORT in portas_em_uso):
+        CONSENSUS_PORT+=1
+    while(VALIDATOR_PORT in portas_em_uso):
+        VALIDATOR_PORT+=1
+
+    chave_publica, chave_privada = get_chave_sawadm()
+
+    criar_blockchain(nome_blockchain, get_meu_ip(), chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
+    return True
+
+def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
+    print("Enviando fred para -> %s:%s\n" % (ip_host_dst,PORTA_HOST_FRED_SERVER))
+
+    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp.connect((ip_host_dst, PORTA_HOST_FRED_SERVER))
+
+    try:
+        # tcp.send(len(dados))
+        tcp.send(fred_obj.encode())
+
+        tcp.close()
+
+    except:
+        raise SyntaxError("ERRO ao enviar fred !")
+    return 
+
+def remover_fred(ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
+
+    for f in freds:
+        if f.ip_ver == ip_ver and f.proto == f.roto == proto and f.ip_srcd == ip_src and  f.ip_dstd == ip_dst and f.src_portd == src_port and f.dst_port == dst_port:
+            freds.remove(f)
+
+    return
+
+def ip_meu_dominio(ip_src):
+    """verificar se um host eh meu client"""
+    return False
+
+
+#         #procurar em todos os switches do controlador, qual gerou um packet in de um host - ou seja - o host esta mais proximo de qual switch
+def getSwitchFromMac(mac):
+    for s in switches:
+        if s.conheceMac(mac) != -1:
+            return s.nome
+            
+def getSwitchByName(nome):
+    print("procurando switch: %s\n" % nome)
+    for i in switches:
+        if str(i.nome) == str(nome):
+            return i
+
+    return None
+
+    for i in switches:
+            if str(i.nome) == str(nome_switch):
+                return i
+    return None
+
+#dado um conjunto de switches (var global) pertencentes a um dominio/controlador, recuperar o conjunto de switches que fazem parte da rota para o end destino/rede
+def getRota_antigo(switch_primeiro_dpid, ip_dst):
+	#por enquanto nao importam as rotas - rotas fixas e um switch
+    #switches eh uma variavel global que compreende os switches do controlador
+    #rota = vetor de switches
+    rota = []
+    ##print("[getRota] src:%s, dst:%s\n" % (ip_src, ip_dst))
+
+    if switch_primeiro_dpid == None:
+        for s in switches:
+            if ip_dst in s.hosts:
+                switch_primeiro_dpid = s.nome
+
+    if switch_primeiro_dpid == None:
+        return None
+
+    #pegar o primeiro switch da rota, baseado no ip_Src --- ou, por meio do packet in, mas entao nao poderia criar as regras na criacao dos contratos
+    switch_primeiro = getSwitchByName(str(switch_primeiro_dpid))
+    rota.append(switch_primeiro)
+
+    #pegar o salto do ultimo switch inserido na rota
+    nextDpid = switch_primeiro.getPorta(switch_primeiro.getPortaSaida(ip_dst)).next #retorna inteiro
+
+    #print("switch_primeiro: %s, nextDpid: %d\n" % (switch_primeiro.nome, nextDpid))
+
+    while nextDpid > 0:
+        s = getSwitchByName(nextDpid)
+        rota.append(s)
+        #se o .next da porta for -1, esse eh o switch de borda
+        nextDpid = s.getPorta(s.getPortaSaida(ip_dst)).next
+        
+    #for r in rota:
+        #print("[rota]: %s" % (r.nome))
+            
+    return rota
+
+def get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id=-1):
+    
+    lista_switches = rotas[ip_dst]
+
+    if in_switch_id == -1:
+        return lista_switches
+
+    #remover todos ate o primeiro elemento ser o switch
+    for s in lista_switches:
+        if s.switch_name != in_switch_id:
+            lista_switches.remove(s)
+
+    return lista_switches
+
+def add_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, lista_rota_nodes):
+    rotas[ip_dst] = lista_rota_nodes
+
+    return
+
+def del_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id):
+    return
+
+def encontrarMatchFreds(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+    
+    #encontrou
+    for i in freds:
+        if i.ip_ver == ip_ver and i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            return i
+    #nao encontrou
+    return None, None, None
+
+
+def buscarFredId(id):
+    for i in freds:
+        if i.id == id:
+            return i
+        
+    return None
+
+def buscarFred(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+    """ Parametros
+    ip_ver: str
+    ip_src: str
+    ip_dst: str
+    src_port: str
+    dst_port: str
+    proto: str
+    """
+    for i in freds:
+        if i.ip_ver == ip_ver and i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            return i
+        
+    return None
+
+
+
+def tratador_addSwitches(addswitch_json):
+    """[arrumar] nome dos switches e o id, se comparar como string vai dar ruim, tem que armazenar como inteiro e comparar com inteiro -> pois eles se anunciam como 0000000000000001, as vezes"""
+
+    print("Adicionando configuracao de switch")
+    for i in addswitch_json:
+        print(i)
+
+        nome_switch = i['nome_switch']
+
+        #procurando o switch
+        switch = getSwitchByName(nome_switch)
+    
+        #encontrar o switch pelo nome
+        #criar as portas conforme a configuracao do json
+        if(switch == None):
+            print("Switch S%s, nao encontrado no dominio - configuracao rejeitada\n" % str(nome_switch))
+            continue
+        
+        # print("mostrando portas \n")
+        # print(i['portas'])
+
+        for porta in i['portas']:
+            
+            print (porta)
+
+            nome_porta = porta['nome_porta']
+            largura_porta = porta['banda_total']
+            prox_porta = porta['proxSwitch']
+
+            # verificar se porta já existe -> se existir, remover a porta, as regras e as regras OVS
+            switch.delPorta(nome_porta)
+                
+            switch.addPorta(nome_porta, int(largura_porta), int(prox_porta))
+
+            interface = "s" + str(nome_switch) + "-eth"+ str(nome_porta)
+###
+            #criar as novas filas
+            lbandatotal = int(largura_porta)
+            #classe tempo-real ids=[0,1,2]
+            lbandaclasse1 = int(lbandatotal * 0.33)
+            #classe nao-tempo-real/dados ids=[3,4,5]
+            lbandaclasse2 = int(lbandatotal * 0.35)
+            #classe best-effort id = 6
+            lbandaclasse3 = int(lbandatotal * 0.25)
+            #classe controle id = 7
+            lbandaclasse4 = int(lbandatotal * 0.07)
+
+            #obs desse jeito so funciona em rede local!!! --- se o switch estiver em outro pc nao rola -- tem que utilizar a conexao com ovsdb sei la
+            p = subprocess.Popen("echo mininet | sudo ovs-vsctl clear port {} qos".format(interface), stdout=subprocess.PIPE, shell=True)
+
+            print("[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta {}".format(nome_porta))
+
+            p = subprocess.Popen("echo mininet | sudo -S tc qdisc del dev {} root".format(interface), stdout=subprocess.PIPE, shell=True)
+
+            # print(p.__dict__)
+            if(p.stderr == None):
+                print("[new_switch_handler] SUCESSO - filas anteriores removidas {}".format(interface))
+            else:
+                print("[new_switch_handler] FALHA - Erro em remover filas anteriores {}".format(interface))
+
+            #tentar com apenas a configuracao ovs-vsctl - sem limpar o tcqdisc ---> nao funciona
+            #ovs-vsctl clear port s1-eth4 qos
+
+            # # queues = [{'min-rate': '10000', 'max-rate': '100000', 'priority': '5'},{'min-rate':'500000'}]
+            # # ovs_bridge.set_qos(interface, type='linux-htb', max_rate="15000000", queues=queues)
+            # # #deu certo?
+
+            script_qos = "echo mininet | sudo ovs-vsctl -- set port {} qos=@newqos -- \
+                                    --id=@newqos create qos type=linux-htb other-config:max-rate={} \
+                                    queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 -- \
+                                    --id=@q0 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=10 -- \
+                                    --id=@q1 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=5 -- \
+                                    --id=@q2 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=2 -- \
+                                    --id=@q3 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=10 -- \
+                                    --id=@q4 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=5 -- \
+                                    --id=@q5 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=2 -- \
+                                    --id=@q6 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=10 -- \
+                                    --id=@q7 create queue other-config:min-rate={} other-config:max-rate={} other-config:priority=2 \
+                                    ".format(interface, 
+                                    str(lbandatotal),
+                                    str(lbandaclasse1+lbandaclasse2), str(lbandaclasse1+lbandaclasse2+100),
+                                    str(lbandaclasse1+lbandaclasse2), str(lbandaclasse1+lbandaclasse2+100),
+                                    str(lbandaclasse1+lbandaclasse2), str(lbandaclasse1+lbandaclasse2+100),
+                                    str(lbandaclasse1+lbandaclasse2), str(lbandaclasse1+lbandaclasse2+100),
+                                    str(lbandaclasse1+lbandaclasse2), str(lbandaclasse1+lbandaclasse2+100),
+                                    str(lbandaclasse1+lbandaclasse2), str(lbandaclasse1+lbandaclasse2+100),
+                                    str(lbandaclasse3), str(lbandatotal),
+                                    str(lbandaclasse4), str(lbandaclasse4+100))
+
+            print(script_qos)                                    
+            #aplicando o script aqui
+            p = subprocess.Popen(script_qos, stdout=subprocess.PIPE, shell=True)
+
+            if(p.stderr == None):
+                print("[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta {}\n{}".format(interface,script_qos))
+            else:
+                print("[new_switch_handler] FALHA - Erro em novas configuracoes de filas porta {}\n{}".format(interface,script_qos))
+ 
+def tratador_delSwitches(switch_cfg):
+
+    nome_switch = switch_cfg['nome_switch']
+
+    for switch in switches:
+        if switch.nome == nome_switch:
+            
+            #remover as portas e as regras primeiro ? acho que sim...
+            for porta in switch.getPortas():
+                switch.delPorta(porta.nome)
+
+            switches.remove(switch)
+            break
+
+    print('Switch removido: %s' % (nome_switch))
+
+
+def tratador_addRotas(novasrotas_json):
+
+    print("Adicionando novas rotas:")
+    for rota in novasrotas_json:
+        #poderia obter uma lista de switches e ir em cada um adicinoando a rota
+        ip_ver = rota['ip_ver']
+        src_prefix = rota['src_prefix']
+        dst_prefix = rota['dst_prefix']
+        src_port = rota['src_port']
+        dst_port = rota['dst_port']
+        proto = rota['proto']
+    
+        lista_rota_nodes = []
+        
+        for switch in rota['switches_rota']:
+            
+            lista_rota_nodes.append(Rota_Node(switch_name=switch['nome_switch'],in_port=switch['porta_entrada'],out_port=switch['porta_saida']))
+        
+        add_rota(src_prefix, dst_prefix, ip_ver, src_port, dst_port, proto, lista_rota_nodes)
+        
+    print('rotas adicionadas')
+
+def tratador_delRotas(novasrotas_json):
+
+    for rota in novasrotas_json:
+        #poderia obter uma lista de switches e ir em cada um adicinoando a rota
+        ip_ver = rota['ip_ver']
+        src_prefix = rota['src_prefix']
+        dst_prefix = rota['dst_prefix']
+        src_port = rota['src_port']
+        dst_port = rota['dst_port']
+        proto = rota['proto']
+
+        
+        for r in rotas:
+            if r.ip_ver == ip_ver and r.src_prefix == src_prefix and r.dst_prefix == dst_prefix and r.src_port == src_port and r.dst_port == dst_port and r.proto == proto:
+                rotas.remove(r)
+                break 
+        
+    return 
+
+def tratador_addRegras(novasregras_json):
+    #   *Nao implementado*
+    # -> encontrar o switch onde as regras devem ser instaladas
+    # tipos de regras possiveis
+    # - delete e add
+    # - regras marcacao
+    # - regras meter (classes com qos -> gbam)
+    # - regra de encaminhamento (best-effort)
+
+    for regra in novasregras_json:
+
+        print(regra)
+
+        nome_switch = regra['nome_switch']
+        switch_obj = None
+        
+        #encontrar o switch
+        for switch in switches:
+            if switch.nome == nome_switch:
+                switch_obj = switch
+                break
+        
+        if switch_obj == None:
+            print("Regra falhou!!")
+            #tentar a proxima regra
+            continue
+
+        ip_ver = regra['ip_ver']
+        ip_src = regra['ip_src']
+        ip_dst = regra['ip_dst']
+        porta_saida = regra['porta_saida']
+        src_port = regra['src_port']
+        dst_port = regra['dst_port']
+        proto = regra['proto']
+        #isso vai ser modificado outro momento
+        classe = regra['classe']
+        prioridade = regra['prioridade']
+        banda = regra['banda']
+
+        switch_obj.alocarGBAM(ip_ver=ip_ver, ip_src = ip_src, ip_dst = ip_dst, proto=proto, dst_port = dst_port, src_port= src_port, porta_saida = porta_saida, banda=banda, prioridade=prioridade, classe=classe)
+
+    return None
+
+def tratador_delRegras(regras_json):
+
+    for regra in regras_json:
+
+        nome_switch = regras_json['nome_switch']
+        switch_obj = None
+    
+        #encontrar o switch
+        for switch in switches:
+            if switch.nome == nome_switch:
+                switch_obj = switch
+                break
+        if switch_obj == None:
+            print("Regra falhou!!")
+            #tentar a proxima regra
+            continue
+
+        ip_ver = regra['ip_ver']
+        ip_src = regra['ip_src']
+        ip_dst = regra['ip_dst']
+        src_port = regra['src_port']
+        dst_port = regra['dst_port']
+        proto = regra['proto']
+        #isso vai ser modificado outro momento
+        classe = regra['classe']
+        prioridade = regra['prioridade']
+        banda = regra['banda']
+        porta_saida = regra['porta_saida']
+
+        if not switch_obj.delRegraGBAM(ip_ver=ip_ver, ip_src = ip_src, ip_dst = ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_saida = porta_saida, banda=banda, prioridade=prioridade, classe=classe):
+                #se for uma regra best-effort remover aqui
+                switch_obj.delRegraT(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,src_port=src_port, dst_port=dst_port, proto=proto,ip_dscp=None)
+
+    return
+
+def get_eth_header(eth_pkt):
+    if eth_pkt:
+        return eth_pkt.dst,eth_pkt.src,eth_pkt.ethertype
+    return None, None, None
+
+def get_ipv4_header(ipv4_pkt):
+    if ipv4_pkt:
+        return ipv4_pkt.version,ipv4_pkt.header_length,ipv4_pkt.tos,ipv4_pkt.total_length,ipv4_pkt.identification,ipv4_pkt.flags,ipv4_pkt.offset,ipv4_pkt.ttl,ipv4_pkt.proto,ipv4_pkt.csum,ipv4_pkt.src,ipv4_pkt.dst,ipv4_pkt.option
+    return None,None,None,None,None,None,None,None,None,None,None,None,None
+
+def get_ipv6_header(ipv6_pkt):
+    if ipv6_pkt:
+        return ipv6_pkt.version,ipv6_pkt.traffic_class,ipv6_pkt.flow_label,ipv6_pkt.payload_length,ipv6_pkt.nxt,ipv6_pkt.hop_limit,ipv6_pkt.src,ipv6_pkt.dst,ipv6_pkt.ext_hdrs
+    return None,None,None,None,None,None,None,None,None
+
+def get_tcp_header(tcp_pkt):
+    if tcp_pkt:
+        return tcp_pkt.src_port,tcp_pkt.dst_port,tcp_pkt.seq,tcp_pkt.ack,tcp_pkt.offset,tcp_pkt.bits,tcp_pkt.window_size,tcp_pkt.csum,tcp_pkt.urgent,tcp_pkt.option
+    return None,None,None,None,None,None,None,None,None,None
+
+def get_udp_header(udp_pkt):
+    if udp_pkt:
+        return udp_pkt.src_port,udp_pkt.dst_port,udp_pkt.total_length,udp_pkt.csum
+    return None,None,None,None
+
+
+
+
+
+def addControladorConhecido(ipnovo):
+    #print]("Verificando se ja conhece o controlador: %s \n" %(ipnovo))
+    if checkControladorConhecido(ipnovo) == 1:
+        #print]("controlador ja conhecido\n")
+        return
+
+    controladores_conhecidos.append(ipnovo)
+    #print]("novo controlador conhecido\n")
+
+def checkControladorConhecido(ip):
+    for i in controladores_conhecidos:
+        if i == ip:
+            #conhecido
+            return 1
+    #desconhecido
+    return 0
+
+
+def tratador_classificacao_trafego(pkt):
+
+    fred = processar_pacotes(pkt)
+
+    return fred
+
+
+def remove_qos_rules(fred):
+    
+    return
+
+def create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, in_switch_id):
+
+    #flow qos
+    banda=fred["banda"]
+    prioridade=fred["prioridade"]
+    classe=fred["classe"]
+
+    # rota com os datapaths dos switches em ordem
+    switch_route = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id)
+
+    if switch_route == None:
+        return False
+
+    # verificar se todos os switches possuim banda para o fluxo
+    for sw in switch_route:
+        switchh = getSwitchByName(sw.switch_name)
+        porta_saida = sw.out_port
+
+        if switchh.getFreeBandwForQoS(sw.in_port, sw.out_port, classe, prioridade, banda) == -1: # deve consultar porta de entrada e saída
+            # algum switch nao suporta
+            return False
+
+    # todos os switches possuem banda -> rodar GBAM em cada um deles
+    for sw in switch_route:
+
+        porta_saida = sw.getPortaSaida(ip_dst)
+        if sw.alocarGBAM(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, banda, prioridade, classe) == -1:
+            # algum switch nao suporta
+            return False
+
+    return True
+
+def create_be_rules(controller, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label, flow_qos, in_switch_id):
+    # rota com os datapaths dos switches em ordem
+    switch_route = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id)
+
+    if switch_route == None:
+        # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
+        # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
+        # 
+        # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+        return False
+
+    for sw in switch_route:
+
+        switchh = getSwitchByName(sw.switch_name)
+        porta_saida = sw.out_port
+        switchh.criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+
+    return True
+
+def current_milli_time():
+    return round(time.time() * 1000)
+
+def monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
+
+    label = ip_ver + ip_src + ip_dst + src_port + dst_port + proto
+    
+    timestamp = current_milli_time()
+
+    fluxos_monitorados[label].append( {"timestamp": timestamp, "tamanho": len(pkt)}  ) 
+
+    return
+
+def get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+
+    label = ip_ver + ip_src + ip_dst + src_port + dst_port + proto
+
+    return fluxos_monitorados[label]

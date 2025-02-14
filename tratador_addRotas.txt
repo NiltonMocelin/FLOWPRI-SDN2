@@ -1,0 +1,14 @@
+{
+    'addRotas':[{
+        'ip_ver':'',
+        'src_prefix':'',
+        'dst_prefix':'',
+        'src_port':'',
+        'dst_port':'',
+        'proto':'',
+        'switches_rota':[{
+                    'nome_switch':'',
+                    'porta_saida':''
+                }]
+    }]
+}

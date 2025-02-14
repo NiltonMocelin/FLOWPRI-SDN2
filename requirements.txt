@@ -1,0 +1,59 @@
+python 38
+ryu
+wsgi
+
+apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev
+
+python3 -m pip install dnspython==2.2.1
+
+eventlet==0.31.1
+msgpack>=0.4.0  # RPC library, BGP speaker(net_cntl)
+netaddr
+oslo.config>=2.5.0
+ovs>=2.6.0  # OVSDB
+packaging==20.9
+routes  # wsgi
+six>=1.4.0
+tinyrpc==1.0.4  # RPC library, BGP speaker(net_cntl)
+webob>=1.2  # wsgi
+
+
+- python-pip
+`apt-get install python-pip`
+
+- setuptools.
+`apt-get install python-setuptools`
+
+- routes
+`apt-get install python-routes`
+
+- netaddr
+`apt-get install python-netaddr`
+
+- python-dev
+`apt-get install python-dev`
+
+
+- webob
+`pip install webob`
+
+- oslo.config
+`pip install oslo.config`
+
+- msgpack-python
+`pip install msgpack-python`
+
+- eventlet (pip install eventlet==0.33.0)
+`pip install eventlet`
+
+- stevedore
+`pip install stevedore`
+
+- six
+`pip install six`
+		
+- netaddr
+`pip install netaddr`
+
+- networkx
+`pip install networkx`

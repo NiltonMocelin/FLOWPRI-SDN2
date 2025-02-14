@@ -1,0 +1,65 @@
+<HTML>
+    <HEAD>
+      <TITLE> Controller WEB Interface </TITLE>
+  
+    </HEAD>
+  
+   <BODY>
+
+    <h1>Interface WEB - Controlador -</h1>
+
+    <!-- informacoes sobre uso de recursos do controlador (cpu, ram, taxa de packet_in/s) -->
+    <div id="controller_stats"></div>
+
+    <h2> Switches Conectados </h2>
+
+    <!-- lista de switches -->
+    <div id="switch_list"></div>
+
+    <!-- canvas com o grafo da rede -->
+    <div id="network_graph"></div>
+
+    <!-- grafo com redes virtuais -->
+    <div id="virtual_network_graph"></div>
+
+    <!-- *que mais??* -->
+
+    <script type="text/javascript">
+      // nao pode ser assim
+      // ref1: https://uwsgi-docs.readthedocs.io/en/latest/articles/OffloadingWebsocketsAndSSE.html
+      // ref2: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+
+      
+      // A cada 5s solicita informacoes ao controlador ||| ou faz por arquivo
+      //solicitando via get acho, nao lembro o que ocorre aqui
+      function refresh_data() {
+        setTimeout(
+        () => {
+            //acessar e obter tudo que /dados enviar
+            let url = 'http://172.17.0.2:7000/dados';
+
+            //promisse
+            const dados_json = fetch(url)
+              .then((response) => { 
+                  return response.json().then((data) => {
+                    // console.log(data);
+                    const array_dados = data.controller_stats
+                    // console.log(array_dados[0]['total_memory'])
+                    document.getElementById('controller_stats').innerHTML = `<h3>Total Memory: ${array_dados[0]['total_memory']}MB | Used Memory: ${array_dados[1]['used_memory']}MB | Free Memory: ${array_dados[2]['free_memory']}MB | CPU Utilization: ${array_dados[3]['cpu_utilization']}%</h3>`
+                    return data;
+              }).catch((err) => {
+                  console.log(err);
+              })
+            }); 
+
+            refresh_data();
+        }, 5000)
+      };
+
+      refresh_data();
+
+    </script>
+
+   </BODY>
+   </HTML>
+   

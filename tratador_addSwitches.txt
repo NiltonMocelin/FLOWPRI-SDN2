@@ -1,0 +1,11 @@
+{
+    'addSwitches':[{
+        'nome_switch':'',
+        'qtdPortas':'',
+        'portas':[{
+            'nome_porta':'',
+            'banda_total':'',
+            'proxSwitch':''
+        }]
+    }]
+}

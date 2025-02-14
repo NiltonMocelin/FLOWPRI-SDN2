@@ -1,0 +1,35 @@
+* guide: https://docs.ruckuswireless.com/fastiron/08.0.60/fastiron-08060-sdnguide/GUID-031030CA-62EC-4009-A516-5510238EF8F4.html
+
+
+
+Message type	                Supported
+OFPT_HELLO	                    Yes
+OFPT_ERROR	                    Yes
+OFPT_ECHO_REQUEST	            Yes
+OFPT_ECHO_REPLY	                Yes
+OFPT_EXPERIMENTER	            No
+OFPT_FEATURES_REQUEST	        Yes
+OFPT_FEATURES_REPLY	            Yes
+OFPT_GET_CONFIG_REQUEST	        No
+OFPT_GET_CONFIG_REPLY	        No
+OFPT_SET_CONFIG     	        No
+OFPT_PACKET_IN	                Yes
+OFPT_FLOW_REMOVED	            Yes
+OFPT_PORT_STATUS	            Yes
+OFPT_PACKET_OUT	                Yes
+OFPT_FLOW_MOD	                Yes
+OFPT_GROUP_MOD	                Yes
+OFPT_PORT_MOD	                No
+OFPT_TABLE_MOD	                No
+OFPT_MULTIPART_REQUEST	        Yes
+OFPT_MULTIPART_REPLY	        Yes
+OFPT_BARRIER_REQUEST	        Yes
+OFPT_BARRIER_REPLY	            Yes
+OFPT_QUEUE_GET_CONFIG_REQUEST	No
+OFPT_QUEUE_GET_CONFIG_REPLY	    No
+OFPT_ROLE_REQUEST	            Yes
+OFPT_ROLE_REPLY	                Yes
+OFPT_GET_ASYNC_REQUEST	        Yes
+OFPT_GET_ASYNC_REPLY	        Yes
+OFPT_SET_ASYNC	                Yes
+OFPT_METER_MOD	                Yes

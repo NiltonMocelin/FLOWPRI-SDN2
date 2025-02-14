@@ -1,0 +1,99 @@
+<HTML>
+    <HEAD>
+      <TITLE> Controller WEB Interface </TITLE>
+  
+    </HEAD>
+  
+   <BODY>
+
+    <h1>Interface WEB - Controlador -</h1>
+
+    <!-- informacoes sobre uso de recursos do controlador (cpu, ram, taxa de packet_in/s) -->
+    <div id="controller_stats"></div>
+
+    <h2> Switches Conectados </h2>
+
+    <!-- lista de switches -->
+    <div id="switch_list"></div>
+
+    <!-- canvas com o grafo da rede -->
+    <div id="network_graph"></div>
+
+    <!-- grafo com redes virtuais -->
+    <div id="virtual_network_graph"></div>
+
+    <!-- *que mais??* -->
+
+    <script type="text/javascript">
+      // nao pode ser assim
+      // ref1: https://uwsgi-docs.readthedocs.io/en/latest/articles/OffloadingWebsocketsAndSSE.html
+      // ref2: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+
+      //teste websocket      
+      //base javascript websocket - https://javascript.info/websocket
+
+      let websocket = new WebSocket("ws://10.0.0.6:9970/dados");
+
+      var switches = [];
+
+      // pegar a mensagem como um arraybuffer - https://bun.sh/guides/binary/arraybuffer-to-string
+      websocket.binaryType = "arraybuffer";
+
+      websocket.onopen = function(e) {
+        alert("[open] Connection established");
+        alert("Sending to server");
+        websocket.send("My name is John");
+      };
+
+      websocket.onmessage = function(event) {
+
+        const decoder = new TextDecoder();
+        const str = decoder.decode(event.data);
+
+        dados_json = JSON.parse(str);
+
+        //check if key exists in json - obj.hasOwnProperty(prop) -> this way we can handle multiple messages here
+        
+        // alert(`[message] Data received from server: ${JSON.stringify(dados_json.switches)}`);
+    
+        alert(`[message] Data received from server: ${str}`);
+        // document.getElementById('controller_stats').innerHTML = `<h3>dados recebidos: ${str}</h3>`
+        // document.getElementById('controller_stats').innerHTML = `<h3>dados recebidos: ${dados_json.switches[0]}</h3>`
+        document.getElementById('controller_stats').innerHTML = `<h3>dados recebidos: ${JSON.stringify(dados_json.switches[0].nome)}</h3>`
+        
+      };
+
+
+      // quero armazenar os switches, as portas dos switches, os links de cada porta, a largura de banda de cada porta, regras de QoS de cada porta
+      // mostrar a topologia
+      // possuir um botão para obter estatística de um fluxo específico.  
+      class Switch{
+        constructor(id, qtdPortas){
+          this.id = id;
+          this.qtdPortas = qtdPortas;
+        }
+      }
+
+      class Porta{
+        constructor(id){
+          this.id = id;
+        }
+      }
+
+      class Link{
+        constructor(SwitchA, PortaA, SwitchB, PortaB, direcao, banda){
+          this.SwitchA = SwitchA;
+          this.SwitchB = SwitchB;
+          this.PortaA = PortaA;
+          this.PortaB = PortaB;
+          this.direcao = direcao;
+          this.banda = banda;
+
+        }
+      }
+
+    </script>
+
+  </BODY>
+  </HTML>
+   
