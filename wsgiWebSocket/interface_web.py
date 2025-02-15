@@ -9,10 +9,13 @@ import os, sys
 import json
 
 # # Add the parent directory to sys.path
-sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/flowpri_")
+# sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/flowpri_")
+# sys.path.append('../core')
 
 #importando constantes
-from fp_constants import IPC, PORTA_ACCESS_WEB, websocket_conn
+# from fp_constants import IPC, PORTA_ACCESS_WEB, websocket_conn
+
+PORTA_ACCESS_WEB = 8080 #porta para acessar a pagina web
 
 #base web python - https://github.com/eventlet/eventlet/blob/master/examples/websocket.py
 
@@ -69,8 +72,8 @@ def dispatch(environ, start_response):
 
 def lancar_wsgi():
     print("lancando wsgi ...")
-    listener = listen((IPC, PORTA_ACCESS_WEB))
-    print("\nVisit http://%s:%s/ in your websocket-capable browser.\n" % (IPC,PORTA_ACCESS_WEB))
+    listener = listen(('127.0.0.1', PORTA_ACCESS_WEB))
+    print("\nVisit http://%s:%s/ in your websocket-capable browser.\n" % ("localhost",PORTA_ACCESS_WEB))
     wsgi.server(listener, dispatch)
 
     print('Feito ...')

@@ -33,8 +33,10 @@ KEYS_LOCATION = '/sawtooth_keys/'
 CHAVE_PUBLICA_SAWADM = ""
 CHAVE_PRIVADA_SAWADM = ""
 
+
 # 5-tupla: [{"timestamp": "timestamp", "tamanho": "tamanho"}]
 fluxos_monitorados = {}
+
 
 IP_MANAGEMENT_HOST = "192.168.0.1" # alterar isso
 PORTA_MANAGEMENT_HOST_SERVER = 9090
@@ -43,11 +45,14 @@ PORTA_MANAGEMENT_HOST_SERVER = 9090
 # print(interfaces())
 
 #cada controlador deve ter o seu
-CONTROLLER_INTERFACE = "eth0"
+# CONTROLLER_INTERFACE = "eth0"
+CONTROLLER_INTERFACE = "enp7s0"
 
 CONTROLADOR_ID = str(CONTROLLER_INTERFACE)
 IPCv4 = str(ifaddresses(CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
 IPCv6 = str(ifaddresses(CONTROLLER_INTERFACE)[10][0]['addr'].split("%")[0])
+IPC = IPCv4
+
 
 MACC = str(ifaddresses(CONTROLLER_INTERFACE)[17][0]['addr'])
 
@@ -64,7 +69,7 @@ PORTAC_ICMP16 = 1116
 ## Interface web
 PORTA_WEBS_RCV = 9971 #porta websocket para solicitacoes de informacoes JSON para a interface WEB
 PORTA_WEBS_SND = 9972 #porta websocket paraenviar informacoes JSON para a interface WEB
-PORTA_ACCESS_WEB = 9970 #porta para acessar a pagina web
+PORTA_ACCESS_WEB = 8080 #porta para acessar a pagina web
 
 websocket_conn = None
 

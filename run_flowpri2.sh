@@ -1,0 +1,1 @@
+ryu-manager core/main_controller.py --verbose

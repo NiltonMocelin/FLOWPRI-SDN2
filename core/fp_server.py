@@ -14,8 +14,10 @@ from fp_contrato import Contrato
     
 import json, struct, time, datetime
 
-from fp_utils import tratador_addRegras, tratador_addSwitches, tratador_addRotas, tratador_delRegras, tratador_delSwitches, tratador_delRotas
-from fp_openflow_rules import send_icmpv4, send_icmpv6
+from fp_utils import tratador_addRegras, tratador_addSwitches, tratador_delRegras, tratador_delSwitches
+from fp_icmp import send_icmpv4, send_icmpv6
+
+from fp_rota import tratador_addRotas, tratador_delRotas
 
 def servidor_configuracoes():
     print("Iniciando o tratador de arquivos de config....\n")

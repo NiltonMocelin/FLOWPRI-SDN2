@@ -3,8 +3,16 @@
 # importar o tratador da interface web
 import sys, os
 
+# setting path for importation
+# sys.path.append('../qosblockchain')
+# sys.path.append('../ryu')
+# sys.path.append('../traffic_classification')
+# sys.path.append('../traffic_monitoring')
+# sys.path.append('../wsgiWebSocket')
+# sys.path.append('../')
+
 # # Add the parent directory to sys.path
-# sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/wsgiWebSocket")
+sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/")
 
 from ryu.base import app_manager
 from ryu.controller import ofp_event
@@ -46,7 +54,7 @@ from fp_switch import SwitchOVS
 # except ImportError:
 #     print('Erro de importacao da classe SwitchOVS')
 
-from fp_server import servidor_socket_controladores,servidor_socket_hosts,servidor_configuracoes, enviar_contratos
+from fp_server import servidor_configuracoes, enviar_contratos
 
 from fp_acao import Acao
 
@@ -56,8 +64,12 @@ from fp_contrato import Contrato
 
 from fp_openflow_rules import add_classification_table, add_default_rule
 
-from fp_utils import get_ipv4_header, get_eth_header, get_ipv6_header, get_tcp_header, get_udp_header, getSwitchByName, get_rota, ip_meu_dominio, tratador_classificacao_trafego, create_be_rules, create_qos_rules, monitorar_pacote
-from fp_utils import get_flow_monitorado, current_milli_time
+from fp_utils import get_ipv4_header, get_eth_header, get_ipv6_header, get_tcp_header, get_udp_header, getSwitchByName, get_rota, ip_meu_dominio, create_be_rules, create_qos_rules, monitorar_pacote
+from fp_utils import current_milli_time
+
+from fp_api_traffic_classification import tratador_classificacao_trafego
+
+from fp_api_traffic_monitoring import get_flow_monitorado
 
 
 # print('importando fp_topo_discovery')
@@ -79,12 +91,6 @@ from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocke
 #################
 #   INICIANDO SOCKET - RECEBER CONTRATOS (hosts e controladores)
 ################
-
-t1 = Thread(target=servidor_socket_hosts)
-t1.start()
-
-t2 = Thread(target=servidor_socket_controladores)
-t2.start()
 
 t3 = Thread(target=servidor_configuracoes)
 t3.start()

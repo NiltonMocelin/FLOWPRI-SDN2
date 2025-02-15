@@ -6,17 +6,24 @@ apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g
 
 python3 -m pip install dnspython==2.2.1
 
-eventlet==0.31.1
-msgpack>=0.4.0  # RPC library, BGP speaker(net_cntl)
-netaddr
-oslo.config>=2.5.0
-ovs>=2.6.0  # OVSDB
-packaging==20.9
-routes  # wsgi
-six>=1.4.0
-tinyrpc==1.0.4  # RPC library, BGP speaker(net_cntl)
+eventlet==0.31.1 \ 
+msgpack>=0.4.0  \# RPC library, BGP speaker(net_cntl)
+netaddr \
+oslo.config>=2.5.0 \
+ovs>=2.6.0  \# OVSDB
+packaging==20.9 \ 
+routes  \ # wsgi
+six>=1.4.0 \
+tinyrpc==1.0.4 \ # RPC library, BGP speaker(net_cntl)
 webob>=1.2  # wsgi
 
+
+
+
+#### * Got -> Cannot import name 'ALREADY_HANDLED' from 'eventlet.wsgi' ? Then run ->>> pip install eventlet==0.30.2
+
+#docker sdk para o qosblockchain
+pip install docker
 
 - python-pip
 `apt-get install python-pip`

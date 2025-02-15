@@ -2,6 +2,9 @@ from fp_acao import Acao
 from fp_porta import Porta
 from fp_constants import CPT, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE
 from fp_regra import Regra
+import sys
+
+sys.path.append('../ryu')
 
 from ryu.lib.packet import ether_types, in_proto
 

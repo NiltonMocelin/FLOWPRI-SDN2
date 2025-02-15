@@ -145,9 +145,3 @@ def fromJsonToFred(_json):
     return Fred(blockchain_name, AS_src_ip_range, AS_dst_ip_range, ip_ver, proto, ip_src, ip_dst, src_port, dst_port, mac_src, 
                  mac_dst, prioridade,classe,bandiwdth, loss, delay,jitter, label, ip_genesis, lista_peers, lista_rota)
 
-
-def salvar_novo_fred(fred_obj):
-
-    
-
-    return 

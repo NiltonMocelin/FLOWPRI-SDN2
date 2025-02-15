@@ -9,8 +9,12 @@ import fp_fred
 
 import json
 
-from fp_utils import check_domain_hosts, get_rota, get_blockchain_for_flow, criar_blockchain, send_fred_socket, remove_qos_rules, create_qos_rules, remover_fred
+from fp_utils import get_rota,send_fred_socket, remove_qos_rules, create_qos_rules, remover_fred
 from fp_utils import getSwitchByName
+
+from fp_api_qosblockchain import get_blockchain, criar_blockchain
+
+from fp_utils import check_domain_hosts
 
 
 def rejeitar_fred(fred, in_switch_id):
@@ -149,7 +153,7 @@ def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
 
          # verificar se sou um controlador de borda -> sou um par da blockchain
         if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
-            ip_blockchain, port_blockchain = get_blockchain_for_flow(ip_dst)
+            ip_blockchain, port_blockchain = get_blockchain(ip_dst)
 
             fred.lista_peers.append({"nome_peer":"controllerX", "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
 
@@ -235,7 +239,7 @@ def handle_icmpv4(pkt_icmpv4, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
 
          # verificar se sou um controlador de borda -> sou um par da blockchain
         if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
-            ip_blockchain, port_blockchain = get_blockchain_for_flow(ip_dst)
+            ip_blockchain, port_blockchain = get_blockchain(ip_dst)
 
             fred.lista_peers.append({"nome_peer":"controllerX", "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
 
