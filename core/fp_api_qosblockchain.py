@@ -1,12 +1,10 @@
 import sys
-sys.path.append('../qosblockchain')
-
 
 from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar_blockchain
 from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show
-from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm
+from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
 
-from fp_constants import KEYS_LOCATION, CHAVE_PRIVADA_SAWADM, CHAVE_PUBLICA_SAWADM, blockchain_table
+from fp_constants import CHAVE_PRIVADA_SAWADM, CHAVE_PUBLICA_SAWADM, blockchain_table
 
 from fp_utils import get_meu_ip
 
@@ -25,28 +23,11 @@ class BlockchainArgs:
         self.command
 
 def criar_chave_sawtooth_keygen():
-# sawtooth keygen my_key
-    p = subprocess.Popen("sawtooth keygen controller_key")
-    return
+    return criar_par_chaves_sawtooth()
+
 
 def criar_chave_sawadm():
-
-    chave_publica, chave_privada = criar_par_chaves_sawadm(KEYS_LOCATION)
-
-    CHAVE_PUBLICA_SAWADM = chave_publica
-    CHAVE_PRIVADA_SAWADM = chave_privada
-
-    return
-
-def get_chave_sawtooth_keygen():
-    # ler arquivo
-    key = ""
-    return key
-
-def get_chave_sawadm():
-
-    return CHAVE_PUBLICA_SAWADM, CHAVE_PRIVADA_SAWADM
-
+    return criar_par_chaves_sawadm()
 
 def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transacao):
 # python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
@@ -96,7 +77,8 @@ def criar_blockchain_api(nome_blockchain, PEERS_IP:list=None, chaves_peers:list 
     while(VALIDATOR_PORT in portas_em_uso):
         VALIDATOR_PORT+=1
 
-    chave_publica, chave_privada = get_chave_sawadm()
+    criar_chave_sawtooth_keygen()
+    chave_publica, chave_privada = criar_chave_sawadm()
 
     criar_blockchain(nome_blockchain, get_meu_ip(), chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
     return True

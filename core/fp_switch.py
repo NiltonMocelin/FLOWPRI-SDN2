@@ -4,7 +4,7 @@ from fp_constants import CPT, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIF
 from fp_regra import Regra
 import sys
 
-sys.path.append('../ryu')
+
 
 from ryu.lib.packet import ether_types, in_proto
 

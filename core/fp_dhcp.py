@@ -9,7 +9,7 @@ from ryu.lib.packet import icmpv6
 from ryu.lib.packet import in_proto
 from ryu.lib.packet import vlan
 from ryu.lib import addrconv
-from fp_constants import IPC, MACC
+from fp_constants import IPCc, MACC
 import ipaddress
 
 
@@ -28,7 +28,7 @@ _LIST_IPS = ['192.168.255.1', '192.168.255.2', '192.168.255.3', '192.168.255.4',
 # isso tem que ter o controle de qual switch conecta o host - mac-ip
 mac_to_client_ip = {}
 
-CONTROLLER_IP = IPC
+CONTROLLER_IP = IPCc
 CONTROLLER_MAC = MACC
 
 #Isso cada switch/grupo de switches deve ter o seu

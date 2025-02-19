@@ -1,7 +1,5 @@
 import sys
 
-sys.path.append('../traffic_classification')
-
 from fp_constants import switches, freds, rotas, controladores_conhecidos, fluxos_monitorados, blockchain_table, IPCv4, KEYS_LOCATION, CHAVE_PRIVADA_SAWADM, CHAVE_PUBLICA_SAWADM
 from fp_rota import Rota, Rota_Node
 #para invocar scripts e comandos tc qdisc
@@ -13,6 +11,10 @@ import psutil
 
 from fp_rota import get_rota
 
+def souDominioBorda(ip_ver, ip_src, ip_dst):
+    if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
+        return True
+    return False
 
 def check_domain_hosts(ip_src):
 

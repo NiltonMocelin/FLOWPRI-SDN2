@@ -27,7 +27,8 @@ def pkts_to_pcap(lista_pacotes, filename):
 def remover_file(filename):
     return
 
-def processar_pacotes(flow_five_tuple, pkt):
+def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
+    flow_five_tuple = ip_ver + "_" + ip_src + "_" + ip_dst + "_" + src_port + "_" + dst_port + "_" + proto
     #salvar em arqivo os pacotes,
     flows_dict[flow_five_tuple].append(pkt)
     

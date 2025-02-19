@@ -3,7 +3,7 @@ from ryu.lib.packet import ethernet
 from ryu.ofproto import ofproto_v1_3, inet, ether
 from ryu.lib.packet import ipv4, arp, icmp, udp, tcp, lldp, ipv6, dhcp, icmpv6
 
-from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER
+from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPCc
 
 import fp_fred
 
@@ -12,9 +12,11 @@ import json
 from fp_utils import get_rota,send_fred_socket, remove_qos_rules, create_qos_rules, remover_fred
 from fp_utils import getSwitchByName
 
-from fp_api_qosblockchain import get_blockchain, criar_blockchain
+# from fp_api_qosblockchain import get_blockchain, criar_blockchain
 
-from fp_utils import check_domain_hosts
+from fp_utils import souDominioBorda, check_domain_hosts
+
+from fp_flow_monitoring import Register, FlowMonitoring, loadFlowMonitoringFromJson
 
 
 def rejeitar_fred(fred, in_switch_id):
@@ -87,81 +89,91 @@ def send_icmpv6(datapath, srcMac, srcIp, dstMac, dstIp, outPort, data, type=8, t
     return 0
 
 
-def tratador_icmpv6_fred(pkt_icmpv6, in_switch_id):
+def tratador_icmp_flow_monitoring(pkt_icmp, in_switch_id):
+    
+    if pkt_icmp == None:
+        return None
+    
+    if not "Monitoring" in pkt_icmp.data:
+        return None
+
+    try:
+        flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmp.data))   
+        return flow_monitoring
+    except:
+        return None
+    return None
+
+def tratador_icmp_fred(pkt_icmp, in_switch_id):
 
     # 139 icmpv6 vem com um fred, criar as regras de QoS, preencher com os campos (E chave publica) e enviar para frente
 
-    if pkt_icmpv6 == None:
+    if pkt_icmp == None:
+        return None
+    
+    if not "FRED" in pkt_icmp.data:
         return None
 
-    ICMPV6_NI_QUERY = 139     # node information request
-    ICMPV6_NI_REPLY = 140     # node information reply
-
-    if pkt_icmpv6.type_ == ICMPV6_NI_QUERY:
-
-        try:
-            fred = fp_fred.fromJsonToFred(json.loads(pkt_icmpv6.data))
-        except:
-            print("Nenhum fred nos dados de ICMPv6")
-            return None
-
-        return fred
-    elif pkt_icmpv6.type_ == ICMPV6_NI_REPLY:
-        # obter um reply é pq algo deu errado -> provavelmente um ISP rejeitou o fluxo com qos e deve ser enviado por best-effort
-        print("sbb")
-    return None
-
-def tratador_icmpv4_fred(pkt_icmpv4, in_switch_id):
-        # 139 icmpv6 vem com um fred, criar as regras de QoS, preencher com os campos (E chave publica) e enviar para frente
-
-    if pkt_icmpv4 == None:
-        return None
-
-    INFORMATION_REQUEST = 15     # node information request
-    INFORMATION_REPLY = 16     # node information reply
-    fred = None
     try:
-        fred = fp_fred.fromJsonToFred(json.loads(pkt_icmpv4.data))
+        fred = fp_fred.fromJsonToFred(json.loads(pkt_icmp.data))
+        return fred
     except:
-        print("Nenhum fred nos dados de ICMP")
+        print("Nenhum fred nos dados de ICMPv6")
         return None
 
-    return fred
-
+    return None
+    
 
 def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
     #print("\n Recebeu Pacote ICMP: \n")
 
-    fred = tratador_icmpv6_fred(pkt_icmpv6, in_switch_id)
-
     # icmpv6.ICMPV6_NI_QUERY == anuncio de FRED
     if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_QUERY:
+
+        # aqui pode ser duas coisas: anuncio fred ou flow monitoring
+
+        fred = tratador_icmp_fred(pkt_icmpv6, in_switch_id)
+        flow_monitoring = tratador_icmp_flow_monitoring(pkt_icmpv6, in_switch_id)
+
+        # modificar fred                
+        minha_chave_publica = ''
+    
+         # verificar se sou um controlador de borda -> sou um par da blockchain
+        if souDominioBorda(ip_ver, ip_src, ip_dst):
+            
+            if fred == None:
+                print("ICMPv6 %d incorreto" % (icmpv6.ICMPV6_NI_QUERY))
+                return False
+
+            ip_blockchain, port_blockchain = "",""# get_blockchain(ip_dst)
+
+            fred.lista_peers.append({"nome_peer":IPCc, "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
+
+            # apenas o nó genesis (host origem do primeiro fluxo entre os dois dominios de borda)
+            # é quem cria a transação -> pois só após ele subir a blockchain com o bloco genesis é que os pares podem enviar transações.
+        
+            if ip_blockchain == None:
+               ip_blockchain, port_blockchain= "",""#criar_blockchain()
+
+        else: # nao sou dominio de borda
+            
+            # criar regras G-BAM backbone             
+            fred.lista_rota.append({"ordem": str(ordem), "nome_peer": IPCc, "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
+
+            return
 
         if fred == None:
             print("ICMPv6 %d incorreto" % (icmpv6.ICMPV6_NI_QUERY))
             return False
 
-        # modificar fred                
-        minha_chave_publica = ''
         switches_rota = get_rota(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, in_switch_id)
         if switches_rota == None:
             print("Nao há rotas configuradas para o destino %s " % (ip_dst))
             return False
         
         ordem = len(fred.lista_peers) 
-        fred.lista_rota.append({"ordem": str(ordem), "nome_peer": "controllerXX", "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
+        fred.lista_rota.append({"ordem": str(ordem), "nome_peer": IPCc, "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
 
-         # verificar se sou um controlador de borda -> sou um par da blockchain
-        if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
-            ip_blockchain, port_blockchain = get_blockchain(ip_dst)
-
-            fred.lista_peers.append({"nome_peer":"controllerX", "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
-
-            # apenas o nó genesis (host origem do primeiro fluxo entre os dois dominios de borda)
-            # é quem cria a transação -> pois só após ele subir a blockchain com o bloco genesis é que os pares podem enviar transações.
-
-            if ip_blockchain == None:
-               ip_blockchain, port_blockchain= criar_blockchain()
 
 
         # salvar fred
@@ -239,7 +251,7 @@ def handle_icmpv4(pkt_icmpv4, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
 
          # verificar se sou um controlador de borda -> sou um par da blockchain
         if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
-            ip_blockchain, port_blockchain = get_blockchain(ip_dst)
+            ip_blockchain, port_blockchain = "","" #get_blockchain(ip_dst)
 
             fred.lista_peers.append({"nome_peer":"controllerX", "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
 
@@ -247,7 +259,7 @@ def handle_icmpv4(pkt_icmpv4, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
             # é quem cria a transação -> pois só após ele subir a blockchain com o bloco genesis é que os pares podem enviar transações.
 
             if ip_blockchain == None:
-               ip_blockchain, port_blockchain= criar_blockchain()
+               ip_blockchain, port_blockchain= "",""#criar_blockchain()
 
 
         # salvar fred

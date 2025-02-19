@@ -18,6 +18,7 @@ tinyrpc==1.0.4 \ # RPC library, BGP speaker(net_cntl)
 webob>=1.2  # wsgi
 
 
+colorlog
 
 
 #### * Got -> Cannot import name 'ALREADY_HANDLED' from 'eventlet.wsgi' ? Then run ->>> pip install eventlet==0.30.2
@@ -64,3 +65,26 @@ pip install docker
 
 - networkx
 `pip install networkx`
+
+
+# qosblockchain:
+
+* sawtooth-sdk (pip install sawtooth-sdk) (necessário para o client)
+
+* docker
+
+* docker-compose
+
+* toml
+
+* color
+
+* yaml
+
+* pip install sawtooth-signing
+
+* pip install psutil
+
+* pip install protobuf
+
+* copiar https://github.com/hyperledger-archives/sawtooth-sdk-python/blob/main/sawtooth_signing/secp256k1.py para o local onde o pacote sawtooth-signing foi instalado. Se estiver utilizando conda, provavelmente esteja em $HOME/miniconda/envs/!!NOME_AMBIENTE_VIRTUAL_PYTHON!!/lib/python3.8/site-packages/sawtooth_signing/secp256k1.py  --> A versão recuperada pelo pip pode levar a erros !!

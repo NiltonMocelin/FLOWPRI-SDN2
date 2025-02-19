@@ -8,92 +8,70 @@
 
     <h1>Interface WEB - Controlador -</h1>
 
-    <!-- informacoes sobre uso de recursos do controlador (cpu, ram, taxa de packet_in/s) -->
-    <div id="controller_stats"></div>
-
+    <div>
     <h2> Switches Conectados </h2>
 
     <!-- lista de switches -->
     <div id="switch_list"></div>
+    </div>
 
     <!-- canvas com o grafo da rede -->
-    <div id="network_graph"></div>
-
+    <div>
+      <h2>Topologia</h2>
+      <div id="network_graph"></div>
+    </div>
+    
+    
     <!-- grafo com redes virtuais -->
-    <div id="virtual_network_graph"></div>
-
-    <!-- *que mais??* -->
+    <div>
+      <h2>Logs</h2>
+    <div id="logs"></div>
+    </div>
+    
 
     <script type="text/javascript">
       // nao pode ser assim
       // ref1: https://uwsgi-docs.readthedocs.io/en/latest/articles/OffloadingWebsocketsAndSSE.html
       // ref2: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 
-      //teste websocket      
-      //base javascript websocket - https://javascript.info/websocket
+      
+      // A cada 5s solicita informacoes ao controlador ||| ou faz por arquivo
+      //solicitando via get acho, nao lembro o que ocorre aqui
+      function refresh_data() {
+        setTimeout(
+        () => {
+            //acessar e obter tudo que /dados enviar
+            let url = 'http://127.0.0.1:8080/get_switches';
 
-      let websocket = new WebSocket("ws://10.0.0.6:9970/dados");
+            //promisse
+            const dados_json = fetch(url)
+              .then((response) => { 
+                  return response.json().then((data) => {
+                    // console.log(data);
+                    const array_dados = data.switches;
+                    console.log(array_dados[0]['nome']);
 
-      var switches = [];
+                    let texto = "";
 
-      // pegar a mensagem como um arraybuffer - https://bun.sh/guides/binary/arraybuffer-to-string
-      websocket.binaryType = "arraybuffer";
+                    for(let i = 0; i < array_dados.length; i++){
+                      texto+= `${i}: Switch name: ${array_dados[i]["nome"]}<br>`;
+                    }
 
-      websocket.onopen = function(e) {
-        alert("[open] Connection established");
-        alert("Sending to server");
-        websocket.send("My name is John");
+                    document.getElementById('switch_list').innerHTML = texto;
+                    return data;
+              }).catch((err) => {
+                  console.log(err);
+              })
+            }); 
+
+            refresh_data();
+        }, 5000)
       };
 
-      websocket.onmessage = function(event) {
-
-        const decoder = new TextDecoder();
-        const str = decoder.decode(event.data);
-
-        dados_json = JSON.parse(str);
-
-        //check if key exists in json - obj.hasOwnProperty(prop) -> this way we can handle multiple messages here
-        
-        // alert(`[message] Data received from server: ${JSON.stringify(dados_json.switches)}`);
-    
-        alert(`[message] Data received from server: ${str}`);
-        // document.getElementById('controller_stats').innerHTML = `<h3>dados recebidos: ${str}</h3>`
-        // document.getElementById('controller_stats').innerHTML = `<h3>dados recebidos: ${dados_json.switches[0]}</h3>`
-        document.getElementById('controller_stats').innerHTML = `<h3>dados recebidos: ${JSON.stringify(dados_json.switches[0].nome)}</h3>`
-        
-      };
-
-
-      // quero armazenar os switches, as portas dos switches, os links de cada porta, a largura de banda de cada porta, regras de QoS de cada porta
-      // mostrar a topologia
-      // possuir um botão para obter estatística de um fluxo específico.  
-      class Switch{
-        constructor(id, qtdPortas){
-          this.id = id;
-          this.qtdPortas = qtdPortas;
-        }
-      }
-
-      class Porta{
-        constructor(id){
-          this.id = id;
-        }
-      }
-
-      class Link{
-        constructor(SwitchA, PortaA, SwitchB, PortaB, direcao, banda){
-          this.SwitchA = SwitchA;
-          this.SwitchB = SwitchB;
-          this.PortaA = PortaA;
-          this.PortaB = PortaB;
-          this.direcao = direcao;
-          this.banda = banda;
-
-        }
-      }
+      refresh_data();
 
     </script>
 
-  </BODY>
-  </HTML>
+   </BODY>
+   </HTML>
    

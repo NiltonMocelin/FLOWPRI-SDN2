@@ -1,11 +1,10 @@
 #avoid circular import https://builtin.com/articles/python-circular-import
 
 import socket
-from fp_constants import IPC, PORTAC_C, MACC, PORTAC_H, PORTAC_X, CRIAR, CPT
+from fp_constants import IPCc, PORTAC_C, MACC, PORTAC_H, PORTAC_X, CRIAR, CPT
 from fp_constants import freds
 
 from fp_switch import SwitchOVS
-from fp_contrato import Contrato
 
 # try:
 # from main_controller import delContratoERegras, tratador_regras, send_icmpv4, tratador_addSwitch, tratador_rotas
@@ -15,17 +14,19 @@ from fp_contrato import Contrato
 import json, struct, time, datetime
 
 from fp_utils import tratador_addRegras, tratador_addSwitches, tratador_delRegras, tratador_delSwitches
-from fp_icmp import send_icmpv4, send_icmpv6
 
 from fp_rota import tratador_addRotas, tratador_delRotas
 
 def servidor_configuracoes():
+
+    global IPCc
     print("Iniciando o tratador de arquivos de config....\n")
 
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
+
+    print("ip:", IPCc)
     #um desses funfa
-    tcp.bind((IPC, PORTAC_X))
+    tcp.bind(('127.0.0.1', PORTAC_X))
 
     tcp.listen(5)
 

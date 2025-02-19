@@ -34,3 +34,5 @@ class Regra:
 
     def toString(self):
         return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%s; dst_port=%s; proto=%s; banda:%s, porta_dst=%d, tos=%s, emprestando=%d" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_dst, self.tos, self.emprestando) 
+
+# parte de criação de regras 

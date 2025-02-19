@@ -1,5 +1,4 @@
 import sys
-sys.path.append('../traffic_classification')
 
 from traffic_classification.classificator import processar_pacotes, classificar_fluxo
 

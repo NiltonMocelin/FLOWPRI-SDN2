@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../ryu')
+
 
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, DEAD_DISPATCHER
 from ryu.controller.handler import set_ev_cls

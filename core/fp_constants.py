@@ -27,13 +27,6 @@ switches = [] #switches administrados pelo controlador
 ## mudou:-: {} ip_dst: [rota_nodes]
 rotas = {}
 
-
-KEYS_LOCATION = '/sawtooth_keys/'
-
-CHAVE_PUBLICA_SAWADM = ""
-CHAVE_PRIVADA_SAWADM = ""
-
-
 # 5-tupla: [{"timestamp": "timestamp", "tamanho": "tamanho"}]
 fluxos_monitorados = {}
 
@@ -48,17 +41,14 @@ PORTA_MANAGEMENT_HOST_SERVER = 9090
 # CONTROLLER_INTERFACE = "eth0"
 CONTROLLER_INTERFACE = "enp7s0"
 
-CONTROLADOR_ID = str(CONTROLLER_INTERFACE)
-IPCv4 = str(ifaddresses(CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
-IPCv6 = str(ifaddresses(CONTROLLER_INTERFACE)[10][0]['addr'].split("%")[0])
-IPC = IPCv4
+CONTROLADOR_ID = "No-id"
+IPCv4 = None 
+IPCv6 = None 
+IPCc = None
 
 
-MACC = str(ifaddresses(CONTROLLER_INTERFACE)[17][0]['addr'])
+MACC = None
 
-print("Controlador ID - {}".format(CONTROLADOR_ID))
-print("Controlador IP - {}".format(IPCv6))
-print("Controlador MAC - {}".format(MACC))
 
 PORTAC_H = 4444 #porta para receber contratos de hosts
 PORTAC_C = 8888 #porta para receber contratos de controladores

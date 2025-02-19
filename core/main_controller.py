@@ -3,6 +3,13 @@
 # importar o tratador da interface web
 import sys, os
 
+
+# sys.path.append('../../FLOWPRI-SDN2')
+
+from netifaces import AF_INET, ifaddresses, interfaces
+
+import rest_topology, ofctl_rest, ws_topology
+
 # setting path for importation
 # sys.path.append('../qosblockchain')
 # sys.path.append('../ryu')
@@ -11,8 +18,17 @@ import sys, os
 # sys.path.append('../wsgiWebSocket')
 # sys.path.append('../')
 
+current = os.path.dirname(os.path.realpath(__file__))
+
+# Getting the parent directory name
+# where the current directory is present.
+parent = os.path.dirname(current)
+
+# adding the parent directory to 
+# the sys.path.
+sys.path.append(parent)
+
 # # Add the parent directory to sys.path
-sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/")
 
 from ryu.base import app_manager
 from ryu.controller import ofp_event
@@ -22,8 +38,6 @@ from ryu.ofproto import ofproto_v1_3, inet, ether
 from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ipv4, arp, icmp, udp, tcp, lldp, ipv6, dhcp, icmpv6
-
-from traffic_classification.classificator import flows_dict
 
 from ryu.topology import event
 
@@ -43,33 +57,26 @@ import logging
 import sys, os
 
 #codigos das acoes
-from fp_constants import REMOVER, CRIAR, MARCACAO_MONITORAMENTO
+from fp_constants import REMOVER, MARCACAO_MONITORAMENTO
 
-from fp_constants import switches, freds, controller_singleton, rotas, PORTA_MANAGEMENT_HOST_SERVER
 
-from fp_rota import Rota
+from fp_constants import switches, IPCc,IPCv4, IPCv6, CONTROLLER_INTERFACE, MACC, controller_singleton
 
 # try:
 from fp_switch import SwitchOVS
 # except ImportError:
 #     print('Erro de importacao da classe SwitchOVS')
 
-from fp_server import servidor_configuracoes, enviar_contratos
+from fp_server import servidor_configuracoes
 
 from fp_acao import Acao
 
 from fp_regra import Regra
 
-from fp_contrato import Contrato
-
 from fp_openflow_rules import add_classification_table, add_default_rule
 
-from fp_utils import get_ipv4_header, get_eth_header, get_ipv6_header, get_tcp_header, get_udp_header, getSwitchByName, get_rota, ip_meu_dominio, create_be_rules, create_qos_rules, monitorar_pacote
+from fp_utils import get_ipv4_header, get_eth_header, get_ipv6_header, get_tcp_header, get_udp_header, getSwitchByName, get_rota, ip_meu_dominio, create_be_rules, create_qos_rules
 from fp_utils import current_milli_time
-
-from fp_api_traffic_classification import tratador_classificacao_trafego
-
-from fp_api_traffic_monitoring import get_flow_monitorado
 
 
 # print('importando fp_topo_discovery')
@@ -77,9 +84,7 @@ from fp_api_traffic_monitoring import get_flow_monitorado
 from fp_topology_discovery import handler_switch_enter, handler_switch_leave
 # print('importando fp_dhcp')
 #tratador DHCPv4
-from fp_dhcp import handle_dhcp_discovery, handle_dhcp_request, handle_dhcp, mac_to_client_ip
-
-import fp_fred
+from fp_dhcp import handle_dhcp
 
 from fp_icmp import handle_icmpv6, handle_icmpv4, rejeitar_fred, send_icmpv4, send_icmpv6
 
@@ -87,26 +92,16 @@ from fp_icmp import handle_icmpv6, handle_icmpv4, rejeitar_fred, send_icmpv4, se
 # import wsgiWebSocket.interface_web as iwb
 from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocket_snd, dados_json
 
-
-#################
-#   INICIANDO SOCKET - RECEBER CONTRATOS (hosts e controladores)
-################
-
-t3 = Thread(target=servidor_configuracoes)
-t3.start()
-
-## iniciar o servidor web aqui
-t4 = Thread(target=lancar_wsgi)
-t4.start()
-
-#t1.join()
-
+from traffic_classification.classificator import classificar_pacote
 
 class Dinamico(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
 
     def __init__(self, *args, **kwargs):
         print("CONTROLADOR - \n Init Start\n" )# % (IPC))
+        setup()
+        print("done")
+
         super(Dinamico,self).__init__(*args,**kwargs)
         self.mac_to_port = {}
         self.ip_to_mac = {}
@@ -116,6 +111,8 @@ class Dinamico(app_manager.RyuApp):
 
         global controller_singleton
         controller_singleton = self
+
+        # app_manager.AppManager.run_apps(['rest_topology', 'ofctl_rest', 'ws_topology'])
     
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
@@ -243,6 +240,7 @@ class Dinamico(app_manager.RyuApp):
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def packet_in_handler(self, ev):
 
+####################### LEARNING PHASE ###############################################################################
         timpo_i_mili = current_milli_time()
         print("[packet_in] init ", timpo_i_mili)
 
@@ -328,6 +326,8 @@ class Dinamico(app_manager.RyuApp):
         else:
             out_port = None
 
+####################### LEARNING PHASE ###############################################################################
+
         #tratador dhcp ipv4
         dhcpPkt = pkt.get_protocol(dhcp.dhcp)
         if dhcpPkt:
@@ -369,11 +369,11 @@ class Dinamico(app_manager.RyuApp):
                 marcacao_pkt = pkt_ipv6.flow_label
 
             if marcacao_pkt == MARCACAO_MONITORAMENTO:
-                qtd_pkts = monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
+                qtd_pkts = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
 
             if qtd_pkts >= 10:
                 
-                flow_monitorado_dict = get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+                flow_monitorado_dict = "" #get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
                 
                 b = json.dumps(flow_monitorado_dict)
                 
@@ -388,7 +388,7 @@ class Dinamico(app_manager.RyuApp):
                 elif pkt_ipv6:
                     send_icmpv6(switch_ultimo.datapath, eth_src, ip_src, eth_dst, ip_dst, switch_rota[-1].out_port, b, type=139, ttl=64)
 
-            fred = tratador_classificacao_trafego(pkt)
+            fred = "" #tratador_classificacao_trafego(pkt)
             flow_label = fred["label"]
 
 
@@ -428,3 +428,34 @@ class Dinamico(app_manager.RyuApp):
         print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
         return	 
                     
+
+
+def setup():
+
+    global CONTROLADOR_ID, IPCc, IPCv4, IPCv6, MACC
+
+    CONTROLADOR_ID = str(CONTROLLER_INTERFACE)
+    IPCv4 = str(ifaddresses(CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
+    
+    IPCv6 = str(ifaddresses(CONTROLLER_INTERFACE)[10][0]['addr'].split("%")[0])
+    IPCc = IPCv4
+    
+    MACC = str(ifaddresses(CONTROLLER_INTERFACE)[17][0]['addr'])
+
+    print("Controlador ID - {}".format(CONTROLADOR_ID))
+    print("Controlador IPv4 - {}".format(IPCv4))
+    print("Controlador IPv6 - {}".format(IPCv6))
+    print("Controlador MAC - {}".format(MACC))
+
+    #################
+    #   INICIANDO SOCKET - R0ECEBER CONTRATOS (hosts e controladores)
+    ################
+
+    # t3 = Thread(target=servidor_configuracoes)
+    # t3.start()
+
+    # # iniciar o servidor web aqui
+    # t4 = Thread(target=lancar_wsgi)
+    # t4.start()
+
+    #t1.join()

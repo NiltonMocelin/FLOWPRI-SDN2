@@ -3,10 +3,15 @@ from time import sleep
 from eventlet import listen, sleep
 from eventlet import wsgi
 from eventlet import websocket
+from ryu.app.wsgi import Response
+from ryu.app.wsgi import route
+from ryu.lib import dpid as dpid_lib
 
 import os, sys
 
 import json
+
+from core.fp_constants import controller_singleton
 
 # # Add the parent directory to sys.path
 # sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/flowpri_")
@@ -25,13 +30,12 @@ def handle(ws):
     """  This is the websocket handler function.  Note that we
     can dispatch based on path in here, too."""
 
-    #gambiarrinha do bem, para poder utilizar a conexao quando quiser
-    websocket_conn = ws
+    # websocket_conn = ws
+    print('websocket dict:')
 
-    message_from_client = ws.wait()
-    print(message_from_client)
-    # print('websocket dict:')
-    # print(ws.__dict__)
+    # message_from_client = ws.wait()
+    # print(message_from_client)
+    print(ws.__dict__)
 
     if ws.path == '/dados':
         
@@ -44,30 +48,39 @@ def handle(ws):
         ws.send(snd_json_data)
 
 
-def send_dados():
+def get_switches():
 
-    #limpar os antigos dados
-    dados_json = """{
-    "dado1": 1,
-    "dado2": 2,
-    }"""
+    return '{ "switches": [ { "nome": "s1" } ] }'
 
-    return dados_json
+def get_switch_ports_rules(name):
+
+    return '{ "switches": [ { "nome": "s1" } ] }'
 
 def dispatch(environ, start_response):
     """ This resolves to the web page or the websocket depending on
     the path."""
 
     print(environ['PATH_INFO'])
-    if environ['PATH_INFO'] == '/dados':
+
+    if environ['PATH_INFO'] == '/topology/switches':
+        return
+    
+    if '/get_switch?' in environ['PATH_INFO']:
+        # get switch name, buscar todas as regras ativas para cada porta
+
+        switch_name = environ['PATH_INFO'].split('?')[1]
+        return 
+
+    if environ['PATH_INFO'] == '/get_switches':
+        start_response('200 OK', [('content-type', 'application/json')])
         #responde solicitacao websocket
-        print('websocket')
-        return handle(environ, start_response)
+        
+        return get_switches()
     else:
         #responde solicitacao pagina web
         start_response('200 OK', [('content-type', 'text/html')])
         print('Host conectado')
-        return [open('../wsgiWebSocket/index.html').read()]
+        return [open('wsgiWebSocket/index.html').read()]
 
 
 def lancar_wsgi():

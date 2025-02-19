@@ -1,7 +1,5 @@
 import sys
 
-sys.path.append('../traffic_classification')
-
 from fp_utils import current_milli_time
 from fp_constants import fluxos_monitorados
 
