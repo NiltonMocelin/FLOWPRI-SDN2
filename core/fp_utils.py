@@ -1,7 +1,10 @@
 import sys
 
-from fp_constants import switches, freds, rotas, controladores_conhecidos, fluxos_monitorados, blockchain_table, IPCv4, KEYS_LOCATION, CHAVE_PRIVADA_SAWADM, CHAVE_PUBLICA_SAWADM
+from fp_constants import switches, freds, controladores_conhecidos, IPCv4, SEMBANDA
 from fp_rota import Rota, Rota_Node
+
+from fp_switch import Switch
+
 #para invocar scripts e comandos tc qdisc
 import subprocess
 import time
@@ -11,7 +14,7 @@ import psutil
 
 from fp_rota import get_rota
 
-def souDominioBorda(ip_ver, ip_src, ip_dst):
+def souDominioBorda(ip_ver:int, ip_src:str, ip_dst:str):
     if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
         return True
     return False
@@ -33,7 +36,7 @@ def check_domain_hosts(ip_src):
 
 
 
-def calculate_network_prefix_ipv4(ip_v4):
+def calculate_network_prefix_ipv4(ip_v4:str):
     # supomos tudo /24 -> 192.168.1.10 -> 192.168.1.0
     prefix = ip_v4.split(".")
 
@@ -59,7 +62,7 @@ def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
         raise SyntaxError("ERRO ao enviar fred !")
     return 
 
-def remover_fred(ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
+def remover_fred(ip_ver:int , proto:int , ip_src:str, ip_dst:str, src_port:int, dst_port:int):
 
     for f in freds:
         if f.ip_ver == ip_ver and f.proto == f.roto == proto and f.ip_srcd == ip_src and  f.ip_dstd == ip_dst and f.src_portd == src_port and f.dst_port == dst_port:
@@ -78,7 +81,7 @@ def getSwitchFromMac(mac):
         if s.conheceMac(mac) != -1:
             return s.nome
             
-def getSwitchByName(nome):
+def getSwitchByName(nome) -> Switch:
     print("procurando switch: %s\n" % nome)
     for i in switches:
         if str(i.nome) == str(nome):
@@ -86,7 +89,7 @@ def getSwitchByName(nome):
 
     return None
 
-def encontrarMatchFreds(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+def encontrarMatchFreds(ip_ver: int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
     
     #encontrou
     for i in freds:
@@ -340,7 +343,7 @@ def get_udp_header(udp_pkt):
     return None,None,None,None
 
 
-def addControladorConhecido(ipnovo):
+def addControladorConhecido(ipnovo:str):
     #print]("Verificando se ja conhece o controlador: %s \n" %(ipnovo))
     if checkControladorConhecido(ipnovo) == 1:
         #print]("controlador ja conhecido\n")
@@ -349,7 +352,7 @@ def addControladorConhecido(ipnovo):
     controladores_conhecidos.append(ipnovo)
     #print]("novo controlador conhecido\n")
 
-def checkControladorConhecido(ip):
+def checkControladorConhecido(ip:str):
     for i in controladores_conhecidos:
         if i == ip:
             #conhecido
@@ -362,12 +365,13 @@ def remove_qos_rules(fred):
     
     return
 
-def create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, in_switch_id):
+def create_qos_rules(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, fred:dict, in_switch_id:int):
 
     #flow qos
     banda=fred["banda"]
     prioridade=fred["prioridade"]
     classe=fred["classe"]
+    flow_label = fred["label"]
 
     # rota com os datapaths dos switches em ordem
     switch_route = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id)
@@ -380,7 +384,7 @@ def create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, in
         switchh = getSwitchByName(sw.switch_name)
         porta_saida = sw.out_port
 
-        if switchh.getFreeBandwForQoS(sw.in_port, sw.out_port, classe, prioridade, banda) == -1: # deve consultar porta de entrada e saída
+        if switchh.getFreeBandwForQoS(sw.in_port, sw.out_port, classe, prioridade, banda) == SEMBANDA: # deve consultar porta de entrada e saída
             # algum switch nao suporta
             return False
 
@@ -394,7 +398,7 @@ def create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, in
 
     return True
 
-def create_be_rules(controller, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label, flow_qos, in_switch_id):
+def create_be_rules(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, in_switch_id:int):
     # rota com os datapaths dos switches em ordem
     switch_route = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id)
 

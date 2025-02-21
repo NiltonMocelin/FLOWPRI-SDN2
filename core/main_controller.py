@@ -94,6 +94,8 @@ from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocke
 
 from traffic_classification.classificator import classificar_pacote
 
+from traffic_monitoring.fp_monitoring import monitorar_pacote
+
 class Dinamico(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
 
@@ -223,7 +225,7 @@ class Dinamico(app_manager.RyuApp):
         #por agora, tanto as regras de ida quanto as de volta sao marcadas para notificar com o evento
         #atualizar no switch que gerou o evento
 
-        switch = self.getSwitchByName(str(dp.id))
+        switch = getSwitchByName(str(dp.id))
         if switch != None:
             # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
             porta_nome = switch.getPortaSaida(ip_dst)
@@ -309,7 +311,7 @@ class Dinamico(app_manager.RyuApp):
         print("[%s] pkt_in ip_src: %s; ip_dst: %s; src_port: %s; dst_port: %s; proto: %s\n" % (datetime.datetime.now().time(), ipv4_src, ip_dst, src_port, dst_port, proto))
 
         # aprendizagem
-        este_switch = self.getSwitchByName(str(dpid))
+        este_switch = getSwitchByName(str(dpid))
         este_switch.listarRegras()
 
         #essa informacao nao importa ao switch, poderia ser uma variavel do controlador, essas duas info poderiam ser um dict {switch: {mac_src: ip_src}}
@@ -328,6 +330,8 @@ class Dinamico(app_manager.RyuApp):
 
 ####################### LEARNING PHASE ###############################################################################
 
+
+######################## IMCP ########################################################################################
         #tratador dhcp ipv4
         dhcpPkt = pkt.get_protocol(dhcp.dhcp)
         if dhcpPkt:
@@ -350,7 +354,9 @@ class Dinamico(app_manager.RyuApp):
             handle_icmpv4(pkt_icmpv4, eth_src, eth_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, str(dpid))
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
+######################## IMCP ########################################################################################
 
+######################## Unmactched ########################################################################################
         # fluxo novo -> classificar
         # fazer classificaçao trafego
         flow_label = "best-effort"
@@ -361,7 +367,6 @@ class Dinamico(app_manager.RyuApp):
             # se o pacote for marcado para monitoramento, apenas armazenaR timestamp, len(pkt)
             # injetar o pacote ou contar 20 e mudar a regra -- OFPP_CONTROLLER
             marcacao_pkt = 0
-            qtd_pkts = 0
 
             if pkt_ipv4:
                 marcacao_pkt = pkt_ipv4.tos
@@ -369,58 +374,27 @@ class Dinamico(app_manager.RyuApp):
                 marcacao_pkt = pkt_ipv6.flow_label
 
             if marcacao_pkt == MARCACAO_MONITORAMENTO:
-                qtd_pkts = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
+                monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
 
-            if qtd_pkts >= 10:
-                
-                flow_monitorado_dict = "" #get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
-                
-                b = json.dumps(flow_monitorado_dict)
-                
-                # pegar rota, escolher ultimo switch e inserir o icmp
-                switch_rota = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, dpid)
+            fred = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
 
-                switch_ultimo = getSwitchByName(switch_rota[-1].switch_name)
-
-                if pkt_ipv4:
-                    send_icmpv4(switch_ultimo.datapath, eth_src, ip_src, eth_dst, ip_dst, switch_rota[-1].out_port, 0, b, id=1, type=15, ttl=64)
-                    
-                elif pkt_ipv6:
-                    send_icmpv6(switch_ultimo.datapath, eth_src, ip_src, eth_dst, ip_dst, switch_rota[-1].out_port, b, type=139, ttl=64)
-
-            fred = "" #tratador_classificacao_trafego(pkt)
-            flow_label = fred["label"]
-
-
-        if flow_label != "best-effort":
             # criar regras qos, criar fred, preencher e enviar icmpv6.
             print("criar regras qos, criar fred, preencher e enviar icmpv6.")
 
-            if create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, dpid):
-                print("Regras criadas")
+            if fred["label"] != "best-effort":
+                if create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, dpid):
+                    print("Regras criadas")
+                    return
             
-            else: 
-                print("Fluxo teve QoS rejeitado (falta de recursos)")
-                # informar os outros domínios para enviar o fluxo por best-effort por enquanto. -> via icmpv6
-                rejeitar_fred(fred, in_switch_id=dpid)
-
-                create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label, flow_qos="qqcoisa", in_switch_id=dpid)
-            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-            return
-
         # nao teve classificação ou foi best-effort
         print("criar regras best-effort")
-        create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label, flow_qos="qqcoisa", in_switch_id=dpid)
+        create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label, flow_qos="best-effort", in_switch_id=dpid)
 
-        # ## comportamento diferente se for backbone...
-        # if check_domain_hosts(ip_src) == False and check_domain_hosts(ip_dst) == False:
-        #     print("backbone")
-
-        #injetar pacote na rede
-        switch_ultimo = None
-        out_port = switch_ultimo.getPortaSaida(ip_dst) # !!!!
+        #injetar pacote na rede --> antes injetava direto no ultimo switch, mas não é muito realista, então vou injetar no próprio (qq coisa volta ao que era)
+        # switch_ultimo = None
+        # out_port = switch_ultimo.getPortaSaida(ip_dst) # !!!!
         fila = None
-        switch_ultimo.injetarPacote(switch_ultimo.datapath, fila, out_port, msg)
+        este_switch.injetarPacote(este_switch.datapath, fila, out_port, msg)
 
         # logging.info('[Packet_In] pacote sem match - fim - tempo: %d\n' % (round(time.monotonic()*1000) - tempo_i))
         print("[%s] pkt_in fim \n" % (datetime.datetime.now().time()))

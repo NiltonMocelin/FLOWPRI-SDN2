@@ -4,13 +4,13 @@ from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar
 from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show
 from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
 
-from fp_constants import CHAVE_PRIVADA_SAWADM, CHAVE_PUBLICA_SAWADM, blockchain_table
-
 from fp_utils import get_meu_ip
 
 import psutil
 
 import subprocess
+
+blockchain_table = {}
 
 class BlockchainArgs:
     def __init__(self, command=None, flowname=None, flowjson=None, auth_password=None, auth_user=None, username=None, url=None):

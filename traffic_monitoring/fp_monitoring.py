@@ -1,7 +1,13 @@
 import sys
+import time
+from core.fp_constants import QTD_MONITORAMENTO
 
-from fp_utils import current_milli_time
-from fp_constants import fluxos_monitorados
+# 5-tupla: [{"timestamp": "timestamp", "tamanho": "tamanho"}]
+fluxos_monitorados = {}
+
+def current_milli_time():
+    return round(time.time() * 1000)
+
 
 def monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
 
@@ -10,6 +16,11 @@ def monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
     timestamp = current_milli_time()
 
     fluxos_monitorados[label].append( {"timestamp": timestamp, "tamanho": len(pkt)}  ) 
+
+    if len(fluxos_monitorados[label]) >= QTD_MONITORAMENTO:
+        #enviar_icmp para destino com o monitoramento
+        fluxos_monitorados[label].clear()
+        return
 
     return
 

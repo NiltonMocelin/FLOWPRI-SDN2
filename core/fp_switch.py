@@ -1,14 +1,14 @@
 from fp_acao import Acao
 from fp_porta import Porta
-from fp_constants import CPT, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE
+from fp_constants import CPT, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA
+from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK
 from fp_regra import Regra
 import sys
 
+from fp_openflow_rules import addRegraF, addRegraM, delRegraM, delRegraF, getMeterID_from_Flow, delMeter, generateMeterId
 
 
-from ryu.lib.packet import ether_types, in_proto
-
-class SwitchOVS:
+class Switch:
     def __init__(self, datapath, name:int, controller): 
         
         print("Novo switch: nome = S%s" % (str(name)))
@@ -24,15 +24,15 @@ class SwitchOVS:
         self.redes = {} #chave: ip, valor: porta
         self.hosts= {} #chave: ip, valor: mac
 
-
+        #5-tuple : id
         self.meter_dict = {}
 
-    def addPorta(self, nomePorta, larguraBanda, proximoSwitch):
+    def addPorta(self, nomePorta:int, larguraBanda:int, proximoSwitch:int):
         print("[S%s] Nova porta: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
         #criar a porta no switch
         self.portas.append(Porta(nomePorta, int(larguraBanda), int(int(larguraBanda)*.33), int(int(larguraBanda)*.35), 0, 0, int(proximoSwitch)))
 
-    def delPorta(self, nomePorta):
+    def delPorta(self, nomePorta:int):
         # print("[S%s] deletando: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
         
         index = 0
@@ -47,26 +47,76 @@ class SwitchOVS:
             return
 
         for regra in porta.getRegrasC1() + porta.getRegrasC2():
-            self.delRegraT(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto, regra.tos)
-        
+            delRegraF(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
+
         self.portas.pop(index)
         return 
 
-
-    def getPorta(self, nomePorta):
+    def getPorta(self, nomePorta:int) -> Porta:
 
         for i in self.portas:
             # %s x %s\n" % (i.nome, nomePorta))
-            if str(i.nome) == str(nomePorta):
+            if i.nome == nomePorta:
                 return i
         #print("[getPorta] porta inexistente: %s\n" % (nomePorta))
         return None
     
-    def getPortas(self):
+    def getPortas(self)->list[Porta]:
         return self.portas
+    
+    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida):
+
+        porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, "outport:2", False))
+        addRegraF(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT)
+
+        return True
+
+
+    def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, actions:str, emprestando:bool):
+
+        # verificar se tem banda o suficiente -> se nao tiver, lancar uma excessao
+        if self.getFreeBandwForQoS(porta_entrada,classe, prioridade, banda) == SEMBANDA:
+            print("[addregraqos]Sem banda suficiete para alocar Regra: porta entrada")
+            return False
+        
+        if self.getFreeBandwForQoS(porta_saida,classe, prioridade, banda) == SEMBANDA:
+            print("[addregraqos]Sem banda suficiete para alocar Regra: porta saida")
+            return False
+
+    #adiciona uma regra, na porta entrada e saida, criar meter
+
+        meter_id = generateMeterId(self)
+        addRegraM(self, banda, meter_id)
+
+        #armazenar meter
+        self.meter_dict[str(ip_ver)+ip_src+ip_dst+str(src_port)+str(dst_port)+str(proto)] = meter_id
+        
+        self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, actions, emprestando))
+        self.getPorta(porta_entrada).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, fila, flow_label, actions, emprestando))
+
+        addRegraF(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, NO_QOS_MARK, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
+        # addRegraF(porta_saida)
+
+        return True
+    
+    def delRegra(self,ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_saida:int, porta_entrada:int=-1):
+    #remove uma regra
+
+        meter_id = getMeterID_from_Flow(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+
+        if meter_id != NO_METER: # qos 
+            delRegraM(meter_id)
+            delMeter(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            self.getPorta(porta_entrada).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+
+        self.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        delRegraF(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+
+        return True
+
 
 #porta_switch antes era dport -> eh a porta onde a regra vai ser salva -> porta de saida do switch
-    def alocarGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port,  proto, porta_saida, banda, prioridade, classe):
+    def alocarGBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
         """ Parametros:
         ip_ver: str
         ip_src: str
@@ -80,21 +130,17 @@ class SwitchOVS:
         classe:str
         """
 
-        banda = int(banda)
-        prioridade = int(prioridade)
-        classe = int(classe)
-
         #armazenar as acoes a serem tomadas
         acoes = []
 
-        porta_obj = self.getPorta(str(porta_saida))
+        porta_obj = self.getPorta(porta_saida)
  
         print("[alocarGBAM-S%s] porta %s, src: %s, dst: %s, banda: %d, prioridade: %d, classe: %d \n" % (self.nome, str(porta_saida), ip_src, ip_dst,banda, prioridade, classe))
 
         #caso seja classe de controle ou best-effort, nao tem BAM, mas precisa criar regras da mesma forma
         #best-effort
         if classe == 3:
-            self.addRegraF(ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, ip_dscp=60, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=6,meter_id=None,flag=0, hardtime=10)   
+            self.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, porta_entrada)
             return acoes
 
         #controle
@@ -111,13 +157,7 @@ class SwitchOVS:
         #banda usada e total na classe original
         cU, cT = Porta.getUT(porta_obj, classe)
 
-        # print("[antes de alocar] banda usada: %d, banda total: %d \n" % ( cU, cT)) 
-
-        ### antes de alocar o novo fluxo, verificar se ja nao existe uma regra para este fluxo -- caso exista remover e adicionar de novo? ou so nao alocar?
-        #a principio - remover e alocar de novo
-        # self.delRegraGBAM(self, origem, destino, porta, str(classe), str(prioridade), str(banda))
-        # correto eh utilizar Acoes -- e evitar criar regras repetidas (que removem e criam a mesma)
-        # se GBAM falhar, as acoes nao ocorrem !!
+        # regra ja existe? remover e adicionar nova
         acoes.append( Acao(self.controller.getSwitchByName(self.nome), porta_saida, REMOVER, Regra(ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst,src_port=src_port, dst_port=dst_port, porta_saida=porta_saida,tos=tos,banda=banda,prioridade=prioridade,classe=classe,emprestando=0)))   
 
         #testando na classe original
@@ -235,7 +275,10 @@ class SwitchOVS:
         #algum erro ocorreu 
         return acoes
 
-    def getFreeBandwForQoS(self, in_port, out_port, classe, prioridade, banda):
+    def backboneGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe):
+        return
+
+    def getFreeBandwForQoS(self, in_port, classe, prioridade, banda):
         # verifica banda disponível -> retorna 0 se for na própria classe, 1 se for emprestando e -1 se for rejeitado
         
         banda_classe1,banda_classe2 = self.getPorta(in_port).getBandaDisponivelQoS()
@@ -252,14 +295,6 @@ class SwitchOVS:
                 return 0
         return -1
     
-    def criarRegraBE(self):
-
-        
-
-        return
-    
-    # def criarRegraQoS(self):
-    #     return
 
     def delRegraGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, classe, prioridade, banda):
         """ Parametro:
@@ -294,224 +329,8 @@ class SwitchOVS:
         else:
             print("[S%s]regra NAO removida - ip_src:%s, ip_dst:%s, proto:%s, src_port:%s, dst_port:%s, tos:%s\n" % (self.nome,ip_src,ip_dst,proto, src_port, dst_port, tos))
         return False
-
-    #criar uma mensagem para remover uma regra de fluxo no ovsswitch
-    def delRegraT(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ip_dscp, tabela=ALL_TABLES):
-        """ Parametros:
-        ip_ver:str
-        ip_src:str
-        ip_dst:str
-        src_port:str
-        dst_port:str
-        proto:str
-        ip_dscp:int
-        tabela=ALL_TABLES
-        """
-
-        #tabela = 255 = ofproto.OFPTT_ALL = todas as tabelas
-        #print("Deletando regra - ipsrc: %s, ipdst: %s, tos: %d, tabela: %d\n" % (ip_src, ip_dst, tos, tabela))
-        #tendo o datapath eh possivel criar pacotes de comando para o switch/datapath
-        #caso precise simplificar, pode chamar o cmd e fazer tudo via ovs-ofctl
-
-        #modelo com ovs-ofctl:
-        #we can remove all or individual flows from the switch
-        # sudo ovs-ofctl del-flows <expression>
-        # ex. sudo ovs-ofctl del-flows dp0 dl_type=0x800
-        # ex. sudo ovs-ofctl del-flows dp0 in_port=1
-        datapath = self.datapath
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-
-        #remover a regra meter associada
-        meter_id = int(ip_src.split(".")[3] + ip_dst.split(".")[3])                
-        self.delRegraM(meter_id)
-                        
-        if(ip_dscp != None):
-            ip_dscp = '000000'
-        
-        #generico ipv4
-        match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ipv4_src=ip_src, ipv4_dst=ip_dst, ip_dscp=ip_dscp)
- 
-        if ip_ver == 'ipv6':
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IPV6, ipv6_src=ip_src, ipv6_dst=ip_dst, ip_dscp=ip_dscp)
-
-        #tratamento especial para este tipo de trafego
-        if proto ==in_proto.IPPROTO_TCP:
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv4_src=ip_src, ipv4_dst=ip_dst, tcp_src = src_port, tcp_dst=dst_port,ip_dscp=ip_dscp)
-
-            if ip_ver == 'ipv6':
-                match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IPV6, ip_proto = proto, ipv6_src=ip_src, ipv6_dst=ip_dst, tcp_src = src_port, tcp_dst=dst_port,ip_dscp=ip_dscp)
-
-        elif proto == in_proto.IPPROTO_UDP:
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv4_src=ip_src, ipv4_dst=ip_dst, udp_src = src_port, udp_dst=dst_port,ip_dscp=ip_dscp)
-            if ip_ver == 'ipv6':
-                match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IPV6, ip_proto = proto, ipv6_src=ip_src, ipv6_dst=ip_dst, udp_src = src_port, udp_dst=dst_port,ip_dscp=ip_dscp)
-
-        mod = datapath.ofproto_parser.OFPFlowMod(datapath, command=ofproto.OFPFC_DELETE, match=match, table_id=tabela, out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY)
-
-        ##esse funciona - remove tudo
-        #mod = datapath.ofproto_parser.OFPFlowMod(datapath, command=ofproto.OFPFC_DELETE, table_id=ofproto.OFPTT_ALL, out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY)
- 
-        datapath.send_msg(mod)
-
-        return 0
     
-    
-
-#Injetar pacote no controlador com instrucoes - serve para injetar pacotes que foram encaminhado por packet_in (se nao eles sao perdidos)
-    def injetarPacote(self, datapath, fila, out_port, packet):
-        actions = [datapath.ofproto_parser.OFPActionSetQueue(fila), datapath.ofproto_parser.OFPActionOutput(out_port)] 
-        out = datapath.ofproto_parser.OFPPacketOut(
-            datapath=datapath,
-            buffer_id=datapath.ofproto.OFP_NO_BUFFER,
-            in_port=100,
-            actions=actions,
-            data=packet.data)
-        
-        datapath.send_msg(out)
-
-#add regra tabela FORWARD
-    def addRegraF(self, ip_ver, ip_src, ip_dst, ip_dscp, out_port, src_port, dst_port, proto, fila, meter_id, flag, hardtime=None):
-        """ Parametros:
-        ip_ver:str
-        ip_src: str
-        ip_dst: str
-        ip_dscp: int
-        out_port: int
-        src_port: int
-        dst_port: int 
-        proto: str
-        fila: int
-        meter_id: int 
-        flag: int
-        hardtime=None
-        """
-
-        #https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html#flow-instruction-structures
-# hardtimeout = 5 segundos # isso eh para evitar problemas com pacotes que sao marcados como best-effort por um contrato nao ter chego a tempo. Assim vou garantir que daqui 5s o controlador possa identifica-lo. PROBLEMA: fluxos geralmente nao duram 5s, mas eh uma abordagem.
-        
-        #Para que a regra emita um evento de flow removed, ela precisa carregar uma flag, adicionada no OFPFlowMod
-        #flags=ofproto.OFPFF_SEND_FLOW_REM
-        
-        datapath = self.datapath
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-        
-        idletime = 30 # 0 = nao limita
-        #hardtime = None
-
-        prioridade = 100
-       
-        #match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto=in_proto.IPPROTO_TCP,ipv4_src=ip_src, ipv4_dst=ip_dst,ip_dscp=ip_dscp)
-        # match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP,ipv4_src=ip_src, ipv4_dst=ip_dst)
-        
-        #caso queiramos que seja generico
-        match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP,ipv4_src=ip_src, ipv4_dst=ip_dst)
-        
-        if ip_ver == 'ipv6':
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IPV6,ipv6_src=ip_src, ipv6_dst=ip_dst)
-
-        if(ip_dscp != None):
-            ip_dscp = '000000'
-        
-        #tratamento especial para este tipo de trafego
-        if proto ==in_proto.IPPROTO_TCP:
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv4_src=ip_src, ipv4_dst=ip_dst, tcp_src = src_port, tcp_dst=dst_port,ip_dscp=ip_dscp)
-        elif proto == in_proto.IPPROTO_UDP:
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv4_src=ip_src, ipv4_dst=ip_dst, udp_src = src_port, udp_dst=dst_port,ip_dscp=ip_dscp)
-
-
-        actions = [parser.OFPActionSetQueue(fila), parser.OFPActionOutput(out_port)]
-        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)] # essa instrucao eh necessaria?
- 
-###nao esta funcionando 
-        if meter_id != None:
-            inst.append(parser.OFPInstructionMeter(meter_id=meter_id))
-#            inst = [parser.OFPInstructionMeter(meter_id,ofproto.OFPIT_METER), parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-
-        #marcar para gerar o evento FlowRemoved
-        if flag == 1:
-            mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idletime, priority=prioridade, match=match, instructions=inst, table_id=FORWARD_TABLE, flags=ofproto.OFPFF_SEND_FLOW_REM)
-            datapath.send_msg(mod)
-            return
-
-        mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idletime, priority=prioridade, match=match, instructions=inst, table_id=FORWARD_TABLE)
-
-        if hardtime != None:
-            mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idletime, hard_timeout = hardtime, priority=prioridade, match=match, instructions=inst, table_id=FORWARD_TABLE)
-
-        datapath.send_msg(mod)
-        
-#add regra tabela CLASSIFICATION
-#se o destino for um ip de controlador, 
-    def addRegraC(self, ip_ver ,ip_src, ip_dst, src_port, dst_port, proto, ip_dscp):
-        """ parametros:
-        ip_ver: str
-        ip_src: str
-        ip_dst: str
-        src_port: str
-        dst_port: str
-        proto: str
-        ip_dscp: str
-        """
-
-        #https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html#flow-instruction-structures
-         #criar regra na tabela de marcacao - obs - utilizar idletime para que a regra suma - serve para que em switches que nao sao de borda essa regra nao exista
-                         #obs: cada switch passa por um processo de enviar um packet_in para o controlador quando um fluxo novo chega,assim, com o mecanismo de GBAM, pode ser que pacotes de determinados fluxos sejam marcados com TOS diferentes da classe original, devido ao emprestimo, assim, em cada switch o pacote pode ter uma marcacao - mas com essa regra abaixo, os switches que possuem marcacao diferentes vao manter a regra de remarcacao. Caso ela expire e cheguem novos pacotes, ocorrera novo packet in e o controlador ira executar um novo GBAM - que vai criar uma nova regra de marcacao
-        #print("[criando-regra-tabela-marcacao] ipsrc: %s, ipdst: %s, tos: %d\n" % (ip_src, ip_dst, ip_dscp))
-
-        datapath = self.datapath
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-
-        #generico       
-        match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ipv4_src=ip_src, ipv4_dst=ip_dst)
-
-        #tratamento especial para este tipo de trafego
-        if proto ==in_proto.IPPROTO_TCP:
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv4_src=ip_src, ipv4_dst=ip_dst, tcp_src = src_port, tcp_dst=dst_port,ip_dscp=ip_dscp)
-            if ip_ver == 'ipv6':
-                match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IPV6, ip_proto = proto, ipv6_src=ip_src, ipv6_dst=ip_dst, tcp_src = src_port, tcp_dst=dst_port,ip_dscp=ip_dscp)
-
-        elif proto == in_proto.IPPROTO_UDP:
-            match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv4_src=ip_src, ipv4_dst=ip_dst, udp_src = src_port, udp_dst=dst_port,ip_dscp=ip_dscp)
-            if ip_ver == 'ipv6':
-                match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, ip_proto = proto, ipv6_src=ip_src, ipv6_dst=ip_dst, udp_src = src_port, udp_dst=dst_port,ip_dscp=ip_dscp)
-
-        if ip_dscp == None:
-            ip_dscp = '000000'      
-
-        actions = [parser.OFPActionSetField(ip_dscp=ip_dscp)]
-
-        inst = [parser.OFPInstructionGotoTable(FORWARD_TABLE), parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-        idletime = 30 # 30s sem pacotes, some
-        prioridade = 100
-
-        mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idletime, priority=prioridade, match=match, instructions=inst, table_id=CLASSIFICATION_TABLE)
-        datapath.send_msg(mod)
-
-    #criando regra meter
-    def addRegraM(self, meter_id, banda):
-        datapath = self.datapath
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-
-        #criando meter bands
-        bands = [parser.OFPMeterBandDrop(type_=ofproto.OFPMBT_DROP, len_=0, rate=banda, burst_size=10)]#e esse burst_size ajustar?
-        req = parser.OFPMeterMod(datapath=datapath, command=ofproto.OFPMC_ADD, flags=ofproto.OFPMF_KBPS, meter_id=meter_id, bands=bands)
-        datapath.send_msg(req)
-        return
-
-    def delRegraM(self, meter_id):
-        datapath = self.datapath
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-        
-        req = parser.OFPMeterMod(datapath=datapath, command=ofproto.OFPMC_DELETE, meter_id=meter_id)
-        datapath.send_msg(req)
-        return
-
-#adicionar rotas no switch - por agora fica com o nome de rede
+    #adicionar rotas no switch - por agora fica com o nome de rede
     def addRedeIPv4(self, ip_dst, porta): 
         print("[S%s]Rede adicionada %s: %s" % (self.nome, ip_dst, str(porta)))
         self.redes[ip_dst]=porta
@@ -574,3 +393,5 @@ class SwitchOVS:
             for rp3c2 in porta1.p3c2rules:
                 print(rp3c2.toString()+"\n")
 
+
+ 

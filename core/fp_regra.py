@@ -1,8 +1,8 @@
 
 class Regra:
-    def __init__(self, ip_ver, ip_src, ip_dst, src_port,
-                dst_port, proto, porta_saida, tos,
-                banda, prioridade, classe, emprestando):
+    def __init__(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int,
+                dst_port:int, proto:int, porta_entrada:int, porta_saida:int, meter_id:int,
+                banda: int, prioridade: int, classe: int, fila: int, flow_label:str, actions:str, emprestando: bool):
         """Parametros: 
         ip_ver: str
         ip_src: str
@@ -10,29 +10,38 @@ class Regra:
         src_port: str
         dst_port: str
         proto: str
+        porta_entrada: int
         porta_saida: int
+        meter_id: int
         tos: int
         banda: str
         prioridade: str
         classe: str
-        emprestando: int"""
+        emprestando: bool
+        fila: int
+        actions: ""
+        """
 
-        self.ip_src = ip_src
-        self.ip_dst = ip_dst
-        self.ip_ver= ip_ver
-        self.porta_saida = porta_saida
-        self.tos = tos
-        self.emprestando=emprestando
-        self.banda = banda
-        self.prioridade=prioridade
-        self.classe = classe
-        self.src_port = src_port
-        self.dst_port = dst_port
-        self.proto = proto
+        self.ip_src:str = ip_src
+        self.ip_dst:str = ip_dst
+        self.ip_ver:int = ip_ver
+        self.porta_saida:int = porta_saida
+        self.porta_entrada: int = porta_entrada
+        self.meter_id:int = meter_id
+        self.emprestando:bool =emprestando
+        self.banda: int = banda
+        self.prioridade:int =prioridade
+        self.classe:int = classe
+        self.src_port:int = src_port
+        self.dst_port:int = dst_port
+        self.proto:int = proto
+        self.fila:int = fila
+        self.actions:str = actions
+        self.flow_label:str = flow_label
 
         #print]("[criando-regra-controlador]src:%s; dst=%s; banda:%s, porta_dst=%d, tos=%s, emprestando=%d" % (self.ip_src, self.ip_dst, self.banda, self.porta_dst, self.tos, self.emprestando)) 
 
     def toString(self):
-        return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%s; dst_port=%s; proto=%s; banda:%s, porta_dst=%d, tos=%s, emprestando=%d" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_dst, self.tos, self.emprestando) 
+        return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%d; dst_port=%d; proto=%d; banda:%d, porta_dst=%d, tos=%s, emprestando=%b" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_entrada, self.porta_saida, self.emprestando) 
 
 # parte de criação de regras 

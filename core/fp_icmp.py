@@ -18,6 +18,8 @@ from fp_utils import souDominioBorda, check_domain_hosts
 
 from fp_flow_monitoring import Register, FlowMonitoring, loadFlowMonitoringFromJson
 
+from fp_api_qosblockchain import criar_chave_sawadm
+
 
 def rejeitar_fred(fred, in_switch_id):
     switches_rota = get_rota(fred.ip_dst, fred.ip_src, fred.ip_ver, fred.dst_port, fred.src_port, fred.proto, in_switch_id)
@@ -136,7 +138,7 @@ def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
         flow_monitoring = tratador_icmp_flow_monitoring(pkt_icmpv6, in_switch_id)
 
         # modificar fred                
-        minha_chave_publica = ''
+        minha_chave_publica, minha_chave_privada = criar_chave_sawadm()
     
          # verificar se sou um controlador de borda -> sou um par da blockchain
         if souDominioBorda(ip_ver, ip_src, ip_dst):
@@ -166,14 +168,8 @@ def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
             print("ICMPv6 %d incorreto" % (icmpv6.ICMPV6_NI_QUERY))
             return False
 
-        switches_rota = get_rota(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, in_switch_id)
-        if switches_rota == None:
-            print("Nao há rotas configuradas para o destino %s " % (ip_dst))
-            return False
-        
         ordem = len(fred.lista_peers) 
         fred.lista_rota.append({"ordem": str(ordem), "nome_peer": IPCc, "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
-
 
 
         # salvar fred

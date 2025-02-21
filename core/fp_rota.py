@@ -1,60 +1,25 @@
 class Rota_Node:
-    def __init__(self, switch_name, in_port, out_port):
-        self.switch_name = switch_name
-        self.in_port = in_port
-        self.out_port = out_port
+    def __init__(self, switch_name:int, in_port:int, out_port:int):
+        self.switch_name:int = switch_name
+        self.in_port:int = in_port
+        self.out_port:int = out_port
 
 class Rota:
-    def __init__(self, ip_ver, src_prefix, dst_prefix, src_port,
-                dst_port, proto, rota_nodes):
+    def __init__(self, ip_ver:int, src_prefix:str, dst_prefix:str, src_port:int,
+                dst_port:int, proto:int, rota_nodes:list[Rota_Node]):
 
-        self.src_prefix = src_prefix
-        self.dst_prefix = dst_prefix
-        self.ip_ver= ip_ver
-        self.rota_nodes = rota_nodes # (nome_switch (str), porta_saida (int))
-        self.src_port = src_port
-        self.dst_port = dst_port
-        self.proto = proto
+        self.src_prefix:int = src_prefix
+        self.dst_prefix:int = dst_prefix
+        self.ip_ver:int = ip_ver
+        self.rota_nodes:int = rota_nodes # (nome_switch (str), porta_saida (int))
+        self.src_port:int = src_port
+        self.dst_port:int = dst_port
+        self.proto:int = proto
 
+## mudou:-: {} ip_dst: [rota_nodes]
+rotas = {}
 
-
-#dado um conjunto de switches (var global) pertencentes a um dominio/controlador, recuperar o conjunto de switches que fazem parte da rota para o end destino/rede
-def getRota_antigo(switch_primeiro_dpid, ip_dst):
-	#por enquanto nao importam as rotas - rotas fixas e um switch
-    #switches eh uma variavel global que compreende os switches do controlador
-    #rota = vetor de switches
-    rota = []
-    ##print("[getRota] src:%s, dst:%s\n" % (ip_src, ip_dst))
-
-    if switch_primeiro_dpid == None:
-        for s in switches:
-            if ip_dst in s.hosts:
-                switch_primeiro_dpid = s.nome
-
-    if switch_primeiro_dpid == None:
-        return None
-
-    #pegar o primeiro switch da rota, baseado no ip_Src --- ou, por meio do packet in, mas entao nao poderia criar as regras na criacao dos contratos
-    switch_primeiro = getSwitchByName(str(switch_primeiro_dpid))
-    rota.append(switch_primeiro)
-
-    #pegar o salto do ultimo switch inserido na rota
-    nextDpid = switch_primeiro.getPorta(switch_primeiro.getPortaSaida(ip_dst)).next #retorna inteiro
-
-    #print("switch_primeiro: %s, nextDpid: %d\n" % (switch_primeiro.nome, nextDpid))
-
-    while nextDpid > 0:
-        s = getSwitchByName(nextDpid)
-        rota.append(s)
-        #se o .next da porta for -1, esse eh o switch de borda
-        nextDpid = s.getPorta(s.getPortaSaida(ip_dst)).next
-        
-    #for r in rota:
-        #print("[rota]: %s" % (r.nome))
-            
-    return rota
-
-def get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id=-1):
+def get_rota(ip_src: str, ip_dst:str , ip_ver:int , src_port:int, dst_port:int, proto:int, in_switch_id=-1):
     
     lista_switches = rotas[ip_dst]
 
@@ -68,12 +33,12 @@ def get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id=-1)
 
     return lista_switches
 
-def add_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, lista_rota_nodes):
+def add_rota(ip_src: str, ip_dst:str, ip_ver:int , src_port:int, dst_port:int, proto:int, lista_rota_nodes:list[Rota_Node]):
     rotas[ip_dst] = lista_rota_nodes
 
     return
 
-def del_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id):
+def del_rota(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, in_switch_id:int):
     return
 
 
