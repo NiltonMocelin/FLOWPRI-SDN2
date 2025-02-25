@@ -45,3 +45,59 @@ class Regra:
         return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%d; dst_port=%d; proto=%d; banda:%d, porta_dst=%d, tos=%s, emprestando=%b" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_entrada, self.porta_saida, self.emprestando) 
 
 # parte de criação de regras 
+
+def ordenaRegrasPorBandaMaiorMenor(lista_regras) -> list[Regra]:
+
+    _mergeSortRegras(lista_regras, 0, len(lista_regras)-1)
+
+
+def _merge(lista_regras:list[Regra], esq:int, meio:int, dir:int):
+    n1 = meio - esq + 1
+    n2 = dir - meio
+
+    # Copy data to temp vectors L[] and R[]
+    lista_esq = lista_regras[esq : meio+1]
+    lista_dir = lista_regras[meio+1 : dir+1]
+
+    i = 0
+    j = 0
+    k = esq
+
+    while i < n1 and j < n2 :
+        if lista_esq[i].banda <= lista_dir[j].banda:
+            lista_regras[k] = lista_esq[i]
+            i+=1
+        else:
+            lista_regras[k] = lista_dir[j]
+            j+=1
+        k+=1
+        
+
+    #Copy the remaining elements of L[], 
+    #if there are any
+    while i < n1:
+        lista_regras[k] = lista_esq[i]
+        i+=1
+        k+=1
+    
+    #Copy the remaining elements of R[], 
+    #if there are any
+    while j < n2:
+        lista_regras[k] = lista_dir[j]
+        j+=1
+        k+=1
+
+def _mergeSortRegras(lista_regras:int, esq:int, dir:int):
+
+    if esq >= dir:
+        return
+    
+    meio = dir + (dir - esq)/2
+
+    _mergeSortRegras(lista_regras, esq, meio)
+    _mergeSortRegras(lista_regras, meio+1, dir)
+    _merge(lista_regras, esq, meio, dir)
+
+
+    
+

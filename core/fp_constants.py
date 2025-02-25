@@ -41,6 +41,11 @@ IPCv6 = None
 IPCc = None
 
 
+
+BAIXA_PRIO=3
+MEDIA_PRIO=2
+ALTA_PRIO=1
+
 MACC = None
 
 
@@ -129,4 +134,16 @@ dhcp_msg_type_code = {
             6: 'DHCP_NAK',
             7: 'DHCP_RELEASE',
             8: 'DHCP_INFORM',
+ }
+
+
+class_prio_to_queue_id = {
+            11: 0,
+            12: 1,
+            13: 2,
+            21: 3,
+            22: 4,
+            23: 5,
+            3: 6,
+            4: 7
  }

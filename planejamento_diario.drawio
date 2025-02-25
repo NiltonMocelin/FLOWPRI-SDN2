@@ -1,0 +1,236 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.15 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.15" pages="4">
+  <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
+    <mxGraphModel dx="2058" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-1" target="-aLrSAhBZ-N-OfGElPO0-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-1" target="-aLrSAhBZ-N-OfGElPO0-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-1" target="-aLrSAhBZ-N-OfGElPO0-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-1" value="Objetivo: FLOWPRI2 rodando" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="70" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-2" target="-aLrSAhBZ-N-OfGElPO0-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7JyS8U2MEhxafHwqLXR-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-2" target="e7JyS8U2MEhxafHwqLXR-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5wksBHdEA-TXuHTnagim-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-2" target="5wksBHdEA-TXuHTnagim-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-2" target="5FmTdBkJ5_4LCafok2GZ-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="shP3xlCRC4CT-vgoB4CX-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-aLrSAhBZ-N-OfGElPO0-2" target="shP3xlCRC4CT-vgoB4CX-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-2" value="ERROS" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="-250" y="160" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-3" value="Importações (pasta pai e afins) [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-270" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="-aLrSAhBZ-N-OfGElPO0-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="-aLrSAhBZ-N-OfGElPO0-16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="utfMI5SQkQcTHa897YUp-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="utfMI5SQkQcTHa897YUp-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="VdtekRpqjFC6Wfjtw76O-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="VdtekRpqjFC6Wfjtw76O-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FhFb54NLBzNOBZW-PnSw-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="FhFb54NLBzNOBZW-PnSw-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qyrjWjYYuWChkDs8PrSO-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="qyrjWjYYuWChkDs8PrSO-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="5FmTdBkJ5_4LCafok2GZ-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-5" value="Falta implementar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="440" y="250" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-6" target="-aLrSAhBZ-N-OfGElPO0-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-6" target="-aLrSAhBZ-N-OfGElPO0-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-6" value="Falta integrar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="1120" y="170" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-8" value="QoSblockchain [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1430" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-10" value="Traffic classification" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1260" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-6" target="-aLrSAhBZ-N-OfGElPO0-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-12" value="Traffic monitoring" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1090" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-14" value="Traffic monitoring: Hosts e controlador" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="220" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="525" y="400" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;e de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry x="510" y="630" width="220" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="utfMI5SQkQcTHa897YUp-1" value="GUI simples (swtiches, rotas, regras) -&amp;gt; esquecer isso por enquanto" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="680" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="VdtekRpqjFC6Wfjtw76O-1" value="backbone G-BAM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="380" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e7JyS8U2MEhxafHwqLXR-1" value="Arrumar as duas criações de chaves !! [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-450" y="245" width="150" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="FhFb54NLBzNOBZW-PnSw-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="FhFb54NLBzNOBZW-PnSw-1" target="FhFb54NLBzNOBZW-PnSw-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FhFb54NLBzNOBZW-PnSw-1" value="QoSBlockchain" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="810" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FhFb54NLBzNOBZW-PnSw-3" value="Criar a versao host (que é o server_..., mas precisa ter um arquivo claro do que é host e o que é controller)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="810" y="430" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="qyrjWjYYuWChkDs8PrSO-1" value="Tratar ao menos ARP e PINGv4v6" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="294" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qyrjWjYYuWChkDs8PrSO-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Feitos (mais antigo para mais recente)&lt;/h1&gt;&lt;p&gt;* Outros controladores OK, problema é o flowpri2 msm&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;* Arrumar as importações da pasta pai [OK]&lt;/p&gt;&lt;p&gt;* Fazer funcionar numa versão mais simples&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;[OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* tipar todos os parametros das funcoes para evitar confusão&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* ajustar as meters: a meter id deve ser associada a regra e deve existir uma tabela de meters em cada switch para controlar a criação dos ids para novas meters&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a criação de regras e fazer funcionar do jeito que está, a criação de regras -&amp;gt; até meio dia, uma versão funcional ! (sem traffic monitoring, mas com as regras).&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Revisar e mudar-&amp;gt; parte de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry y="810" width="220" height="550" as="geometry" />
+        </mxCell>
+        <mxCell id="5wksBHdEA-TXuHTnagim-1" value="GBAM precisa verificar se existe banda e pode emprestar, nas portas de entrada e saida, nao só na de saida -&amp;gt; sem criar meter e regraF para a porta de entada" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-100" y="270" width="150" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-1" value="As ações se mostraram a melhor opção para o G-BAM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-3" value="Integrar as ações novamente" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="294" y="555" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="shP3xlCRC4CT-vgoB4CX-1" value="Renomear Classes priority para Alta, media, baixa, pq 1 2 e 3 nem eu lembro o que é [OK]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-420" y="20" width="120" height="120" as="geometry" />
+        </mxCell>
+        <UserObject label="https://pixeldrain.com/u/KN9tR9sD" link="https://pixeldrain.com/u/KN9tR9sD" id="GS2F_hY2PqZsesg8sYkH-1">
+          <mxCell style="text;whiteSpace=wrap;" vertex="1" parent="1">
+            <mxGeometry x="1240" y="720" width="220" height="40" as="geometry" />
+          </mxCell>
+        </UserObject>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="yCrAVNZ3YxgUfBvcgkGx" name="Testes">
+    <mxGraphModel dx="1114" dy="838" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="PQvJjznsTiufLVNCUXzs-1" value="Overhead" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="310" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="CN7VQtm2QfGtR-_zN2J2" name="Texto">
+    <mxGraphModel dx="1231" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Cbhmh_6iK4pcWZHGsgkt-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Cbhmh_6iK4pcWZHGsgkt-1" target="Cbhmh_6iK4pcWZHGsgkt-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Cbhmh_6iK4pcWZHGsgkt-1" value="Trabalhos Relacionados" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="50" y="130" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Cbhmh_6iK4pcWZHGsgkt-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="Cbhmh_6iK4pcWZHGsgkt-2" target="Cbhmh_6iK4pcWZHGsgkt-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Cbhmh_6iK4pcWZHGsgkt-2" value="Incluir Novos" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="110" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Cbhmh_6iK4pcWZHGsgkt-4" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Novos Trabalhos&lt;/h1&gt;&lt;p&gt;* Utilizar IA - Connected papers para encontrar mais recentes&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=none;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry x="80" y="350" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="SGJ1v5LpRT6QbzJyy_wd-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="SGJ1v5LpRT6QbzJyy_wd-2" target="SGJ1v5LpRT6QbzJyy_wd-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SGJ1v5LpRT6QbzJyy_wd-2" value="Proposta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="630" y="120" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SGJ1v5LpRT6QbzJyy_wd-3" value="Dar mais enfase ao que é o flowpri -&amp;gt; na arquitetura" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="690" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SGJ1v5LpRT6QbzJyy_wd-5" value="Experimentos e Analises" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="120" width="240" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="rnp-GbsDjN9TG7-ud5NP" name="Rotina">
+    <mxGraphModel dx="1231" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="yJrInyKWkOm30SiSlxPH-1" value="7h acordar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-2" value="8h Ir treinar&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-3" value="9-17h Trabalhar&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-4" value="18-19 muay thai" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-5" value="Filme ou sair ou&lt;div&gt;Curso&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-6" value="00h Dormir" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-7" value="Dia sem dança" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="270" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-8" value="7h acordar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="390" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-9" value="8h Ir treinar&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="390" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-10" value="9-17h Trabalhar&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="390" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-11" value="Ler curso qq coisa" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="390" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-12" value="20:40-23h dança" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="390" y="450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-13" value="00h Dormir" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="390" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yJrInyKWkOm30SiSlxPH-14" value="Dia com dança" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="390" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
