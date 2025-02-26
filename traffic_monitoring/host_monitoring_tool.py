@@ -16,7 +16,13 @@ for plen, t, buf in sniff("enp7s0", count=-1, promisc=0):
     # se for um pacote marcado, busca no dicionario e adiciona
     # se tiver 10, cria uma thread para calcular as métricas >> receber do controlador as métricas dele (sincronizar) calcular a media, enviar a blockchain.
 
+    # checar tos ipv4 ou flowlabel ipv6, se for QoSMONITORING, armazenar em um pcap
+
+    # se tiver 20 pacotes nesse arquivo, extrair features para calculo
+
     print(Ether(buf))
     print("[+]: Payload len=", plen)
     print("[+]: Time", t)
     print("[+]: Payload", buf)
+
+# uma thread para ler qos monitoring json dos domínios.

@@ -64,7 +64,7 @@ def _merge(lista_regras:list[Regra], esq:int, meio:int, dir:int):
     k = esq
 
     while i < n1 and j < n2 :
-        if lista_esq[i].banda <= lista_dir[j].banda:
+        if lista_esq[i].banda >= lista_dir[j].banda:
             lista_regras[k] = lista_esq[i]
             i+=1
         else:

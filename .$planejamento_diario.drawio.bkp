@@ -120,7 +120,7 @@
         <mxCell id="5wksBHdEA-TXuHTnagim-1" value="GBAM precisa verificar se existe banda e pode emprestar, nas portas de entrada e saida, nao só na de saida -&amp;gt; sem criar meter e regraF para a porta de entada" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-100" y="270" width="150" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="5FmTdBkJ5_4LCafok2GZ-1" value="As ações se mostraram a melhor opção para o G-BAM -&amp;gt; no entanto fica muito complexo para controlar o fluxo de execução e a criação das regras (pq precisa de meter e tudo mais) -&amp;gt; Nao usar acoes, fazer cada switch finalizar o gbam e se rejeitar remove as regras de cada switch da rota [ OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-1" value="As ações se mostraram a melhor opção para o G-BAM -&amp;gt; no entanto fica muito complexo para controlar o fluxo de execução e a criação das regras (pq precisa de meter e tudo mais) -&amp;gt; Nao usar acoes, fazer cada switch finalizar o gbam e se rejeitar remove as regras de cada switch da rota" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="60" y="10" width="120" height="260" as="geometry" />
         </mxCell>
         <mxCell id="5FmTdBkJ5_4LCafok2GZ-3" value="Integrar as ações novamente" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">

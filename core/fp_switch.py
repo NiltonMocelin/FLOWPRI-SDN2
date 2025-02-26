@@ -118,36 +118,8 @@ class Switch:
 
 
 
-    def getRegrasEmprestandoAteBandaNecessaria(self, porta_nome:int, classe:int, bandaNecessaria:int):
-        emprestando = []
-        bandaE = 0
-
-        #sim: somar os fluxos que estao emprestando e ver se a banda eh suficiente para alocar este fluxo 
-        porta_obj = self.getPorta(porta_nome)
-
-        bandaDisponivelReal, bandaDisponivelNaoReal = porta_obj.getBandaDisponivelQoS()
-        bandaDisponivel = 0
-        if classe == SC_REAL:
-            bandaDisponivel = bandaDisponivelReal
-            emprestando = porta_obj.getRegrasC1Emprestando()
-        else:
-            bandaDisponivel = bandaDisponivelNaoReal
-            emprestando = porta_obj.getRegrasC2Emprestando()
-
-        contadorE = 0
-        for i in emprestando:
-            bandaE += i.banda
-            contadorE+=1
-
-            if bandaDisponivel + bandaE >= bandaNecessaria:
-                break
-        if bandaE + bandaDisponivel < bandaNecessaria:
-            return []
-
-        return emprestando[:contadorE]
-
 #porta_switch antes era dport -> eh a porta onde a regra vai ser salva -> porta de saida do switch
-    def alocarGBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
+    def GBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
         """ Parametros:
         ip_ver: str
         ip_src: str
@@ -176,11 +148,13 @@ class Switch:
             return True
 
         # fazer porta entrada e depois porta de saida
-    def _alocarGBAM_porta(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_considerada:int, banda:int, prioridade:int, classe:int):
+        # as duas devem alocar 
 
-        porta_obj = self.getPorta(porta_considerada)
-                
-        lista_acoes = []
+        # self._alocarGBAM_borda()
+
+    def _alocarGBAM_borda(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int, porta_obj:Porta, criar_regra_openflow:bool = True) -> list[Acao] | None :
+        """Criar em porta de entrada significa: essa regra deve ser salva na porta de entrada ? = Sim -> apenas armazena a regra e reduz a banda;;; Não, é na porta de saída -> entrao armazena a regra, reduz a banda e cria a regra openflow nos switches para traffic shaping"""
+        
         bandaDisponivelPropriaClasse, bandaDisponivelOutraClasse = porta_obj.getBandaDisponivelQoS()
         
         #para generalizar o metodo GBAM e nao ter de repetir codigo testando para uma classe e depois para outra
@@ -192,50 +166,26 @@ class Switch:
             bandaDisponivelOutraClasse = aux
 
         # regra ja existe? remover e adicionar nova
-        self.delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_considerada)
+        self.delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_obj.nome)
         
         #testando na classe original
         if banda <= bandaDisponivelPropriaClasse: #Total - usado > banda necessaria
             
             #nova acao: criar regra: ip_src: origem, ip_dst: destino, porta de saida: nomePorta, tos: tos, banda:banda, prioridade:prioridade, classe:classe, emprestando: nao
-            return self.addRegraQoS(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_considerada, NO_QOS_MARK, banda, prioridade, classe, self.getQueueId(classe, prioridade), False)
+            return self.addRegraQoS(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_QOS_MARK, banda, prioridade, classe, self.getQueueId(classe, prioridade), False)
 
-            
         else: #nao ha banda suficiente 
             #verificar se existe fluxo emprestando largura = verificar se alguma regra nas filas da classe esta emprestando banda
-            emprestando = []
-            bandaE = 0
 
-            #sim: somar os fluxos que estao emprestando e ver se a banda eh suficiente para alocar este fluxo 
+            emprestando = porta_obj.getRegrasEmprestandoAteBandaNecessaria(classe, banda)
 
-            for i in Porta.getRules(porta_obj, classe, 1):
-                if i.emprestando:
-                    emprestando.append(i)
+            if emprestando != []:
+                print()
 
-            for i in Porta.getRules(porta_obj, classe, 2):
-                if i.emprestando:
-                    emprestando.append(i)
-
-            for i in Porta.getRules(porta_obj, classe, 3):
-                if i.emprestando:
-                    emprestando.append(i)
-
-            contadorE = 0
-            for i in emprestando:
-                bandaE += int(i.banda)
-                contadorE+=1
-
-                if cT - cU + bandaE >= int(banda):
-                    break
-            
-            #se as regras que estao emprestando representam largura de banda suficiente para que removendo-as, posso alocar o novo fluxo, entao:
-            if cT - cU + bandaE >= int(banda):
-                for i in range(contadorE): #criando as acoes para remover as regras que estao emprestando
-                    
-                    self.delRegra(emprestando[i].ip_ver, emprestando[i].ip_src, emprestando[i].ip_dst, emprestando[i].src_port, emprestando[i].dst_port, emprestando[i].proto, emprestando[i].porta_saida, emprestando[i].porta_entrada)
-                    
-                #criando a acao  para criar a regra do fluxo, depois de remover as regras selecionadas que emprestam.
-                return self.addRegraQoS(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_QOS_MARK, banda, prioridade, classe, self.getQueueId(classe, prioridade), False)
+                for regra in emprestando:
+                    self.delRegra(regra.ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+                # criar acao para remover as regras de emprestando
+                # criar ação para criar a regra na classe original
             
             else:       #nao: testa o nao
                 #nao: ver se na outra classe existe espaco para o fluxo
@@ -243,61 +193,35 @@ class Switch:
                 #emprestando.clear()
 
                 #banda usada e total na outra classe
-                cOU, cOT = Porta.getUT(porta_obj, outraClasse)
-                if int(banda) <= cOT - cOU:
+                if banda <= bandaDisponivelOutraClasse:
 
                     # # # # # salvo com o tos original mas na fila que empresto # # # # #
-                    acoes.append( Acao(self.controller.getSwitchByName(self.nome), porta_saida, CRIAR, Regra(ip_ver=ip_ver,ip_src=ip_src,ip_dst=ip_dst,proto=proto, porta_saida=porta_saida,tos=tos,banda=banda,prioridade=prioridade,classe=outraClasse,emprestando=1)))   
+                    lista_acoes.append( Acao(self.controller.getSwitchByName(self.nome), porta_saida, CRIAR, Regra(ip_ver=ip_ver,ip_src=ip_src,ip_dst=ip_dst,proto=proto, porta_saida=porta_saida,tos=tos,banda=banda,prioridade=prioridade,classe=outraClasse,emprestando=1)))   
                     self.addRegraQoS(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_QOS_MARK, banda, prioridade, outraClasse, self.getQueueId(outraClasse, prioridade), True)                    
                     return acoes
 
                 else:
                         #nao: verificar na classe original se nao existem fluxos de menor prioridade que somados dao minha banda
-                        
-                    bandaP = 0
-                    remover = []
+                    
+                    regrasMenorPrioridade = porta_obj.getLowerPriorityRulesAteBandaNecessaria(classe, prioridade, banda)                
 
-                    #sim: remove eles e aloca este
-                    if prioridade > 1:
-    
-                        for i in Porta.getRules(porta_obj, classe, 1):
-                            bandaP += int(i.banda)
-                            remover.append(i)
+                    if regrasMenorPrioridade != []:
+                        print("remover as regras e alocar a nova na classe original")
+                        for regra in regrasMenorPrioridade:
+                            lista_acoes.append(Acao(self, porta_obj.nome, REMOVER, regra))   
 
-                            if cT - cU + bandaP >= int(banda):
-                                break
-                        
-                    if prioridade > 2:
-                        if cT - cU + bandaP < int(banda):
-                            for i in Porta.getRules(porta_obj, classe, 2):
-                                bandaP += int(i.banda)
-                                remover.append(i)
-
-                                if cT - cU + bandaP >= int(banda):
-                                    break
-
-                    if cT - cU + bandaP >= int(banda):
-                        for i in remover:
-                            acoes.append( Acao(self.controller.getSwitchByName(self.nome), porta_saida, REMOVER, Regra(ip_ver=i.ip_ver, ip_src=i.ip_src,ip_dst=i.ip_dst,proto=i.proto, porta_saida=porta_saida,tos=i.tos,banda=i.banda,prioridade=i.prioridade,classe=i.classe,emprestando=i.emprestando)))   
-                
-                        #adiciona na classe original
-                        tos = CPT[(str(classe), str(prioridade), str(banda))] #obter do vetor CPT - sei a classe a prioridade e a banda = tos
-                        
-                        acoes.append( Acao(self.controller.getSwitchByName(self.nome), porta_saida, CRIAR, Regra(ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst,src_port=src_port, dst_port=dst_port, proto=proto, porta_saida=porta_saida,tos=tos,banda=banda,prioridade=prioridade,classe=classe,emprestando=0)))   
-                        
-                        return acoes
-
+                    lista_acoes.append(Acao(self,porta_obj.nome, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, )))
                     else:
 
                         #nao: rejeita o fluxo - criando uma regra de drop por uns 5segundos
                         print("[alocaGBMA]fluxo descartado\n")
                         #FAZER NADA - se nao tiver regra, o pacote eh dropado automaticamente.
-                        return acoes
+                        return []
 
         #algum erro ocorreu 
-        return acoes
+        return []
 
-    def backboneGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe):
+    def _backboneGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe):
         return
 
     def getFreeBandwForQoS(self, in_port, classe, prioridade, banda):
@@ -386,7 +310,7 @@ class Switch:
         #print("[%s]Rede deletada %s: %s" % (self.nome, ip_dst, porta))
         return
 
-    def getPortas(self):
+    def getPortas(self) -> list[Porta]:
         return self.portas
     
     def getDP(self):
@@ -397,22 +321,22 @@ class Switch:
         for porta1 in self.getPortas():
             # return
             print("\n[s%s-p%s] listar regras || C1T:%d, C1U:%d || C2T:%d, C2U: %d ||:\n" % (self.nome,porta1.nome, porta1.c1T, porta1.c1U, porta1.c2T, porta1.c2U))
-            for rp1c1 in porta1.p1c1rules:
+            for rp1c1 in porta1.getRegrasAltaPrio(SC_REAL):
                 print(rp1c1.toString()+"\n")
             #print("\n -- C1P2 (qtdregras: %d):" % (este_switch.p2c1rules.length))
-            for rp2c1 in porta1.p2c1rules:
+            for rp2c1 in porta1.getRegrasMediaPrio(SC_REAL):
                 print(rp2c1.toString()+"\n")
             #print("\n -- C1P3 (qtdregras: %d):" % (este_switch.p3c1rules.length))
-            for rp3c1 in porta1.p3c1rules:
+            for rp3c1 in porta1.getRegrasBaixaPrio(SC_REAL):
                 print(rp3c1.toString()+"\n")
             #print(" -- C2P1 (qtdregras: %d):" % (este_switch.p1c2rules.length))
-            for rp1c2 in porta1.p1c2rules:
+            for rp1c2 in porta1.getRegrasAltaPrio(SC_NONREAL):
                 print(rp1c2.toString()+"\n")
             #print("\n -- C2P2 (qtdregras: %d):" % (este_switch.p2c2rules.length))
-            for rp2c2 in porta1.p2c2rules:
+            for rp2c2 in porta1.getRegrasMediaPrio(SC_NONREAL):
                 print(rp2c2.toString()+"\n")
             #print("\n -- C2P3 (qtdregras: %d):" % (este_switch.p3c2rules.length))
-            for rp3c2 in porta1.p3c2rules:
+            for rp3c2 in porta1.getRegrasBaixaPrio(SC_NONREAL):
                 print(rp3c2.toString()+"\n")
 
 

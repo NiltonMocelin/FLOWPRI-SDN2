@@ -150,6 +150,31 @@ class Porta:
     def getRegrasC2(self) -> list[Regra]:
         return self.regrasPrioBaixaClasseNaoReal + self.regrasPrioMediaClasseNaoReal + self.regrasPrioAltaClasseNaoReal
 
+    def getRegrasBaixaPrio(self, classe:int) -> list[Regra]:
+        if classe == SC_REAL:
+            return self.regrasPrioBaixaClasseReal
+        elif classe == SC_NONREAL:
+            return self.regrasPrioBaixaClasseNaoReal
+        return []
+        
+
+    def getRegrasMediaPrio(self, classe:int) -> list[Regra]:
+        if classe == SC_REAL:
+            return self.regrasPrioMediaClasseReal
+        elif classe == SC_NONREAL:
+            return self.regrasPrioMediaClasseNaoReal
+        return []
+        
+    def getRegrasAltaPrio(self, classe:int) -> list[Regra]:
+        if classe == SC_REAL:
+            return self.regrasPrioAltaClasseReal
+        elif classe == SC_NONREAL:
+            return self.regrasPrioAltaClasseNaoReal
+
+        return []
+        
+        
+
     def getRegrasC1Emprestando(self) -> list[Regra]:
 
         regras = []
@@ -228,3 +253,55 @@ class Porta:
             return self.bandaUtilizadaClasseReal, self.bandaTotalClasseReal
         # SC_NONREAL
         return self.bandaUtilizadaClasseNaoReal, self.bandaTotalClasseNaoReal
+    
+    def getRegrasEmprestandoAteBandaNecessaria(self, classe:int, bandaNecessaria:int) -> list[Regra]:
+        emprestando = []
+        bandaE = 0
+
+        #sim: somar os fluxos que estao emprestando e ver se a banda eh suficiente para alocar este fluxo 
+        bandaDisponivelReal, bandaDisponivelNaoReal = self.getBandaDisponivelQoS()
+        bandaDisponivel = 0
+        if classe == SC_REAL:
+            bandaDisponivel = bandaDisponivelReal
+            emprestando = self.getRegrasC1Emprestando()
+        else:
+            bandaDisponivel = bandaDisponivelNaoReal
+            emprestando = self.getRegrasC2Emprestando()
+
+        contadorE = 0
+        for i in emprestando:
+            bandaE += i.banda
+            contadorE+=1
+
+            if bandaDisponivel + bandaE >= bandaNecessaria:
+                break
+        if bandaE + bandaDisponivel < bandaNecessaria:
+            return []
+
+        return emprestando[:contadorE]
+    
+    def getLowerPriorityRules(self, classe:int, prioridade:int) -> list[Regra]:
+        
+        if prioridade == BAIXA_PRIO:
+            return []
+        
+        if prioridade == MEDIA_PRIO:
+            return self.getRegrasBaixaPrio(classe)
+        
+        if prioridade == ALTA_PRIO:
+            return self.getRegrasBaixaPrio(classe) + self.getRegrasMediaPrio(classe)
+        
+        return []
+
+    def getLowerPriorityRulesAteBandaNecessaria(self, classe:int, prioridade:int, banda:int) -> list[Regra]:
+        
+        if prioridade == BAIXA_PRIO:
+            return []
+        
+        if prioridade == MEDIA_PRIO:
+            return self.getRegrasBaixaPrio(classe)
+        
+        if prioridade == ALTA_PRIO:
+            return self.getRegrasBaixaPrio(classe) + self.getRegrasMediaPrio(classe)
+        
+        return []
