@@ -44,6 +44,7 @@ class Regra:
     def toString(self):
         return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%d; dst_port=%d; proto=%d; banda:%d, porta_dst=%d, tos=%s, emprestando=%b" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_entrada, self.porta_saida, self.emprestando) 
 
+
 # parte de criação de regras 
 
 def ordenaRegrasPorBandaMaiorMenor(lista_regras) -> list[Regra]:
@@ -101,3 +102,16 @@ def _mergeSortRegras(lista_regras:int, esq:int, dir:int):
 
     
 
+# class Regra2:
+#     def __init__(self, fred, porta_entrada:int, porta_saida:int, meter_id:int, fila:int, actions:str, emprestando:bool):
+
+#         self.fred = fred
+#         self.porta_entrada = porta_entrada
+#         self.porta_saida = porta_saida
+#         self.meter_id = meter_id
+#         self.fila = fila
+#         self.actions = actions
+#         self.emprestando = emprestando
+
+#     def getPrioridade(self):
+#         return fred.

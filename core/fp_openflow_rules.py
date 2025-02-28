@@ -132,7 +132,7 @@ def _send_packet(datapath, port, pkt):
     
 
 #Injetar pacote no controlador com instrucoes - serve para injetar pacotes que foram encaminhado por packet_in (se nao eles sao perdidos)
-def injetarPacote(switch:Switch, fila, out_port, packet, buffer_id=OFP_NO_BUFFER):
+def injetarPacote(switch:Switch, fila:int, out_port:int, packet, buffer_id=OFP_NO_BUFFER):
     datapath = switch.datapath
     actions = [datapath.ofproto_parser.OFPActionSetQueue(fila), datapath.ofproto_parser.OFPActionOutput(out_port)] 
     out = datapath.ofproto_parser.OFPPacketOut(
@@ -145,7 +145,7 @@ def injetarPacote(switch:Switch, fila, out_port, packet, buffer_id=OFP_NO_BUFFER
     datapath.send_msg(out)
 
 #add regra tabela FORWARD
-def addRegraF(switch:Switch, ip_ver, ip_src, ip_dst, out_port, src_port, dst_port, proto, fila, meter_id, qos_mark, idle_timeout, hard_timeout, prioridade=10,  flow_removed=True):
+def addRegraF(switch:Switch, ip_ver:int, ip_src:str, ip_dst:int, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, meter_id:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True):
     """ Parametros:
     ip_ver:str
     ip_src: str
@@ -221,7 +221,7 @@ def addRegraF(switch:Switch, ip_ver, ip_src, ip_dst, out_port, src_port, dst_por
     
 #add regra tabela CLASSIFICATION
 #se o destino for um ip de controlador, 
-def addRegraC(switch:Switch, ip_ver ,ip_src, ip_dst, src_port, dst_port, proto, qos_mark, idle_timeout, hard_timeout, prioridade=10):
+def addRegraC(switch:Switch, ip_ver:int ,ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10):
     """  ADD regra monitoring
     parametros:
     ip_ver: str
@@ -274,7 +274,7 @@ def addRegraC(switch:Switch, ip_ver ,ip_src, ip_dst, src_port, dst_port, proto, 
     mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout = hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=CLASSIFICATION_TABLE)
     datapath.send_msg(mod)
 
-def delRegraF(switch:Switch, ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+def delRegraF(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
     # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
     datapath = switch.datapath
     ofproto = datapath.ofproto

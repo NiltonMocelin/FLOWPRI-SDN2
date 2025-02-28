@@ -77,8 +77,6 @@ MONITORING_TIMEOUT= 2
 BE_HARD_TIMEOUT  = 5
 BE_IDLE_TIMEOUT   = 2
 
-
-
 #service classes
 SC_REAL        = 1
 SC_NONREAL     = 2

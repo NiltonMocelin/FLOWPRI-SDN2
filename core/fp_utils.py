@@ -1,8 +1,9 @@
 import sys
 
-from fp_constants import switches, freds, controladores_conhecidos, IPCv4, SEMBANDA
+from fp_constants import switches, freds, controladores_conhecidos, IPCv4, SEMBANDA, class_prio_to_queue_id
 from fp_rota import Rota, Rota_Node
 
+from fp_acao import Acao
 from fp_switch import Switch
 
 #para invocar scripts e comandos tc qdisc
@@ -378,23 +379,11 @@ def create_qos_rules(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:
 
     if switch_route == None:
         return False
+    
+    lista_acoes:list[Acao] =[]
 
-    # verificar se todos os switches possuim banda para o fluxo
-    for sw in switch_route:
-        switchh = getSwitchByName(sw.switch_name)
-        porta_saida = sw.out_port
-
-        if switchh.getFreeBandwForQoS(sw.in_port, sw.out_port, classe, prioridade, banda) == SEMBANDA: # deve consultar porta de entrada e saída
-            # algum switch nao suporta
-            return False
-
-    # todos os switches possuem banda -> rodar GBAM em cada um deles
-    for sw in switch_route:
-
-        porta_saida = sw.getPortaSaida(ip_dst)
-        if sw.alocarGBAM(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, banda, prioridade, classe) == -1:
-            # algum switch nao suporta
-            return False
+    # for switch in switch_route:
+        #GBAM
 
     return True
 

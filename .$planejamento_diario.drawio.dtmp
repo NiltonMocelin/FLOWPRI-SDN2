@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="4">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="5">
   <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
     <mxGraphModel dx="1863" dy="1775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -229,6 +229,46 @@
         </mxCell>
         <mxCell id="yJrInyKWkOm30SiSlxPH-14" value="Dia com dança" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="390" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="InfWYHL0cfjfVD2tf_Pw" name="backboneGBAM">
+    <mxGraphModel dx="942" dy="551" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_eyuS-i5_waZS2UFusAt-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_eyuS-i5_waZS2UFusAt-1" target="_eyuS-i5_waZS2UFusAt-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-1" value="Novo FRED" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_eyuS-i5_waZS2UFusAt-2" target="_eyuS-i5_waZS2UFusAt-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-2" value="Alocar GBAM backbone" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="_eyuS-i5_waZS2UFusAt-6" target="_eyuS-i5_waZS2UFusAt-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-6" value="Descobrir Fluxos que devem expirar &amp;gt; hardtimeout (regras&amp;nbsp; armazenadas com timeout)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-8" value="Descobrir onde alocar a regra&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_eyuS-i5_waZS2UFusAt-9" target="_eyuS-i5_waZS2UFusAt-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-9" value="Remover fluxos que expiraram" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-12" value="Criar fluxos agrupados em uma regra" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="250" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

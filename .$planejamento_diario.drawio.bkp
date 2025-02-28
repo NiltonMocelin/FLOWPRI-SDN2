@@ -1,6 +1,6 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.15 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.15" pages="4">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="4">
   <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
-    <mxGraphModel dx="2058" dy="1861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1863" dy="1775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -87,7 +87,7 @@
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-14" value="Traffic monitoring: Hosts e controlador" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="220" y="390" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="525" y="400" width="120" height="100" as="geometry" />
         </mxCell>
         <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;e de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumando Alocar GBAM para cotar banda na porta entrada e saida --&amp;gt; nessa versao é assim: cada switch roda e aloca cria tudo (nao usar acoes, pq vai dar problema ctz), caso algum switch nao aceitar a regra, entao para o processo e remove de todos os anteriores, envia o icmp com fluxo rejeitado.&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
@@ -120,11 +120,11 @@
         <mxCell id="5wksBHdEA-TXuHTnagim-1" value="GBAM precisa verificar se existe banda e pode emprestar, nas portas de entrada e saida, nao só na de saida -&amp;gt; sem criar meter e regraF para a porta de entada" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-100" y="270" width="150" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="5FmTdBkJ5_4LCafok2GZ-1" value="As ações se mostraram a melhor opção para o G-BAM -&amp;gt; no entanto fica muito complexo para controlar o fluxo de execução e a criação das regras (pq precisa de meter e tudo mais) -&amp;gt; Nao usar acoes, fazer cada switch finalizar o gbam e se rejeitar remove as regras de cada switch da rota" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-1" value="As ações se mostraram a melhor opção para o G-BAM&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="60" y="10" width="120" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="5FmTdBkJ5_4LCafok2GZ-3" value="Integrar as ações novamente" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="294" y="555" width="120" height="60" as="geometry" />
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-3" value="Integrar as ações novamente [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="294" y="570" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="shP3xlCRC4CT-vgoB4CX-1" value="Renomear Classes priority para Alta, media, baixa, pq 1 2 e 3 nem eu lembro o que é [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-420" y="20" width="120" height="120" as="geometry" />

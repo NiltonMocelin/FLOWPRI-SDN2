@@ -11,7 +11,7 @@ class Rota:
         self.src_prefix:int = src_prefix
         self.dst_prefix:int = dst_prefix
         self.ip_ver:int = ip_ver
-        self.rota_nodes:int = rota_nodes # (nome_switch (str), porta_saida (int))
+        self.rota_nodes = rota_nodes # (nome_switch (str), porta_saida (int))
         self.src_port:int = src_port
         self.dst_port:int = dst_port
         self.proto:int = proto
@@ -19,26 +19,23 @@ class Rota:
 ## mudou:-: {} ip_dst: [rota_nodes]
 rotas = {}
 
-def get_rota(ip_src: str, ip_dst:str , ip_ver:int , src_port:int, dst_port:int, proto:int, in_switch_id=-1):
+def get_rota(ip_src: str, ip_dst:str) -> list[Rota_Node]:
     
-    lista_switches = rotas[ip_dst]
-
-    if in_switch_id == -1:
-        return lista_switches
-
-    #remover todos ate o primeiro elemento ser o switch
-    for s in lista_switches:
-        if s.switch_name != in_switch_id:
-            lista_switches.remove(s)
+    lista_switches = rotas[ip_src+ip_dst]
 
     return lista_switches
 
-def add_rota(ip_src: str, ip_dst:str, ip_ver:int , src_port:int, dst_port:int, proto:int, lista_rota_nodes:list[Rota_Node]):
-    rotas[ip_dst] = lista_rota_nodes
+def add_rota(ip_src: str, ip_dst:str, lista_rota_nodes:list[Rota_Node]):
+    rotas[ip_src+ip_dst] = lista_rota_nodes
 
     return
 
-def del_rota(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, in_switch_id:int):
+def del_rota(ip_src:str, ip_dst:str):
+    try:
+        del rotas[ip_src+ip_dst]
+        print("Rota removida")
+    except:
+        print("Rota inexistente")
     return
 
 
@@ -60,7 +57,7 @@ def tratador_addRotas(novasrotas_json):
             
             lista_rota_nodes.append(Rota_Node(switch_name=switch['nome_switch'],in_port=switch['porta_entrada'],out_port=switch['porta_saida']))
         
-        add_rota(src_prefix, dst_prefix, ip_ver, src_port, dst_port, proto, lista_rota_nodes)
+        add_rota(src_prefix, dst_prefix, lista_rota_nodes)
         
     print('rotas adicionadas')
 
@@ -75,10 +72,6 @@ def tratador_delRotas(novasrotas_json):
         dst_port = rota['dst_port']
         proto = rota['proto']
 
-        
-        for r in rotas:
-            if r.ip_ver == ip_ver and r.src_prefix == src_prefix and r.dst_prefix == dst_prefix and r.src_port == src_port and r.dst_port == dst_port and r.proto == proto:
-                rotas.remove(r)
-                break 
+        del_rota(src_prefix, dst_prefix)
         
     return 
