@@ -1,3 +1,5 @@
+from fp_utils import current_milli_time
+from fp_constants import BE_HARD_TIMEOUT, QOS_HARD_TIMEOUT
 
 class Regra:
     def __init__(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int,
@@ -38,12 +40,15 @@ class Regra:
         self.fila:int = fila
         self.actions:str = actions
         self.flow_label:str = flow_label
+        self.timestamp = current_milli_time()
 
         #print]("[criando-regra-controlador]src:%s; dst=%s; banda:%s, porta_dst=%d, tos=%s, emprestando=%d" % (self.ip_src, self.ip_dst, self.banda, self.porta_dst, self.tos, self.emprestando)) 
 
     def toString(self):
         return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%d; dst_port=%d; proto=%d; banda:%d, porta_dst=%d, tos=%s, emprestando=%b" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_entrada, self.porta_saida, self.emprestando) 
 
+    def getTimestamp(self):
+        return self.timestamp
 
 # parte de criação de regras 
 
@@ -100,7 +105,15 @@ def _mergeSortRegras(lista_regras:int, esq:int, dir:int):
     _merge(lista_regras, esq, meio, dir)
 
 
-    
+def getRegrasExpiradas(lista_regras:list[Regra]) -> list[Regra]:
+    tempo_atual = current_milli_time()
+    lista_regras_expiradas = []
+
+    for regra in lista_regras:
+        if tempo_atual - regra.getTimestamp() > QOS_HARD_TIMEOUT * 1000: # converter para miliseconds
+            lista_regras_expiradas.append(regra)
+    return lista_regras_expiradas
+
 
 # class Regra2:
 #     def __init__(self, fred, porta_entrada:int, porta_saida:int, meter_id:int, fila:int, actions:str, emprestando:bool):

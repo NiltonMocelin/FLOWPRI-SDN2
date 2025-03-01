@@ -2,9 +2,8 @@ from fp_acao import Acao
 from fp_porta import Porta
 from fp_constants import CPT, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
 from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, class_prio_to_queue_id, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL
-from fp_regra import Regra
+from fp_regra import Regra, getRegrasExpiradas
 import sys
-from fp_utils import getQueueId
 
 from fp_openflow_rules import addRegraF, addRegraM, delRegraM, delRegraF, getMeterID_from_Flow, delMeter, generateMeterId
 
@@ -232,23 +231,44 @@ class Switch:
 
         return SEMBANDA, [] # rejeitar 
 
-    def _backboneGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe):
+    def agruparNovaRegraFluxo(self, ip_ver:int, ip_src:str, ip_dst:str):
+        return 
 
+    def _backboneGBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
 
         # alocar banda para um fluxo em um switch sem reservar banda, apenas utilizando os freds, podendo até emprestar banda
         lista_acoes = []
+
+        porta_entrada_obj = self.getPorta(porta_entrada)
+
+
+        # buscar as regras (freds) expirados
+        lista_regras_expiradas = getRegrasExpiradas(porta_entrada_obj.getRegrasBE() + porta_entrada_obj.getRegrasC1() + porta_entrada_obj.getRegrasC2())
+
+        for regra in lista_regras_expiradas:
+            self.delRegra(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port,regra.dst_port, regra.proto, regra.porta_entrada, False)
+            self.delRegra(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port,regra.dst_port, regra.proto, regra.porta_saida, True)
+
+        # verificar onde se pode alocar o fluxo
         resp_entrada, lista_remover_entrada = self._ondeAlocarFluxoQoS(porta_entrada, classe, prioridade, banda)
 
-        resp_saida, lista_remover_saida = self._ondeAlocarFluxoQoS(porta_saida, classe, prioridade, banda)
-
+        resp_saida, lista_remover_saida = self._ondeAlocarFluxoQoS(porta_saida, classe, prioridade, banda)  
         
-        
-        # verificar onde se pode alocar o fluxo
-
         # remover o que for necessario
+        # remover fluxos que emprestam ou com menor prioridade
+        if lista_remover_saida != []:
+            # print("remover regras")
+            for regra in lista_remover_saida:
+                lista_acoes.append(Acao(self,porta_saida, REMOVER, regra))         
+        
+        # remover fluxos que emprestam ou com menor prioridade
+        if lista_remover_entrada != []:
+            for regra in lista_remover_saida:
+                lista_acoes.append(Acao(self,porta_entrada, REMOVER, regra))
+            # print("remover regras")  
 
         # criar a regra para backboneGBAM
-
+        self.agruparNovaRegraFluxo(ip_ver, ip_src, ip_dst)
 
         return
 
@@ -287,10 +307,8 @@ class Switch:
         #tem que remover por tupla: ip_src, ip_dst, porta_src, porta_dst, proto
         porta_saida_obj = self.getPorta(porta_saida)
 
-        tos = CPT[(classe, prioridade, banda)] 
-
         #obtenho a classe onde a regra estava (1 ou 2, -1 == falha)  
-        classe_removida = porta_saida_obj.delRegra(ip_ver=ip_ver, ip_src= ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, tos=tos)
+        classe_removida = porta_saida_obj.delRegra(ip_ver=ip_ver, ip_src= ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
 
         #estava emprestando -- na verdade nessa implementacao nao faz diferenca pois estou pesquisando em todas as filas (ok eh ruim, mas por agora fica assim)
         # if classe_removida != classe:
