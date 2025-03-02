@@ -1,0 +1,335 @@
+# Copyright 2019 Cargill Incorporated
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# teste de alcançabilidade - chaves fixas
+
+version: '3.6'
+
+volumes:
+  pbft-shared:
+
+
+services:
+
+# -------------=== qos-blockchain ===-------------
+
+  qos-blockchain-as1_as2-1:
+    image: qosblockchainv1
+    container_name: sth-qosblockchain-as1_as2-1
+    network_mode: "host"
+    command: python3 main.py -C tcp://0.0.0.0:4004
+    stop_signal: SIGKILL
+
+# -------------=== rest api ===-------------
+
+  rest-api-as1_as2-1:
+    image: hyperledger/sawtooth-rest-api:chime
+    container_name: sth-rest-api-as1_as2-1
+    network_mode: "host"
+    command: |
+      bash -c "
+        sawtooth-rest-api \
+          --connect tcp://0.0.0.0:4004 \
+          --bind 0.0.0.0:8008
+      "
+    stop_signal: SIGKILL
+
+# -------------=== settings tp ===-------------
+
+  settings-tp-as1_as2-1:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sth-settings-tp-as1_as2-1
+    network_mode: "host"
+    command: settings-tp -C tcp://0.0.0.0:4004
+    stop_signal: SIGKILL
+
+# -------------=== validators ===-------------
+
+  validator-as1_as2-1:
+    image: hyperledger/sawtooth-validator:chime
+    container_name: sth-validator-as1_as2-1
+    volumes:
+      - pbft-shared:/pbft-shared
+    network_mode: "host"
+    command: |
+      bash -c "
+        if [ ! -e /etc/sawtooth/keys/validator.priv ]; then
+          echo 03b62300f74e0d23507b09951bdba15bba84f242c18fc8acac3c0e348d4b225009 > /etc/sawtooth/keys/validator.pub
+          echo ca996cef5f88966f4947b4bb68fbe51f3b9c41916a028898f9cbdc564d59c1fd > /etc/sawtooth/keys/validator.priv
+          cp /etc/sawtooth/keys/validator.pub /pbft-shared/validator-1.pub
+        fi &&
+        if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
+          sawtooth keygen my_key
+        fi &&
+        sawtooth-validator -vv \
+          --endpoint tcp://0.0.0.0:8800 \
+          --bind component:tcp://0.0.0.0:4004 \
+          --bind consensus:tcp://0.0.0.0:5050 \
+          --bind network:tcp://0.0.0.0:8800 \
+          --scheduler parallel \
+          --peering static \
+          --maximum-peer-connectivity 4 
+      "
+
+# -------------=== pbft engines ===-------------
+
+  pbft-as1_as2-1:
+    image: hyperledger/sawtooth-pbft-engine:chime
+    network_mode: "host"
+    container_name: sth-pbft-as1_as2-1
+    command: pbft-engine -vv --connect tcp://0.0.0.0:5050
+    stop_signal: SIGKILL
+
+
+# -------------=== qos-blockchain ===-------------
+
+  qos-blockchain-as1_as2-2:
+    image: qosblockchainv1
+    container_name: sth-qosblockchain-as1_as2-2
+    network_mode: "host"
+    command: python3 main.py -C tcp://0.0.0.0:4005
+    stop_signal: SIGKILL
+
+# -------------=== rest api ===-------------
+
+  rest-api-as1_as2-2:
+    image: hyperledger/sawtooth-rest-api:chime
+    container_name: sth-rest-api-as1_as2-2
+    network_mode: "host"
+    command: |
+      bash -c "
+        sawtooth-rest-api \
+          --connect tcp://0.0.0.0:4005 \
+          --bind 0.0.0.0:8009
+      "
+    stop_signal: SIGKILL
+
+# -------------=== settings tp ===-------------
+
+  settings-tp-as1_as2-2:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sth-settings-tp-as1_as2-2
+    network_mode: "host"
+    command: settings-tp -C tcp://0.0.0.0:4005
+    stop_signal: SIGKILL
+
+# -------------=== validators ===-------------
+
+  validator-as1_as2-2:
+    image: hyperledger/sawtooth-validator:chime
+    container_name: sth-validator-as1_as2-2
+    network_mode: "host"
+    volumes:
+      - pbft-shared:/pbft-shared
+    command: |
+      bash -c "
+        if [ ! -e /etc/sawtooth/keys/validator.priv ]; then
+          echo 03b1d5a90535cb40e3c0e75ada096b63b26474193d49c0ce4abe586d3b3860c19b > /etc/sawtooth/keys/validator.pub
+          echo 01e0cf3d7e551b70793ca7e3fcf1e0387354a125d69e2028610c3e663053f073 > /etc/sawtooth/keys/validator.priv
+          cp /etc/sawtooth/keys/validator.pub /pbft-shared/validator-2.pub
+        fi &&
+        if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
+          sawtooth keygen my_key
+        fi &&
+        sawtooth-validator -vv \
+          --endpoint tcp://0.0.0.0:8801 \
+          --bind component:tcp://0.0.0.0:4005 \
+          --bind consensus:tcp://0.0.0.0:5051 \
+          --bind network:tcp://0.0.0.0:8801 \
+          --scheduler parallel \
+          --peering static \
+          --maximum-peer-connectivity 4  --peers tcp://0.0.0.0:8800
+      "
+
+# -------------=== pbft engines ===-------------
+
+  pbft-as1_as2-2:
+    image: hyperledger/sawtooth-pbft-engine:chime
+    network_mode: "host"
+    container_name: sth-pbft-as1_as2-2
+    command: pbft-engine -vv --connect tcp://0.0.0.0:5051
+    stop_signal: SIGKILL
+
+
+# -------------=== qos-blockchain ===-------------
+
+  qos-blockchain-as1_as2-3:
+    image: qosblockchainv1
+    container_name: sth-qosblockchain-as1_as2-3
+    network_mode: "host"
+    command: python3 main.py -C tcp://0.0.0.0:4006
+    stop_signal: SIGKILL
+
+# -------------=== rest api ===-------------
+
+  rest-api-as1_as2-3:
+    image: hyperledger/sawtooth-rest-api:chime
+    container_name: sth-rest-api-as1_as2-3
+    network_mode: "host"
+    command: |
+      bash -c "
+        sawtooth-rest-api \
+          --connect tcp://0.0.0.0:4006 \
+          --bind 0.0.0.0:8010
+      "
+    stop_signal: SIGKILL
+
+# -------------=== settings tp ===-------------
+
+  settings-tp-as1_as2-3:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sth-settings-tp-as1_as2-3
+    network_mode: "host"
+    command: settings-tp -C tcp://0.0.0.0:4006
+    stop_signal: SIGKILL
+
+# -------------=== validators ===-------------
+
+  validator-as1_as2-3:
+    image: hyperledger/sawtooth-validator:chime
+    container_name: sth-validator-as1_as2-3
+    network_mode: "host"
+    volumes:
+      - pbft-shared:/pbft-shared
+    command: |
+      bash -c "
+        if [ ! -e /etc/sawtooth/keys/validator.priv ]; then
+          echo 03363fea8506c9e8b790321755b55db16bc47472b2dea0718a556487f9cdb16da0 > /etc/sawtooth/keys/validator.pub
+          echo 4b549f4af8145e24944f895131a7452dca8afcef75e240ad517513e92d91698b > /etc/sawtooth/keys/validator.priv
+          cp /etc/sawtooth/keys/validator.pub /pbft-shared/validator-3.pub
+        fi &&
+        if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
+          sawtooth keygen my_key
+        fi &&
+        sawtooth-validator -vv \
+          --endpoint tcp://0.0.0.0:8802 \
+          --bind component:tcp://0.0.0.0:4006 \
+          --bind consensus:tcp://0.0.0.0:5052 \
+          --bind network:tcp://0.0.0.0:8802 \
+          --scheduler parallel \
+          --peering static \
+          --maximum-peer-connectivity 4  --peers tcp://0.0.0.0:8800 --peers tcp://0.0.0.0:8801
+      "
+
+# -------------=== pbft engines ===-------------
+
+  pbft-as1_as2-3:
+    image: hyperledger/sawtooth-pbft-engine:chime
+    network_mode: "host"
+    container_name: sth-pbft-as1_as2-3
+    command: pbft-engine -vv --connect tcp://0.0.0.0:5052
+    stop_signal: SIGKILL
+
+# -------------=== qos-blockchain ===-------------
+
+  qos-blockchain-as1_as2-4:
+    image: qosblockchainv1
+    container_name: sth-qosblockchain-as1_as2-4
+    network_mode: "host"
+    command: python3 main.py -C tcp://0.0.0.0:4007
+    stop_signal: SIGKILL
+
+# -------------=== rest api ===-------------
+
+  rest-api-as1_as2-4:
+    image: hyperledger/sawtooth-rest-api:chime
+    container_name: sth-rest-api-as1_as2-4
+    network_mode: "host"
+    command: |
+      bash -c "
+        sawtooth-rest-api \
+          --connect tcp://0.0.0.0:4007 \
+          --bind 0.0.0.0:8011
+      "
+    stop_signal: SIGKILL
+
+# -------------=== settings tp ===-------------
+
+  settings-tp-as1_as2-4:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sth-settings-tp-as1_as2-4
+    network_mode: "host"
+    command: settings-tp -C tcp://0.0.0.0:4007
+    stop_signal: SIGKILL
+
+# -------------=== validators ===-------------
+
+  validator-as1_as2-4:
+    image: hyperledger/sawtooth-validator:chime
+    container_name: sth-validator-as1_as2-4
+    network_mode: "host"
+    volumes:
+      - pbft-shared:/pbft-shared
+    command: |
+      bash -c "
+        if [ ! -e /etc/sawtooth/keys/validator.priv ]; then
+          echo 033201f2e72dcef145b777ef4bfdae3afc0cae5e81ad6647ad354d9dba5a19ab08 > /etc/sawtooth/keys/validator.pub
+          echo 6a3e5644561dbc7b9eefbe1fdc5e42c7d95cafbf354e186cc233191830358dda > /etc/sawtooth/keys/validator.priv
+          cp /etc/sawtooth/keys/validator.pub /pbft-shared/validator.pub
+        fi &&
+        while [[ ! -f /pbft-shared/validator-1.pub || \
+                 ! -f /pbft-shared/validator-2.pub || \
+                 ! -f /pbft-shared/validator-3.pub ]];
+        do sleep 1; done
+        if [ ! -e config-genesis.batch ]; then
+          sawset genesis -k /etc/sawtooth/keys/validator.priv -o config-genesis.batch
+        fi &&
+        if [ ! -e config.batch ]; then
+          sawset proposal create \
+              -k /etc/sawtooth/keys/validator.priv \
+              sawtooth.consensus.algorithm.name=pbft \
+              sawtooth.consensus.algorithm.version=1.0 \
+              sawtooth.consensus.pbft.members=\\['\"'$$(cat /etc/sawtooth/keys/validator.pub)'\"','\"'$$(cat /pbft-shared/validator-1.pub)'\"','\"'$$(cat /pbft-shared/validator-2.pub)'\"','\"'$$(cat /pbft-shared/validator-3.pub)'\"'\\] \
+              sawtooth.publisher.max_batches_per_block=1200 \
+              -o config.batch
+        fi &&
+        if [ ! -e /var/lib/sawtooth/genesis.batch ]; then
+          sawadm genesis config-genesis.batch config.batch
+        fi &&
+        if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
+          sawtooth keygen my_key
+        fi &&
+        sawtooth-validator -vv \
+          --endpoint tcp://0.0.0.0:8803 \
+          --bind component:tcp://0.0.0.0:4007 \
+          --bind consensus:tcp://0.0.0.0:5053 \
+          --bind network:tcp://0.0.0.0:8803 \
+          --scheduler parallel \
+          --peering static \
+          --maximum-peer-connectivity 4 --peers tcp://0.0.0.0:8800 --peers tcp://0.0.0.0:8801 --peers tcp://0.0.0.0:8802
+      "
+
+
+# -------------=== pbft engines ===-------------
+
+  pbft-as1_as2-4:
+    image: hyperledger/sawtooth-pbft-engine:chime
+    network_mode: "host"
+    container_name: sth-pbft-as1_as2-4
+    command: pbft-engine -vv --connect tcp://0.0.0.0:5053
+    stop_signal: SIGKILL
+
+# -------------=== shell ===-------------
+
+  shell:
+    image: hyperledger/sawtooth-shell:chime
+    container_name: sawtooth-shell-default
+    network_mode: "host"
+    command: |
+      bash -c "
+        sawtooth keygen
+        tail -f /dev/null
+      "
+    stop_signal: SIGKILL
