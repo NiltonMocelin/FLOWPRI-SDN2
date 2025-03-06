@@ -231,8 +231,72 @@ class Switch:
 
         return SEMBANDA, [] # rejeitar 
 
-    def agruparNovaRegraFluxo(self, ip_ver:int, ip_src:str, ip_dst:str):
-        return 
+    def agruparRegrasFluxo(self, ip_ver:int, ip_src:str, ip_dst:str, porta_nome:int, classe:int):
+        """[assumido que todas as regras armazenadas foram aceitas pelo gbam] regra de agrupamento, agrupar fluxos que possuem mesma classe, mesma porta destino na mesma regra, com uma meter agregada (nao sei qual o limite
+        de uma meter, mas neste momento nao importa) -> solução não otima, mas que pode reduzir o tamanho da tabela de fluxos no backbone"""
+
+
+        # obter todos os fluxos que possuem a mesma classe e porta destino
+
+        regras_classe = {}
+
+        lista_regras = []
+        lista_acoes = []
+
+        if classe == SC_BEST_EFFORT:
+            lista_regras = self.getPorta(porta_nome).getRegrasBE()
+        elif classe == SC_REAL:
+            lista_regras = self.getPorta(porta_nome).getRegrasC1()
+        elif classe == SC_NONREAL:
+            lista_regras = self.getPorta(porta_nome).getRegrasC2()
+
+        # agrupando por porta destino e porta de saida
+        for r in lista_regras:
+            if not regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)]:
+                regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)] = [r]
+            else:
+                regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)].append(r)
+
+        # para cada key de regras_classe -> remover regras openflow e meter existentes para essas regras -> somar a banda -> criar nova meter, associar cada regra a essa meter -> criar a regra de fluxo agrupada
+        # sem tempo para otimizar isso
+        for regra in lista_regras:
+            delRegraF(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
+            delRegraM(self, regra.meter_id)
+        
+        # # somar banda de todas as regras a serem agrupadas e criar as meter rules -> nem precisa meter aqui
+        for val in regras_classe.values(): 
+        #     somabanda = 0
+            ip_ver = -1
+            proto = -1
+            src_port = -1
+            dst_port = -1
+            ip_srcs = []
+            ip_dsts = []
+            porta_destino = porta_nome
+            fila = -1
+            for regra in val:
+
+                if porta_destino == -1:
+                    src_port = regra.src_port
+                    dst_port = regra.dst_port
+                    fila = self.getQueueId(regra.classe, regra.prioridade)
+                    
+                ip_srcs.append(regra.ip_src)
+                ip_dsts.append(regra.ip_dst)
+                lista_acoes.append(Acao(self, porta_nome, REMOVER, regra))
+
+            lista_acoes.append(Acao(self, porta_nome, CRIAR, Regra({})))
+            #addRegraF()
+
+        #         somabanda += regra.banda
+
+            # criar meter rule e associar a cada regra
+
+            # criar os matchings para src_port, ip_src, ip_dst, e dst_port
+            # criar a regra openflow no switch
+
+
+        return lista_acoes
 
     def _backboneGBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
 
@@ -267,10 +331,10 @@ class Switch:
                 lista_acoes.append(Acao(self,porta_entrada, REMOVER, regra))
             # print("remover regras")  
 
-        # criar a regra para backboneGBAM
-        self.agruparNovaRegraFluxo(ip_ver, ip_src, ip_dst)
+        # criar a regra para backboneGBAM -> depois que todos aceitarem, cada switch precisa salvar o fred (que é a regra) e roda o agrupadorde regras de fluxo
+        # self.agruparRegrasFluxo(ip_ver, ip_src, ip_dst)
 
-        return
+        return lista_acoes
 
     def getFreeBandwForQoS(self, in_port, classe, prioridade, banda):
         # verifica banda disponível -> retorna 0 se for na própria classe, 1 se for emprestando e -1 se for rejeitado

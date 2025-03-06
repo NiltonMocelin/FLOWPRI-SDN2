@@ -19,6 +19,7 @@ from fp_utils import souDominioBorda, check_domain_hosts
 from fp_flow_monitoring import Register, FlowMonitoring, loadFlowMonitoringFromJson
 
 from fp_api_qosblockchain import criar_chave_sawadm
+from main_controller import create_qos_rules
 
 
 def rejeitar_fred(fred, in_switch_id):
@@ -109,7 +110,6 @@ def tratador_icmp_flow_monitoring(pkt_icmp, in_switch_id):
 def tratador_icmp_fred(pkt_icmp, in_switch_id):
 
     # 139 icmpv6 vem com um fred, criar as regras de QoS, preencher com os campos (E chave publica) e enviar para frente
-
     if pkt_icmp == None:
         return None
     
@@ -124,7 +124,54 @@ def tratador_icmp_fred(pkt_icmp, in_switch_id):
         return None
 
     return None
+
+
+def tratar_icmp_anuncio(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst):
+    # verificar se sou borda ou backbone
+    if souDominioBorda(ip_ver, ip_src, ip_dst):
+
+        # tem fred -> criar regras qos para borda -> criar blockchain se nao existir (rotina blockchain)
+        if fred_icmp != None:
+            if create_qos_rules({}): # modo borda
+                rotina_blockchain()
+
+        # tem monitoramento -> comparar com meu monitoramento -> criar 
+        if monitoramento_icmp != None:
+            pass
+
+    else:
+        if fred_icmp != None:
+            create_qos_rules({}) # modo borda
+
+    return
+
+def tratar_icmp_rejeicao(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst):
+    return
+
+def handle_icmps(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
     
+    tipo = -1
+    fred_icmp = None
+    monitoramento_icmp = None
+    # verificar o tipo do icmp
+    if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_QUERY:
+        tipo = 1 # anuncio (fred ou dados monitoramento)
+
+    elif pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_REPLY:
+        tipo = 2 # rejeicao (fred)
+
+    # verificar o conteudo do icmp
+    fred_icmp = tratador_icmp_fred(pkt_icmpv6, in_switch_id)
+    monitoramento_icmp = tratador_icmp_flow_monitoring(pkt_icmpv6, in_switch_id)
+
+    if tipo == 1:
+        tratar_icmp_anuncio(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
+    else:
+        tratar_icmp_rejeicao(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
+    # se tiver fred -> rotina tratamento fred
+
+    # se tiver monitoramento -> rotina tratamento monitoramento
+    return 
 
 def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
     #print("\n Recebeu Pacote ICMP: \n")
@@ -133,7 +180,6 @@ def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
     if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_QUERY:
 
         # aqui pode ser duas coisas: anuncio fred ou flow monitoring
-
         fred = tratador_icmp_fred(pkt_icmpv6, in_switch_id)
         flow_monitoring = tratador_icmp_flow_monitoring(pkt_icmpv6, in_switch_id)
 
@@ -157,11 +203,14 @@ def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
             if ip_blockchain == None:
                ip_blockchain, port_blockchain= "",""#criar_blockchain()
 
+            create_qos_rules({}) # modo borda
+
         else: # nao sou dominio de borda
             
             # criar regras G-BAM backbone             
             fred.lista_rota.append({"ordem": str(ordem), "nome_peer": IPCc, "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
-
+            
+            create_qos_rules({}) # modo backbone
             return
 
         if fred == None:
@@ -227,7 +276,7 @@ def handle_icmpv4(pkt_icmpv4, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port
 
     # icmpv6.ICMPV6_NI_QUERY == anuncio de FRED
     if pkt_icmpv4.type == INFORMATION_REQUEST:
-        fred = tratador_icmpv4_fred(pkt_icmpv4, in_switch_id)
+        fred = tratador_icmp_fred(pkt_icmpv4, in_switch_id)
 
         if fred == None:
             

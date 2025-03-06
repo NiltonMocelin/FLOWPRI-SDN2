@@ -1,6 +1,6 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="5">
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.15 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.15" pages="5">
   <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
-    <mxGraphModel dx="1863" dy="1775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2058" dy="1861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -90,13 +90,13 @@
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="525" y="400" width="120" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;e de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumando Alocar GBAM para cotar banda na porta entrada e saida --&amp;gt; nessa versao é assim: cada switch roda e aloca cria tudo (usar acoes), caso algum switch nao aceitar a regra, entao para o processo, nao cria as regras e envia o icmp com fluxo rejeitado.&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;e de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="510" y="630" width="220" height="600" as="geometry" />
         </mxCell>
         <mxCell id="utfMI5SQkQcTHa897YUp-1" value="GUI simples (swtiches, rotas, regras) -&amp;gt; esquecer isso por enquanto" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="680" y="400" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="VdtekRpqjFC6Wfjtw76O-1" value="backbone G-BAM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="VdtekRpqjFC6Wfjtw76O-1" value="backbone G-BAM [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="380" y="400" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="e7JyS8U2MEhxafHwqLXR-1" value="Arrumar as duas criações de chaves !! [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -114,8 +114,8 @@
         <mxCell id="qyrjWjYYuWChkDs8PrSO-1" value="Tratar ao menos ARP e PINGv4v6" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="294" y="160" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qyrjWjYYuWChkDs8PrSO-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Feitos (mais antigo para mais recente)&lt;/h1&gt;&lt;p&gt;* Outros controladores OK, problema é o flowpri2 msm&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;* Arrumar as importações da pasta pai [OK]&lt;/p&gt;&lt;p&gt;* Fazer funcionar numa versão mais simples&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;[OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* tipar todos os parametros das funcoes para evitar confusão&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* ajustar as meters: a meter id deve ser associada a regra e deve existir uma tabela de meters em cada switch para controlar a criação dos ids para novas meters&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a criação de regras e fazer funcionar do jeito que está, a criação de regras -&amp;gt; até meio dia, uma versão funcional ! (sem traffic monitoring, mas com as regras).&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Revisar e mudar-&amp;gt; parte de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
-          <mxGeometry y="810" width="220" height="550" as="geometry" />
+        <mxCell id="qyrjWjYYuWChkDs8PrSO-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Feitos (mais antigo para mais recente)&lt;/h1&gt;&lt;p&gt;* Outros controladores OK, problema é o flowpri2 msm&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;* Arrumar as importações da pasta pai [OK]&lt;/p&gt;&lt;p&gt;* Fazer funcionar numa versão mais simples&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;[OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* tipar todos os parametros das funcoes para evitar confusão&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* ajustar as meters: a meter id deve ser associada a regra e deve existir uma tabela de meters em cada switch para controlar a criação dos ids para novas meters&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a criação de regras e fazer funcionar do jeito que está, a criação de regras -&amp;gt; até meio dia, uma versão funcional ! (sem traffic monitoring, mas com as regras).&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Revisar e mudar-&amp;gt; parte de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;* Arrumando Alocar GBAM para cotar banda na porta entrada e saida --&amp;gt; nessa versao é assim: cada switch roda e aloca cria tudo (usar acoes), caso algum switch nao aceitar a regra, entao para o processo, nao cria as regras e envia o icmp com fluxo rejeitado. [ok]&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry y="810" width="220" height="710" as="geometry" />
         </mxCell>
         <mxCell id="5wksBHdEA-TXuHTnagim-1" value="GBAM precisa verificar se existe banda e pode emprestar, nas portas de entrada e saida, nao só na de saida -&amp;gt; sem criar meter e regraF para a porta de entada" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-100" y="270" width="150" height="110" as="geometry" />
@@ -129,11 +129,6 @@
         <mxCell id="shP3xlCRC4CT-vgoB4CX-1" value="Renomear Classes priority para Alta, media, baixa, pq 1 2 e 3 nem eu lembro o que é [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-420" y="20" width="120" height="120" as="geometry" />
         </mxCell>
-        <UserObject label="https://pixeldrain.com/u/KN9tR9sD" link="https://pixeldrain.com/u/KN9tR9sD" id="GS2F_hY2PqZsesg8sYkH-1">
-          <mxCell style="text;whiteSpace=wrap;" parent="1" vertex="1">
-            <mxGeometry x="1240" y="720" width="220" height="40" as="geometry" />
-          </mxCell>
-        </UserObject>
       </root>
     </mxGraphModel>
   </diagram>
@@ -234,7 +229,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="InfWYHL0cfjfVD2tf_Pw" name="backboneGBAM">
-    <mxGraphModel dx="1050" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1231" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -256,19 +251,80 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="_eyuS-i5_waZS2UFusAt-6" value="Descobrir Fluxos que devem expirar &amp;gt; hardtimeout (regras&amp;nbsp; armazenadas com timeout)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="490" y="120" width="120" height="80" as="geometry" />
+          <mxGeometry x="490" y="110" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="_eyuS-i5_waZS2UFusAt-8" value="Descobrir onde alocar a regra&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="310" y="250" width="120" height="60" as="geometry" />
+        <mxCell id="07IQ-6Qu8IQLlvW2kpOs-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="_eyuS-i5_waZS2UFusAt-8" target="_eyuS-i5_waZS2UFusAt-12" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-8" value="Descobrir onde alocar a regra (se é possível GBAM)&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="620" y="270" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="_eyuS-i5_waZS2UFusAt-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="_eyuS-i5_waZS2UFusAt-9" target="_eyuS-i5_waZS2UFusAt-8" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="_eyuS-i5_waZS2UFusAt-9" value="Remover fluxos que expiraram" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="490" y="250" width="120" height="60" as="geometry" />
+          <mxGeometry x="700" y="175" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="_eyuS-i5_waZS2UFusAt-12" value="Criar fluxos agrupados em uma regra" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="140" y="250" width="120" height="60" as="geometry" />
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_eyuS-i5_waZS2UFusAt-12" target="qZ9Jd3IN7ahHs-uki33P-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_eyuS-i5_waZS2UFusAt-12" value="Rodar a rotina que agrupa os fluxos possíveis em meters e regras com mesma classe, src_port e dst_port, ip_Ver e pode ser necessario agrupar por protocolo tbm (seria triste)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="414" y="255" width="120" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-1" value="Regra1: src_portA, dst_portA, ip_srcA, ip_dstA, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="480" width="470" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-2" value="Regra2: src_portB, dst_portB, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="540" width="470" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-3" value="Regra3: src_portA, dst_portB, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="600" width="470" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-4" value="Regra4: src_portA, dst_portA, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="660" width="470" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="qZ9Jd3IN7ahHs-uki33P-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-5" value="Quem deve ser agrupado ?" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="440" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-7" value="Se regras 1 e 2: Nao sao pq dst_portA e dst_portB sao diferentes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="520" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-8" value="Match: src_portA, dst_portA, ip_srcA+ip_srcB, ip_dstA + ip_dstB, porta_saidaA == &amp;gt; sem problemas" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="615" width="570" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-9" value="Se regras 1 e 4:&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="585" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-10" value="Regra4: src_portB, dst_portA, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="720" width="470" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-11" value="Match: src_portA+src_portB, dst_portA, ip_srcA+ip_srcB, ip_dstA + ip_dstB, porta_saidaA ==&amp;gt; problema Aceita: sportB,dportA,ipB&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; sportA,dportA,ipB&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;sportB,dportA,ipA&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;sportA,dportA,ipA&lt;/div&gt;&lt;div&gt;Solução: ??&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="750" width="570" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-12" value="Se regras 1 e 5:&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="720" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-13" value="Se fosse agrupar por classe e ips:&lt;div&gt;Match: ip_srcABCD, ip_dstABCD, tos:1, porta_saida:X&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="960" width="370" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="qZ9Jd3IN7ahHs-uki33P-14" target="qZ9Jd3IN7ahHs-uki33P-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-14" value="Somar a banda de regras de mesma classe" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="255" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-16" value="Criar a regra de fluxo para marcar os pacotes&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="255" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-18" value="Duas abordagems para agrupamento aqui:&lt;div&gt;1- os pacotes vem marcados com a classe vindos da borda.&lt;/div&gt;&lt;div&gt;2- É feito um agrupamento desleixado usando um match com combinação de portas e ips (que vai pegar qualquer coisa)&lt;/div&gt;&lt;div&gt;3- é feito o agrupamento de fluxos que possuam a mesma src_port, dst_port, porta de saida e classe&lt;/div&gt;&lt;div&gt;-----------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 1: além da marcação tos, tem a marcação de monitoramento. porém basta utilizar uma regra que verifica mascara.&lt;/div&gt;&lt;div&gt;Outro problema: se perde o controle do que é aceito ou não, pois podem-se chegar pacotes de fluxos marcados que não foram aceitos mas caiam no match.&lt;/div&gt;&lt;div&gt;-----------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 2: vai pegar fluxos que não deveriam no match.&lt;/div&gt;&lt;div&gt;------------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 3: Não irá ocorrer tantos agrupamentos, mas é o que tem o menor colateral e o match mais restito&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=default;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="145" width="310" height="345" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
