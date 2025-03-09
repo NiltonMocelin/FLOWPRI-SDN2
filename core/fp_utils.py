@@ -15,6 +15,8 @@ import psutil
 
 from fp_rota import get_rota
 
+from fp_fred import Fred
+
 def souDominioBorda(ip_ver:int, ip_src:str, ip_dst:str):
     if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
         return True
@@ -62,6 +64,11 @@ def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
     except:
         raise SyntaxError("ERRO ao enviar fred !")
     return 
+
+def salvar_fred(fred:Fred):
+    if fred not in freds:
+        freds.append(fred)
+    return
 
 def remover_fred(ip_ver:int , proto:int , ip_src:str, ip_dst:str, src_port:int, dst_port:int):
 
@@ -362,8 +369,27 @@ def checkControladorConhecido(ip:str):
     return 0
 
 
-def remove_qos_rules(fred):
-    
+def update_regra_monitoramento(ip_ver,ip_src,ip_dst,src_port,dst_port,proto, switch_name):
+
+    # encontrar o primeiro switch da rota
+    # atualizar com ligar ou desligar monitoramento do fluxo
+    rota_switches = get_rota(ip_src, ip_dst)
+    # sou o dominio de origem, e primeiro switch da rota, que faz monitoramento
+    if rota_switches[0].switch_name == switch_name and ip_meu_dominio(ip_src):
+        # se a regra estava monitorando, agora deve passar um periodo sem monitorar
+        switch = getSwitchByName(switch_name).add_regra_monitoramento_fluxo({})
+        return True
+    return False
+
+def remove_qos_rules(ip_src, ip_dst, ip_ver):
+    rota_switches = get_rota(ip_src, ip_dst)
+    # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
+    for rota_noh in rota_switches:
+        switch = getSwitchByName(rota_noh.switch_name)
+        # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
+        porta_nome = switch.getPortaSaida(ip_dst)
+
+        switch.delRegra(ip_ver)
     return
 
 def create_qos_rules(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, fred:dict, in_switch_id:int):

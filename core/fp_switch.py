@@ -67,6 +67,12 @@ class Switch:
     def getPortas(self)->list[Porta]:
         return self.portas
     
+    def add_regra_monitoramento_fluxo(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+        return
+    
+    def del_regra_monitoramento_fluxo(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+        return
+
     def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida):
 
         porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, '{"qos_mark":%d, "out_port":%d, "meter_id":%d}' %(NO_QOS_MARK, porta_saida, NO_METER), False))

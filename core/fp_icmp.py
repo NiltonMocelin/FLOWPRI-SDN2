@@ -9,17 +9,21 @@ import fp_fred
 
 import json
 
-from fp_utils import get_rota,send_fred_socket, remove_qos_rules, create_qos_rules, remover_fred
+from fp_utils import get_rota,send_fred_socket, remove_qos_rules, create_qos_rules, remover_fred, salvar_fred
 from fp_utils import getSwitchByName
 
 # from fp_api_qosblockchain import get_blockchain, criar_blockchain
 
 from fp_utils import souDominioBorda, check_domain_hosts
 
-from fp_flow_monitoring import Register, FlowMonitoring, loadFlowMonitoringFromJson
+from traffic_monitoring.fp_flow_monitoring import Register, FlowMonitoring, loadFlowMonitoringFromJson
+
+from traffic_monitoring.fp_monitoring import fazer_calculo_qos
 
 from fp_api_qosblockchain import criar_chave_sawadm
 from main_controller import create_qos_rules
+
+from fp_api_qosblockchain import enviar_transacao_blockchain
 
 
 def rejeitar_fred(fred, in_switch_id):
@@ -92,85 +96,57 @@ def send_icmpv6(datapath, srcMac, srcIp, dstMac, dstIp, outPort, data, type=8, t
     return 0
 
 
-def tratador_icmp_flow_monitoring(pkt_icmp, in_switch_id):
+def tratador_icmp_flow_monitoring(flow_monitoring:FlowMonitoring):
     
-    if pkt_icmp == None:
-        return None
-    
-    if not "Monitoring" in pkt_icmp.data:
-        return None
-
-    try:
-        flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmp.data))   
-        return flow_monitoring
-    except:
-        return None
-    return None
-
-def tratador_icmp_fred(pkt_icmp, in_switch_id):
-
-    # 139 icmpv6 vem com um fred, criar as regras de QoS, preencher com os campos (E chave publica) e enviar para frente
-    if pkt_icmp == None:
-        return None
-    
-    if not "FRED" in pkt_icmp.data:
-        return None
-
-    try:
-        fred = fp_fred.fromJsonToFred(json.loads(pkt_icmp.data))
-        return fred
-    except:
-        print("Nenhum fred nos dados de ICMPv6")
-        return None
-
-    return None
-
-
-def tratar_icmp_anuncio(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst):
     # verificar se sou borda ou backbone
-    if souDominioBorda(ip_ver, ip_src, ip_dst):
-
-        # tem fred -> criar regras qos para borda -> criar blockchain se nao existir (rotina blockchain)
-        if fred_icmp != None:
-            if create_qos_rules({}): # modo borda
-                rotina_blockchain()
+    if souDominioBorda(flow_monitoring.ip_ver, flow_monitoring.ip_src, flow_monitoring.ip_dst):
 
         # tem monitoramento -> comparar com meu monitoramento -> criar 
-        if monitoramento_icmp != None:
-            pass
+        qos = fazer_calculo_qos(flow_monitoring)
+        
+        # criar transacao na blockchain
+        enviar_transacao_blockchain({}) # se existir a blockchain -> se nao existir emitir erro
+    
+    # dar sequencia no icmp
+    return
+
+def tratador_icmp_fred(fred:fp_fred.Fred):
+
+    # verificar se sou borda ou backbone
+    if souDominioBorda(fred.ip_ver, fred.ip_src, fred.ip_dst):
+
+        # tem fred -> criar regras qos para borda -> criar blockchain se nao existir (rotina blockchain)
+        if create_qos_rules({}): # modo borda
+            rotina_blockchain() # cria se nao existe, preenche os campos do fred
 
     else:
-        if fred_icmp != None:
-            create_qos_rules({}) # modo borda
+        create_qos_rules({}) # modo borda
 
-    return
+    # salvar ou atualizar fred no dicionario
+    salvar_fred(fred)
+    return 
 
-def tratar_icmp_rejeicao(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst):
-    return
 
 def handle_icmps(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
     
-    tipo = -1
+    # verificar o conteudo do icmp
     fred_icmp = None
     monitoramento_icmp = None
+
+    if "FRED" in pkt_icmpv6.data:
+        fred_icmp = fp_fred.fromJsonToFred(json.loads(pkt_icmpv6.data))
+        
+    if "Monitoring" in pkt_icmpv6.data:
+        flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmpv6.data))   
+
     # verificar o tipo do icmp
     if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_QUERY:
-        tipo = 1 # anuncio (fred ou dados monitoramento)
+        tratador_icmp_fred(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
+        tratador_icmp_flow_monitoring(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
 
     elif pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_REPLY:
-        tipo = 2 # rejeicao (fred)
-
-    # verificar o conteudo do icmp
-    fred_icmp = tratador_icmp_fred(pkt_icmpv6, in_switch_id)
-    monitoramento_icmp = tratador_icmp_flow_monitoring(pkt_icmpv6, in_switch_id)
-
-    if tipo == 1:
-        tratar_icmp_anuncio(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
-    else:
         tratar_icmp_rejeicao(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
-    # se tiver fred -> rotina tratamento fred
 
-    # se tiver monitoramento -> rotina tratamento monitoramento
     return 
 
 def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):

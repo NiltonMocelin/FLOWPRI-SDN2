@@ -18,15 +18,15 @@ class Register:
 
 class FlowMonitoring:
 
-    def __init__(self, ip_ver, ip_src, ip_dst, port_src, port_dst, proto, qtd_pacotes, peer_monitor, lista_pacotes:list[Register]):
+    def __init__(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qtd_pacotes, monitor_name, lista_pacotes:list[Register]):
         self.ip_ver=ip_ver
         self.ip_src=ip_src
         self.ip_dst=ip_dst
-        self.port_src=port_src
-        self.port_dst=port_dst
+        self.src_port=src_port
+        self.dst_port=dst_port
         self.proto=proto
         self.qtd_pacotes = qtd_pacotes
-        self.peer_monitor = peer_monitor
+        self.monitor_name = monitor_name
         self.lista_pacotes = lista_pacotes
 
     def addRegister(self, register:Register):
@@ -35,7 +35,7 @@ class FlowMonitoring:
 
     def toString(self):
 
-        retorno = '{ "Monitoring": { "ip_src": "%s", "ip_dst": "%s", "src_port": "%s", "dst_port": "%s", "proto": "%s", "qtd_pacotes": %d, "peer_monitor": "%s", "lista_pacotes": ['
+        retorno = '{ "Monitoring": { "ip_src": "%s", "ip_dst": "%s", "src_port": "%s", "dst_port": "%s", "proto": "%s", "qtd_pacotes": %d, "monitor_name": "%s", "lista_pacotes": [' % (self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto,self.qtd_pacotes,self.monitor_name)
 
         lista_pacotes = ""
         for l in self.lista_pacotes:
@@ -56,7 +56,7 @@ def loadFlowMonitoringFromJson(monitoring_json):
         src_port = _monitoring["src_port"]
         dst_port = _monitoring["dst_port"]
         qtd_pacotes = _monitoring["qtd_pacotes"]
-        peer_monitor = _monitoring["peer_monitor"]
+        monitor_name = _monitoring["monitor_name"]
         lista_pacotes = _monitoring["lista_pacotes"]
 
         lista_register = []
@@ -66,7 +66,7 @@ def loadFlowMonitoringFromJson(monitoring_json):
     except:
         raise SyntaxError("Error loading Monitoring from JSON !")
 
-    return FlowMonitoring(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qtd_pacotes, peer_monitor, lista_register)
+    return FlowMonitoring(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qtd_pacotes, monitor_name, lista_register)
 
 
 #{"Monitoring":{...}}

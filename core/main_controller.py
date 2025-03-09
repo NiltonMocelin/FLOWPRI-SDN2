@@ -57,7 +57,7 @@ import logging
 import sys, os
 
 #codigos das acoes
-from fp_constants import REMOVER, MARCACAO_MONITORAMENTO
+from fp_constants import REMOVER, MARCACAO_MONITORAMENTO, IPV4_CODE, IPV6_CODE, TCP, UDP
 
 
 from fp_constants import switches, IPCc,IPCv4, IPCv6, CONTROLLER_INTERFACE, MACC, controller_singleton
@@ -73,10 +73,10 @@ from fp_acao import Acao
 
 from fp_regra import Regra
 
-from fp_openflow_rules import add_classification_table, add_default_rule
+from fp_openflow_rules import add_classification_table, add_default_rule, injetarPacote
 
 from fp_utils import get_ipv4_header, get_eth_header, get_ipv6_header, get_tcp_header, get_udp_header, getSwitchByName, get_rota, ip_meu_dominio, create_be_rules, create_qos_rules
-from fp_utils import current_milli_time
+from fp_utils import current_milli_time, salvar_fred, remove_qos_rules, update_regra_monitoramento
 
 
 # print('importando fp_topo_discovery')
@@ -173,7 +173,7 @@ class Dinamico(app_manager.RyuApp):
     #Quando um fluxo eh removido ou expirou, chama essa funcao. OBJ --> atualizar quais fluxos nao estao mais utilizando banda e remover do switch     
     @set_ev_cls(ofp_event.EventOFPFlowRemoved, MAIN_DISPATCHER)
     def flow_removed_handler(self, ev):
-        """verificar se é uma regra qos monitoring"""
+        """verificar se é uma regra qos monitoring == quando a regra do primeiro switch (borda emissora) da rota espirar"""
 
         msg = ev.msg
         dp = msg.datapath
@@ -192,7 +192,7 @@ class Dinamico(app_manager.RyuApp):
 
         ip_src = None
         ip_dst = None
-        tos = None
+        qos_mark = None
         src_port = None
         dst_port = None
         proto = None
@@ -200,41 +200,30 @@ class Dinamico(app_manager.RyuApp):
         if 'ipv4_dst' in msg.match:
             ip_dst = msg.match['ipv4_dst']
             ip_src = msg.match['ipv4_src']
-            ip_ver = 'ipv4'
+            ip_ver = IPV4_CODE
         elif 'ipv6_dst' in msg.match:
             ip_dst = msg.match['ipv6_dst']
             ip_src = msg.match['ipv6_src']
-            ip_ver = 'ipv6'
-
+            ip_ver = IPV4_CODE
         if 'ip_dscp' in msg.match:
-            tos= msg.match['ip_dscp']
+            qos_mark= msg.match['ip_dscp']
+        if 'ipv6_flabel' in msg.match:
+            qos_mark= msg.match['ipv6_flabel']
         if 'tcp_src' in msg.match:
             src_port = msg.match['tcp_src']
             dst_port = msg.match['tcp_dst']
-            proto='tcp'
+            proto=TCP
         if 'udp_src' in msg.match:
             src_port = msg.match['udp_src']
             dst_port = msg.match['udp_dst']
-            proto='udp'
+            proto=UDP
        
-       
-        meter_id = int(ip_src.split(".")[3] + ip_dst.split(".")[3])
-        #print("[event-flowRemove] ipv4_dst:%s, ipv4_src:%s, ip_dscp:%s\n" % (ip_dst,ip_src,tos))
-        print("[%s] flow_removed - removendo regra ip_src: %s, ip_dst: %s, dscp: %d, meter: %d \n" % (datetime.datetime.now().time(), ip_src, ip_dst, int(tos), meter_id))
-
         #por agora, tanto as regras de ida quanto as de volta sao marcadas para notificar com o evento
         #atualizar no switch que gerou o evento
+        if update_regra_monitoramento({}):
+            return
 
-        switch = getSwitchByName(str(dp.id))
-        if switch != None:
-            # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
-            porta_nome = switch.getPortaSaida(ip_dst)
-
-            #versao mais elegante
-            Acao(switch_obj = switch,porta = int(porta_nome),codigo = REMOVER, regra= Regra(ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst,src_port=src_port, dst_port=dst_port, proto=proto, porta_saida = int(porta_nome), tos=tos, banda=None, prioridade=None, classe=None, emprestando=None)).executar()
-
-            # switch.getPorta(porta_nome).delRegra(ip_src, ip_dst, tos)
-            # switch.delRegraM(meter_id)
+        remove_qos_rules({})
 
         return 0
 
@@ -374,7 +363,11 @@ class Dinamico(app_manager.RyuApp):
                 marcacao_pkt = pkt_ipv6.flow_label
 
             if marcacao_pkt == MARCACAO_MONITORAMENTO:
-                monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
+                if monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt): #quando o monitoramento estiver completo
+                    # mudar a regra de monitoramento do primerio switch da rota para nao enviar pacotes ao controlador  -> essa regra tem um tempo hardtimeout menor 2s e uma flag, da proxima vez que expirar deve voltar a monitorar
+                    update_regra_monitoramento(ip_ver,ip_src,ip_dst,src_port,dst_port,proto)
+                    pass
+                return
 
             fred = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
 
@@ -382,6 +375,7 @@ class Dinamico(app_manager.RyuApp):
             print("criar regras qos, criar fred, preencher e enviar icmpv6.")
 
             if fred["label"] != "best-effort":
+                salvar_fred(fred)
                 if create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, dpid):
                     print("Regras criadas")
                     return
@@ -394,15 +388,13 @@ class Dinamico(app_manager.RyuApp):
         # switch_ultimo = None
         # out_port = switch_ultimo.getPortaSaida(ip_dst) # !!!!
         fila = None
-        este_switch.injetarPacote(este_switch.datapath, fila, out_port, msg)
+        injetarPacote(este_switch.datapath, fila, out_port, msg)
 
         # logging.info('[Packet_In] pacote sem match - fim - tempo: %d\n' % (round(time.monotonic()*1000) - tempo_i))
         print("[%s] pkt_in fim \n" % (datetime.datetime.now().time()))
 
         print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
         return	 
-                    
-
 
 def setup():
 

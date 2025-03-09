@@ -132,8 +132,8 @@ def _send_packet(datapath, port, pkt):
     
 
 #Injetar pacote no controlador com instrucoes - serve para injetar pacotes que foram encaminhado por packet_in (se nao eles sao perdidos)
-def injetarPacote(switch:Switch, fila:int, out_port:int, packet, buffer_id=OFP_NO_BUFFER):
-    datapath = switch.datapath
+def injetarPacote(datapath, fila:int, out_port:int, packet, buffer_id=OFP_NO_BUFFER):
+    datapath = datapath
     actions = [datapath.ofproto_parser.OFPActionSetQueue(fila), datapath.ofproto_parser.OFPActionOutput(out_port)] 
     out = datapath.ofproto_parser.OFPPacketOut(
         datapath=datapath,
