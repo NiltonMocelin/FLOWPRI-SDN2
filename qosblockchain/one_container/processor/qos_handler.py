@@ -22,7 +22,7 @@ from sawtooth_sdk.processor.exceptions import InvalidTransaction
 from sawtooth_sdk.processor.exceptions import InternalError
 
 from qos_payload import QoSPayload
-from qos_state import QOS_NAMESPACE, QoSState, Flow, fromJsonToFlow
+from qos_state import QOS_NAMESPACE, QoSState, FlowTransacao, fromJsonToFlow
 
 import json
 
@@ -58,7 +58,7 @@ class QoSTransactionHandler(TransactionHandler):
         print('flow_str: ', str(qos_payload.flow_str))
 
         flow_json = qos_payload.flow_str
-        flow:Flow = fromJsonToFlow(flow_json)
+        flow = fromJsonToFlow(flow_json)
 
         print("FLOW to string: ", flow.toString())
 
@@ -92,7 +92,7 @@ class QoSTransactionHandler(TransactionHandler):
         print("[Fim] transacao")
     
 
-def _display(flow:Flow):
+def _display(flow:FlowTransacao):
     # pylint: disable=logging-not-lazy
     LOGGER.debug(flow.toString())
     

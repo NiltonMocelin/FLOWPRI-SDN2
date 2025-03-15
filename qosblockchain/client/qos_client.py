@@ -94,14 +94,14 @@ class QoSClient:
 
     def show(self, flow_name, auth_user=None, auth_password=None):
         address = self._get_address(flow_name)
-        print('show 3')
+        # print('show 3')
         # data = "{\"action\":\"%s\", \"flow_name\":\"%s\", \"flow\":{}}" % ("show", flow_name)
         
         result = self._send_request(
             "state/{}".format(address),
             auth_user=auth_user,
             auth_password=auth_password)
-        print('show 4')
+        # print('show 4')
         try:
             return base64.b64decode(yaml.safe_load(result)["data"])
 

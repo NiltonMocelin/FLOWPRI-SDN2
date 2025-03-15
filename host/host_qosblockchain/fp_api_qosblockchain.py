@@ -99,4 +99,4 @@ def criar_blockchain_api(nome_blockchain, PEERS_IP:list=None, chaves_peers:list 
     chave_publica, chave_privada = criar_chave_sawadm()
 
     criar_blockchain(nome_blockchain, get_meu_ip(), chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
-    return True
+    return NETWORK_PORT

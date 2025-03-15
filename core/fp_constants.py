@@ -40,8 +40,6 @@ IPCv4 = None
 IPCv6 = None 
 IPCc = None
 
-
-
 BAIXA_PRIO=3
 MEDIA_PRIO=2
 ALTA_PRIO=1
@@ -83,7 +81,7 @@ SC_NONREAL     = 2
 SC_BEST_EFFORT = 3
 SC_CONTROL     = 4
 
-MARCACAO_MONITORAMENTO = 252 # 11111100 -- primeiros 6 dscp, ultimos 2  -> 6+2 = tos
+MARCACAO_MONITORAMENTO = 0x7 # 7 decimal 
 QTD_MONITORAMENTO      = 20
 
 ANY_PORT= -1

@@ -34,7 +34,7 @@ class Fred:
         # uma no da rota = {"ordem":"1", "nome_peer":"", "chave_publica":"", "nro_saltos(qtd_switches_rota)":""}
         
     def toString(self):
-
+        # ARRUMAR ISSO !!!
         str_AS_src_ip_range = ''
         str_AS_dst_ip_range = ''
         str_lista_peers = ''

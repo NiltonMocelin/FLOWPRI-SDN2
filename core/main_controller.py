@@ -8,7 +8,7 @@ import sys, os
 
 from netifaces import AF_INET, ifaddresses, interfaces
 
-import rest_topology, ofctl_rest, ws_topology
+# import rest_topology, ofctl_rest, ws_topology
 
 # setting path for importation
 # sys.path.append('../qosblockchain')

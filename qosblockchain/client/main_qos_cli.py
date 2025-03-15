@@ -266,6 +266,7 @@ def do_list(args):
 
     if flows is not None:
         print(flows)
+        return flows
     else:
         raise QoSException("Could not retrieve flow listing.")
     
@@ -277,13 +278,14 @@ def do_show(args):
 
     client = QoSClient(base_url=url, keyfile=None)
 
-    print('show 1')
+    # print('show 1')
     
     data = client.show(flow_name, auth_user=auth_user, auth_password=auth_password)
     
-    print('show 2')
+    # print('show 2')
     if data is not None:
-        print(data)
+        # print(data)
+        return data
     else:
         raise QoSException("Flow not found: {}".format(flow_name))
 

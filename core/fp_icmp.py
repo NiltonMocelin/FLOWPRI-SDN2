@@ -16,7 +16,7 @@ from fp_utils import getSwitchByName
 
 from fp_utils import souDominioBorda, check_domain_hosts
 
-from traffic_monitoring.fp_flow_monitoring import Register, FlowMonitoring, loadFlowMonitoringFromJson
+from traffic_monitoring.monitoring_utils import Register, FlowMonitoring, loadFlowMonitoringFromJson
 
 from traffic_monitoring.fp_monitoring import fazer_calculo_qos
 
@@ -36,7 +36,7 @@ def rejeitar_fred(fred, in_switch_id):
         getSwitchByName(switches_rota[-1].switch_name)
         remove_qos_rules(fred)
 
-    send_icmpv6()
+    send_icmpv6(getSwitchByName(switches_rota[-1].switch_name).datapath, fred.mac_src, )
 
     return
 

@@ -1,7 +1,7 @@
 import sys
 import time
 from core.fp_constants import QTD_MONITORAMENTO
-from fp_flow_monitoring import FlowMonitoring
+from traffic_monitoring.monitoring_utils_ import FlowMonitoring
 
 # 5-tupla: [{"timestamp": "timestamp", "tamanho": "tamanho"}]
 fluxos_monitorados = {}

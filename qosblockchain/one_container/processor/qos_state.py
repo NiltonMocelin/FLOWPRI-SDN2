@@ -13,6 +13,10 @@
 # limitations under the License.
 # -----------------------------------------------------------------------------
 
+
+# DECIDINDO os valores e tipos de dados das transacoes -> depois ajustar para o controlador tbm
+
+
 import hashlib
 
 from sawtooth_sdk.processor.exceptions import InternalError
@@ -22,127 +26,59 @@ import json
 QOS_NAMESPACE = hashlib.sha512('qos'.encode("utf-8")).hexdigest()[0:6]
 
 
-# transacao = {
-#     'acao':'funcao',
-#     'flow':{flow}
-# }
-
-
 def _make_qos_address(name):
     return QOS_NAMESPACE + \
         hashlib.sha512(name.encode('utf-8')).hexdigest()[:64]
 
-# class EndPairQoS: ## IDEIA: apenas registrar QoS quando perceber mudança significativa de classe ou qos de um fluxo
-#     def __init__(self, endpair_name:str, ip_src:str):
-#         # interpretando o XO game (jogo da velha)
-#         # Isso representa o estado atual do fluxo, ou seja, o resultado das ações informadas nos blocos ( lá cada transação era um movimento e aqui se montava o tabuleiro, o estado do jogo e os jogadores)
-#         self.endpair_name:str = endpair_name
-#         self.ip_src:str = ip_src
-#         self.ip_dst:str = ''
-#         self.ip_ver:str = ''
-
-#         self.flows: list[Flow] = [] # lista de fluxos de um par
-
-#     def addFlow(self, flow):
-#         self.flows.append(flow)
-#         return True
-    
-#     def remFlow(self, name):
-#         for f in self.flows:
-#             if f.name == name:
-#                 self.flows.remove(f)
-#                 return True
-#         return False
-    
-#     def toString(self):
-
-#         #####        
-#         flows_json_str = ""
-#         for flow in self.flows:
-#             flows_json_str+= ',' + flow.toString()
-#         flows_json_str = flows_json_str.replace(',','',1)# tem outros jeitos, depois mudar
-#         #####
-
-#         json_result = "{\"endpair_name\":\"%s\",\
-#             \"ip_ver\":\"%s\",\
-#             \"ip_src\":\"%s\",\
-#             \"ip_dst\":\"%s\",\
-#             \"flows\":[%s]\
-#         }" % (self.endpair_name, self.ip_ver, self.ip_src, self.ip_dst, flows_json_str)
-
-#         return json_result
-    
-#     def fromJSON(self, endpair_qos_json):
-#         return
-    
-
-class Flow:
-    # dissecar o FRED aqui
-    def __init__(self, name:str, src_port:str, dst_port:str, proto:str, duration:list, qos:list, state:str, freds:list):
-        self.name:str = name
-        self.src_port:str = src_port
-        self.dst_port:str = dst_port
-        self.proto:str= proto
-        # self.as_duration:list[:str] = ['AS1001:50s'] # duração que cada AS participou do fluxo
-        # self.as_list:list[:str] = ['AS1001', 'AS1002'] #text/public key ...
-        self.duration:list[:str] = duration
-        self.qoss: list[QoS] = qos # class QoS # lista de registros de qos para um fluxo
-        self.state:str = state #Going, Stoped
-        self.freds:list[Fred] = freds #caso existam freds diferentes, serão armazenados aqui
-
-    def toString(self):
-
-        ####
-        freds_json_str = ""
-        for fred in self.freds:
-            freds_json_str+= ',' + fred.toString()
-        freds_json_str= freds_json_str.replace(',','',1)# tem outros jeitos, depois mudar
-        ####
-
-        ####
-        qos_json_str = ""
-        for qos in self.qoss:
-            qos_json_str+= ',' + qos.toString()
-        qos_json_str = qos_json_str.replace(',','',1)# tem outros jeitos, depois mudar
-        ####
-
-        flow_json = "{\"name\":\"%s\",\
-            \"state\":\"%s\",\
-            \"ip_src\":\"\",\
-            \"ip_dst\":\"\",\
-            \"src_port\":\"%s\",\
-            \"dst_port\":\"%s\",\
-            \"proto\":\"%s\",\
-            \"qos\":[%s],\
-            \"freds\":[%s]}" % (self.name, self.state, self.src_port, self.dst_port, self.proto, qos_json_str, freds_json_str)
-        
-        return flow_json
-    
-
-# organizar isso depois, pois o fred já possui muitas das informacoes do Flow (menos a parte das métricas de QoS)
-class Fred:
-    def __init__(self, nao_sei:str):
-        self.nao_sei:str = nao_sei
-    
-    def toString(self):
-        fred_json = "{\
-        \"nao_sei\":\"%s\"}" % (self.nao_sei)
-
-        return fred_json
-
-class QoS:
+class QoSRegister:
     #medida de QoS
-    def __init__(self, bandwidth:str):
-        self.node:str = 'a' #nó que calculou
-        self.bandwidth:str = bandwidth
+    def __init__(self, nodename:str, route_nodes:list[str], blockchain_nodes:list[str], state:int, service_label:int, application_label:int, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):  
+        #fred data
+        self.nodename:str = nodename #nó que calculou
+        self.route_nodes:list[str] = route_nodes
+        self.blockchain_nodes:list[str] = blockchain_nodes
+        self.state:int = state
+        self.service_label:str = service_label
+        self.application_label:str = application_label
+        self.req_bandwidth:int = req_bandwidth
+        self.req_delay:int = req_delay
+        self.req_loss:int = req_loss
+        self.req_jitter:int = req_jitter
+        # qosreg
+        self.bandwidth:int = bandwidth
+        self.delay:int = delay
+        self.loss:int = loss
+        self.jitter:int = jitter
 
     def toString(self):
-        qos_json = "{\
-        \"bandwidth\":\"%s\"\
-        \"fred_id\":\"1\" \
-        }" % (self.bandwidth)
+        qos_json = {"nodename":self.nodename, 
+        "route_nodes":self.route_nodes, 
+        "blockchain_nodes":self.blockchain_nodes, 
+        "state":self.state, 
+        "service_label":self.service_label, 
+        "application_label":self.application_label, 
+        "req_bandwidth":self.req_bandwidth, 
+        "req_delay":self.req_delay, 
+        "req_loss":self.req_loss, 
+        "req_jitter":self.req_jitter, 
+        "bandwidth":self.bandwidth, 
+        "delay":self.delay, 
+        "loss":self.loss,  
+        "jitter": self.jitter}
 
-        return qos_json
+        return json.dumps(qos_json)
+
+class FlowTransacao:
+    # dissecar o FRED aqui
+    def __init__(self, ip_src, ip_dst, ip_ver, src_port:str, dst_port:str, proto:str, qosregisters:list[QoSRegister]):
+        self.name:str = str(ip_ver) +'_'+ str(proto)+ '_'+  ip_src+'_'+ip_dst +'_'+ str(src_port) +'_'+str(dst_port)
+        self.qosregisters:list[QoSRegister] = qosregisters # class QoS # lista de registros de qos para um fluxo
+
+    def toString(self):
+        flow_json = {"name": self.name, "qosregisters":[qosreg.toString() for qosreg in self.qosregisters]}
+        return json.dumps(flow_json)
+    
+    
 class QoSState:
 
     TIMEOUT = 3
@@ -158,13 +94,7 @@ class QoSState:
         self._context = context
         self._address_cache = {}
 
-    # def flow_start(self, endpair_name, flow:Flow):
-    #     return
-    
-    # def flow_end(self, endpair_name, flow:Flow):
-    #     return
-    
-    def reg_qos(self, flow_name, flow:Flow):
+    def reg_qos(self, flow_name, flow:FlowTransacao):
         """Register (store) qos of a flow in the validator state.
 
         Args:
@@ -176,31 +106,19 @@ class QoSState:
         flow_recuperado = self._load_qos(flow_name=flow_name)
         print('flow_recuperado: flowname:', flow_name, ' --> flow:', flow_recuperado)
 
-        flow_existente:Flow = None 
+        flow_existente:FlowTransacao = None 
         
         if flow_recuperado!=None:
             flow_existente = fromJsonToFlow(flow_recuperado)
 
         # se ja existe, entao, adicionar as informacoes do fluxo no existente (eh um update de estado)
         if flow_existente != None:
-            
-            #adicionar os freds calculados --> deve conter apenas um fred na transação recebida
-            for fred in flow.freds:
-                flow_existente.freds.append(fred)
 
             #adicionar os qoss calculados --> deve conter apenas um calculo na transação recebida
-            for qos in flow.qoss:
-                flow_existente.freds.append(qos)
-
-            #atualizar o estado do fluxo
-            flow_existente.state = flow.state
+            for qos in flow.qosregisters:
+                flow_existente.qosregisters.append(qos)
         else:
             flow_existente = flow
-
-
-        # pegar a lista de qos do fluxo deste par e adicionar o novo
-        # a fazer !!
-        # endpair_flows[flow.name] = flow #(string)
 
         self._store_qos(flow_name=flow_name, flow=flow_existente)
         return
@@ -316,7 +234,7 @@ class QoSState:
 
         return flow
 
-    def _serialize(self, flow:Flow):
+    def _serialize(self, flow:FlowTransacao):
         """Takes a dict of game objects and serializes them into bytes.
 
         Args:
@@ -333,8 +251,13 @@ class QoSState:
 
 
 
-def fromJsonToFlow(json)->Flow:
-    f = Flow(name=json['name'], src_port= json['src_port'], dst_port=json['dst_port'], proto=json['proto'], state=json['state'], duration=[], qos=json['qos'], freds=json['freds'])
+def fromJsonToFlow(json)->FlowTransacao:
+    lista_flowfields = json['name'].split("_")
+    ip_src = lista_flowfields[0]
+    ip_dst = lista_flowfields[1]
+    ip_ver = lista_flowfields[2]
+    proto = lista_flowfields[3]
+    src_port = lista_flowfields[4]
+    dst_port = lista_flowfields[5]
+    f = FlowTransacao(ip_src=ip_src, ip_dst=ip_dst, ip_ver=ip_ver, src_port=src_port, dst_port=dst_port, proto=proto, qosregister=json['qosregisters'])
     return f
-
-#flow = """{"name":"192.168.0.0-192.168.0.1-5000-5000-tcp","state":"Going","src_port":"5000","dst_port":"5000","proto":"tcp","qos":[],"freds":[]}"""
