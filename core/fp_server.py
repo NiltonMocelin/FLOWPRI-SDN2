@@ -4,7 +4,7 @@ import socket
 from fp_constants import IPCc, PORTAC_C, MACC, PORTAC_H, PORTAC_X, CRIAR, CPT
 from fp_constants import freds
 
-from fp_switch import SwitchOVS
+from fp_switch import Switch
 
 # try:
 # from main_controller import delContratoERegras, tratador_regras, send_icmpv4, tratador_addSwitch, tratador_rotas

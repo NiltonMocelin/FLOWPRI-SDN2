@@ -1,4 +1,0 @@
-sudo apt install gcc
-sudo apt-get install libpcap-dev
-pip install python-libpcap
-pip install scapy

@@ -63,7 +63,7 @@ from fp_constants import REMOVER, MARCACAO_MONITORAMENTO, IPV4_CODE, IPV6_CODE, 
 from fp_constants import switches, IPCc,IPCv4, IPCv6, CONTROLLER_INTERFACE, MACC, controller_singleton
 
 # try:
-from fp_switch import SwitchOVS
+from fp_switch import Switch
 # except ImportError:
 #     print('Erro de importacao da classe SwitchOVS')
 
@@ -127,7 +127,7 @@ class Dinamico(app_manager.RyuApp):
 
         print("[%s] switch_features - setup de S%d \n" % (datetime.datetime.now().time(), datapath.id))
 
-        switch = SwitchOVS(datapath,str(datapath.id), self)
+        switch = Switch(datapath,str(datapath.id), self)
 
         switches.append(switch) 
        

@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="7">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="8">
   <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
     <mxGraphModel dx="1877" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -96,7 +96,7 @@
           <mxGeometry x="1090" y="300" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-14" value="Traffic monitoring: Hosts e controlador" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="240" y="330" width="120" height="60" as="geometry" />
+          <mxGeometry x="100" y="285" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="560" y="355" width="120" height="100" as="geometry" />
@@ -148,6 +148,20 @@
         </mxCell>
         <mxCell id="MYrXt6xUmm87GSyCe_8V-1" value="O host noh da blockchain de origem, deve ser informado pelo controlador de origem, no FRED, como sendo o primeiro par, que esta sem chave publica -&amp;gt; para que o host noh da blockcahin de destino, saiba para quem encaminhar o FRED preenchido, para criar a blockchain" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="320" y="440" width="225" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9lIUxT6uJN9yt7C3OYEU-1" target="-aLrSAhBZ-N-OfGElPO0-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-1" value="Host convencional monitoring [ok]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="130" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-3" value="Management host fred(blockchain) e monitoring(transacao)[OK]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="130" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="9lIUxT6uJN9yt7C3OYEU-3" target="-aLrSAhBZ-N-OfGElPO0-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="250" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
@@ -481,6 +495,17 @@
         </mxCell>
         <mxCell id="dgaTL6A2bLWDMHLWS8d9-20" value="A transação possui muitos campos que não estão presentes no monitoramento, por isso, precisa manter uma lista de freds e obter deles" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="1145" y="1630" width="290" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="rTPhyLAhTh2cVcwFYtZS" name="Diagramas_comunicacao">
+    <mxGraphModel dx="1050" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wRJQR5XvGe3gycmCcVVx-1" value="Diagramas explicando a comunicacao host-host: todos os processos envolvidos durante o envio de pacotes de um fluxo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="290" width="120" height="140" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

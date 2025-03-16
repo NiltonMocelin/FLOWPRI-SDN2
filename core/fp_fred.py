@@ -34,53 +34,19 @@ class Fred:
         # uma no da rota = {"ordem":"1", "nome_peer":"", "chave_publica":"", "nro_saltos(qtd_switches_rota)":""}
         
     def toString(self):
-        # ARRUMAR ISSO !!!
-        str_AS_src_ip_range = ''
-        str_AS_dst_ip_range = ''
-        str_lista_peers = ''
-        str_lista_rota = ''
+        freed = {"FRED": {"ip_ver":self.ip_ver, "proto":self.proto, "ip_src":self.ip_src, "ip_dst":self.ip_dst, "src_port":self.src_port, "dst_port":self.dst_port,
+                          "mac_src":self.mac_src, "mac_dst":self.mac_dst, "priority":self.prioridade, "class":self.classe, "bandwidth":self.bandiwdth,
+                          "loss":self.loss, "delay":self.delay, "jitter":self.jitter, "label":self.label, "blockchain_name":self.blockchain_name,
+                          "AS_src_ip_range":self.AS_src_ip_range, "AS_dst_ip_range":self.AS_dst_ip_range, "ip_genesis":self.ip_genesis,
+                          "list_peers":self.lista_peers, "list_route":self.lista_rota, "code":self.code}}
 
-        for s in self.AS_src_ip_range:
-            str_AS_src_ip_range+=',\"%s\"' % (s)
+        return json.dumps(freed)
 
-        for s in self.AS_dst_ip_range:
-            str_AS_dst_ip_range+=',\"%s\"' % (s)
-        
-        for s in self.lista_peers:
-            str_lista_peers+=',\"%s\"' % (json.dumps(s))
-        
-        for s in self.lista_rota:
-            str_lista_rota+=',\"%s\"' % (json.dumps(s))
-        
-        str_AS_src_ip_range = str_AS_src_ip_range.replace(',','',1)
-        str_AS_dst_ip_range = str_AS_dst_ip_range.replace(',','',1)
-        str_lista_peers = str_lista_peers.replace(',','',1)
-        str_lista_rota = str_lista_rota.replace(',','',1)
-
-        return "{\"FRED\":{\"ip_ver\":\"%s\",\
-    \"proto\":\"%s\",\
-    \"ip_src\":\"%s\",\
-    \"ip_dst\":\"%s\",\
-    \"src_port\":\"%s\",\
-    \"dst_port\":\"%s\",\
-    \"mac_src\":\"%s\",\
-    \"mac_dst\":\"%s\",\
-    \"prioridade\":\"%s\",\
-    \"classe\":\"%s\",\
-    \"bandiwdth\":\"%s\",\
-    \"loss\":\"%s\",\
-    \"delay\":\"%s\",\
-    \"jitter\":\"%s\",\
-    \"label\":\"%s\",\
-    \"blockchain_name\":\"%s\",\
-    \"AS_src_ip_range\":[%s],\
-    \"AS_dst_ip_range\":[%s],\
-    \"ip_genesis\":\"%s\",\
-    \"lista_peers\":[%s],\
-    \"lista_rota\":[%s]\
-    } }" % (self.ip_ver,self.proto,self.ip_src,self.ip_dst,self.src_port,self.dst_port,self.mac_src,self.mac_dst,
-                self.prioridade,self.classe,self.bandiwdth,self.loss,self.delay,self.jitter,self.label,self.blockchain_name,
-                str_AS_src_ip_range,str_AS_dst_ip_range,self.ip_genesis,str_lista_peers,str_lista_rota)    
+    def getPeerIPs(self)->list:
+        return [chave['chave_publica'] for chave in self.lista_peers]
+    
+    def getPeersPKeys(self) -> list:
+        return [ip['ip_porta'] for ip in self.lista_peers]
 
 def fromJsonToFred(fred_json):
     """{"FRED":{
@@ -95,8 +61,8 @@ def fromJsonToFred(fred_json):
 
     "code":"",
     
-    "prioridade":"",
-    "classe":"",
+    "priority":"",
+    "class":"",
     "bandiwdth":"",
     "loss":"",
     "delay":"",
@@ -109,8 +75,8 @@ def fromJsonToFred(fred_json):
     "AS_src_ip_range":[],
     "AS_dst_ip_range":[],
     "ip_genesis":"",
-    "lista_peers":[],
-    "lista_rota":[]
+    "list_peers":[],
+    "list_route":[]
     }}"""
 
     try:
@@ -126,8 +92,8 @@ def fromJsonToFred(fred_json):
 
         code = _fred["code"]
 
-        prioridade = _fred["prioridade"]
-        classe = _fred["classe"]
+        prioridade = _fred["priority"]
+        classe = _fred["class"]
         bandiwdth = _fred["bandiwdth"]
         loss = _fred["loss"]
         delay = _fred["delay"]
@@ -138,14 +104,26 @@ def fromJsonToFred(fred_json):
         AS_src_ip_range = _fred["AS_src_ip_range"]
         AS_dst_ip_range = _fred["AS_dst_ip_range"]
         ip_genesis = _fred["ip_genesis"]
-        lista_peers = _fred["lista_peers"]
-        lista_rota = _fred["lista_rota"]
+        lista_peers = _fred["list_peers"]
+        lista_rota = _fred["list_route"]
     except:
         raise SyntaxError("Error loading FRED from JSON !")
 
-    return Fred(blockchain_name, AS_src_ip_range, AS_dst_ip_range, ip_ver, proto, ip_src, ip_dst, src_port, dst_port, mac_src, 
+    return Fred(code, blockchain_name, AS_src_ip_range, AS_dst_ip_range, ip_ver, proto, ip_src, ip_dst, src_port, dst_port, mac_src, 
                  mac_dst, prioridade,classe,bandiwdth, loss, delay,jitter, label, ip_genesis, lista_peers, lista_rota)
 
+
+
+class FredManager:
+    def __init__(self):
+        self.dicionario_freds = {}
+
+    def get_fred(self, name:str) -> Fred:
+        return self.dicionario_freds.get(name, None)
+
+    def save_fred(self, name:str, fred:Fred) -> bool:
+        self.dicionario_freds[name] = fred
+        return True
 
 
 #"{ "FRED" : {....}}"
