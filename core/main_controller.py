@@ -57,10 +57,10 @@ import logging
 import sys, os
 
 #codigos das acoes
-from fp_constants import REMOVER, MARCACAO_MONITORAMENTO, IPV4_CODE, IPV6_CODE, TCP, UDP
+from fp_constants import REMOVER, MARCACAO_MONITORAMENTO, IPV4_CODE, IPV6_CODE, TCP, UDP, IP_MANAGEMENT_HOST
 
 
-from fp_constants import switches, IPCc,IPCv4, IPCv6, CONTROLLER_INTERFACE, MACC, controller_singleton
+from fp_constants import IPCc,IPCv4, IPCv6, CONTROLLER_INTERFACE, MACC, SC_BEST_EFFORT, SC_CONTROL,SC_NONREAL,SC_REAL
 
 # try:
 from fp_switch import Switch
@@ -73,10 +73,10 @@ from fp_acao import Acao
 
 from fp_regra import Regra
 
-from fp_openflow_rules import add_classification_table, add_default_rule, injetarPacote
+from fp_openflow_rules import add_default_rule, injetarPacote, addRegraMonitoring, desligar_regra_monitoramento
 
 from fp_utils import get_ipv4_header, get_eth_header, get_ipv6_header, get_tcp_header, get_udp_header, getSwitchByName, get_rota, ip_meu_dominio, create_be_rules, create_qos_rules
-from fp_utils import current_milli_time, salvar_fred, remove_qos_rules, update_regra_monitoramento
+from fp_utils import current_milli_time, get_ips_meu_dominio, remove_qos_rules
 
 
 # print('importando fp_topo_discovery')
@@ -96,32 +96,134 @@ from traffic_classification.classificator import classificar_pacote
 
 from traffic_monitoring.fp_monitoring import monitorar_pacote
 
-class Dinamico(app_manager.RyuApp):
+from fp_api_qosblockchain import BlockchainManager
+
+from fp_fred import Fred, FredManager
+
+from fp_rota import RotaManager
+
+def get_time_monotonic():
+    return round(time.monotonic()*1000)
+
+class FLOWPRI2(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
+
+    controller_singleton = None
+
+    #self.mac_to_port = {} arrumar esses dois, tirar do controlador e trzer para ca
+    #self.ip_to_mac = {}
+
+    #vetor com os enderecos ip dos controladores conhecidos (enviaram icmps)
+
+     #switches administrados pelo controlador
+    # rotas_ipv4 = {} # ip_dst/prefix:mask :list[switch_name]
+    # rotas_ipv6 = {} # ip_dst/prefix:mask :list[switch_name]
+
+    @staticmethod
+    def getControllerInstance():
+        return FLOWPRI2.controller_singleton
 
     def __init__(self, *args, **kwargs):
         print("CONTROLADOR - \n Init Start\n" )# % (IPC))
         setup()
         print("done")
 
-        super(Dinamico,self).__init__(*args,**kwargs)
+        super(FLOWPRI2,self).__init__(*args,**kwargs)
         self.mac_to_port = {}
         self.ip_to_mac = {}
 
-        # #contratos.append(contrato)
-        # _websocket_snd(pc_status())
+        # onde as principais coisas são armazenadas
+        self.fredmanager = FredManager()
+        self.qosblockchainmanager = BlockchainManager()
+        self.rotamanager = RotaManager()
 
-        global controller_singleton
-        controller_singleton = self
+        self.arpList = {}
 
-        # app_manager.AppManager.run_apps(['rest_topology', 'ofctl_rest', 'ws_topology'])
-    
+        self.controladores_conhecidos = []
+
+        self.switches = {}
+
+    def getSwitchByName(self, nome) -> Switch:
+        return self.switches.get(nome, None)
+
+    def remove_qos_rules(self,ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
+        
+        # comportamento borda = remover as regras de fluxos
+        rota_nodes = get_rota(ip_src, ip_dst)
+        # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
+        for rota_noh in rota_nodes:
+            switch = self.getSwitchByName(rota_noh.switch_name)
+            # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
+            porta_nome = switch.getPortaSaida(ip_dst)
+
+            switch.delRegra(ip_ver)
+
+            # comportamento backbone -> remover os freds que estão a mais tempo que o hardtimeout ! e reagrupar as regras que restaram
+        IDLE_TIMEOUT = 1
+        # se o fluxo foi removido por idle_timeout
+        if IDLE_TIMEOUT:
+            self.fredmanager.del_fred({})
+        # remover_freds_expirados() -> que ja sria necessário mesmo
+        self.fredmanager.remover_freds_expirados()
+        # verificar quais regras precisam ser recriadas (em caso de backbone) -> 
+
+        # reagrupar_regras_backbone() (em caso de backbone)
+
+        return
+
+    def create_qos_rules(self, ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, fred:dict, in_switch_id:int):
+
+        #flow qos
+        banda=fred["banda"]
+        prioridade=fred["prioridade"]
+        classe=fred["classe"]
+        flow_label = fred["label"]
+
+        # rota com os datapaths dos switches em ordem
+        switch_route = self.rotamanager.get_rota(ip_src, ip_dst)
+
+        if switch_route == None:
+            return False
+
+        lista_acoes:list[Acao] =[]
+
+        # for switch in switch_route:
+            #GBAM
+
+        return True
+
+    def create_be_rules(self, ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, in_switch_id:int):
+
+        # criar regras agrupadas ...
+
+        # rota com os datapaths dos switches em ordem
+        route_nohs = self.rotamanager.get_rota(ip_src, ip_dst)
+
+        if route_nohs == None:
+            # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
+            # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
+            # 
+            # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+            print("[creat_be]Error: no route found for this flow: s:%s d:%s" %(ip_src, ip_dst))
+            return False
+
+        for node in route_nohs:
+            switchh = self.getSwitchByName(node.switch_name)
+            porta_saida = node.out_port
+            switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+
+        return True
+
+    def saveSwitch(self, switch_name:int, switch:Switch):
+        self.switches[switch_name] = switch 
+        return
+
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
         print("Novo switch anunciado....\n")
 
         #aqui nao se obtem tantas informacoes sobre os switches como eu gostaria
-        tempo_i = round(time.monotonic()*1000)
+        tempo_i = get_time_monotonic()
     
         datapath = ev.msg.datapath
 
@@ -129,16 +231,13 @@ class Dinamico(app_manager.RyuApp):
 
         switch = Switch(datapath,str(datapath.id), self)
 
-        switches.append(switch) 
-       
-        #[CLASSIFICACAO] regra default -> enviar para tabela 2
-        add_classification_table(datapath)
+        self.saveSwitch(switch=switch, switch_name=datapath.id)
        
         add_default_rule(datapath)
 
         """adicionar regra para monitorar pacotes marcados com destino o meu domínio"""
 
-        logging.info('[switch_features] fim settage - tempo: %d\n' % (round(time.monotonic()*1000) - tempo_i))
+        logging.info('[switch_features] fim settage - tempo_decorrido: %d\n' % (get_time_monotonic() - tempo_i))
 
 # ### Descoberta de topologia
     #tratador eventos onde um switch se conecta
@@ -217,15 +316,73 @@ class Dinamico(app_manager.RyuApp):
             src_port = msg.match['udp_src']
             dst_port = msg.match['udp_dst']
             proto=UDP
-       
+
         #por agora, tanto as regras de ida quanto as de volta sao marcadas para notificar com o evento
         #atualizar no switch que gerou o evento
-        if update_regra_monitoramento({}):
-            return
+        
+        route_nodes = self.rotamanager.get_rota(ip_src, ip_dst)
 
-        remove_qos_rules({})
+        # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
+        if ip_meu_dominio(ip_src):
+            if dp.id == route_nodes[-1].switch_name:
+                addRegraMonitoring(self.getSwitchByName(dp.id), ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=route_nodes[-1].out_port, src_port=src_port, dst_port=dst_port, proto=proto)
+    
+        # OBS backbone tem outro comportamento !!!!!!
+        # nao é o ultimo switch da rota, entao remover mesmo
+        self.remove_qos_rules(ip_ver=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
 
         return 0
+
+    def tratamento_pacote_meu_dominio(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, pkt, qos_mark, dpid):
+                # se o pacote for marcado para monitoramento, apenas armazenaR timestamp, len(pkt)
+        # injetar o pacote ou contar 20 e mudar a regra -- OFPP_CONTROLLER
+        marcacao_pkt = 0
+
+        if ip_ver == 4:
+            marcacao_pkt = qos_mark >> 2 # (esse eh o ipv4.tos) dscp sao apenas os 8 primeiros bits, nao contando os 2 ultimos, porem tos conta todos
+        elif ip_ver == 6:
+            marcacao_pkt = qos_mark
+        else:
+            print("[tratamento_meu_dominoi] erro: tipo de pacote nao identificado")
+            return
+
+        if marcacao_pkt == MARCACAO_MONITORAMENTO:
+            if monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt): #quando o monitoramento estiver completo
+                # mudar a regra de monitoramento do primerio switch da rota para nao enviar pacotes ao controlador  -> essa regra tem um tempo hardtimeout menor 2s e uma flag, da proxima vez que expirar deve voltar a monitorar
+                desligar_regra_monitoramento(ip_ver,ip_src,ip_dst,src_port,dst_port,proto)
+                pass
+            # nao injetar esse pacote, pois ele ja esta sendo encaminhado, apenas copiado ao controlador tbm
+            return
+
+        flow_classificacao = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
+
+        # criar regras qos, criar fred, preencher e enviar icmpv6.
+        print("criar regras qos, criar fred, preencher e enviar icmpv6.")
+
+        if flow_classificacao.classe_label != "be":
+
+            # construir o FRED aqui 
+            fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
+                         mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=get_ips_meu_dominio(), 
+                         as_src_ip_range=[],label=flow_classificacao.application_label,
+                         ip_genesis=IP_MANAGEMENT_HOST, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
+                         prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
+
+            self.fredmanager.save_fred(fred.getName(), fred) #### AAQUII
+            if self.create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, dpid):
+                print("Regras criadas")
+
+                nohs_rota = self.rotamanager.get_rota(ip_src, ip_dst)
+
+                if nohs_rota == None:
+                    print("Erro: sem rota configurada para o pacote s:%s d:%s" % (ip_src, ip_dst))
+                if ip_ver == 4:
+                    send_icmpv4(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
+                else:
+                    send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
+        else:
+            self.create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label='be', flow_qos="be", in_switch_id=dpid)
+        return True
 
 #arrumando ate aqui
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
@@ -235,7 +392,7 @@ class Dinamico(app_manager.RyuApp):
         timpo_i_mili = current_milli_time()
         print("[packet_in] init ", timpo_i_mili)
 
-        tempo_i = round(time.monotonic()*1000)
+        tempo_i = get_time_monotonic()
         #####           obter todas as informacoes uteis do pacote          #######
         msg = ev.msg #representa a mensagem packet_in
         dp = msg.datapath #representa o switch
@@ -278,29 +435,32 @@ class Dinamico(app_manager.RyuApp):
 
         # campos udp = se tiver
         udp_src_port,udp_dst_port,udp_total_length,udp_csum = get_udp_header(pkt_udp)
+        qos_mark = None
 
         if ipv4_version:
-            ip_ver = 'ipv4'
+            ip_ver = 4
             ip_dst = ipv4_dst 
             ip_src = ipv4_src
+            qos_mark = pkt_ipv4.tos
         elif ipv6_version:
-            ip_ver = 'ipv6'
+            ip_ver = 6
             ip_dst = ipv6_dst 
             ip_src = ipv6_src
+            qos_mark = pkt_ipv6.flow_label
 
         if udp_src_port:
             src_port = udp_src_port
             dst_port = udp_dst_port
-            proto = 'udp'
+            proto = UDP
         else:
             src_port = tcp_src_port
             dst_port = tcp_dst_port
-            proto = 'tcp'
+            proto = TCP
 
-        print("[%s] pkt_in ip_src: %s; ip_dst: %s; src_port: %s; dst_port: %s; proto: %s\n" % (datetime.datetime.now().time(), ipv4_src, ip_dst, src_port, dst_port, proto))
+        print("[%s] pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (datetime.datetime.now().time(), ipv4_src, ip_dst, src_port, dst_port, proto))
 
         # aprendizagem
-        este_switch = getSwitchByName(str(dpid))
+        este_switch = self.getSwitchByName(str(dpid))
         este_switch.listarRegras()
 
         #essa informacao nao importa ao switch, poderia ser uma variavel do controlador, essas duas info poderiam ser um dict {switch: {mac_src: ip_src}}
@@ -318,71 +478,48 @@ class Dinamico(app_manager.RyuApp):
             out_port = None
 
 ####################### LEARNING PHASE ###############################################################################
-
-
 ######################## IMCP ########################################################################################
         #tratador dhcp ipv4
         dhcpPkt = pkt.get_protocol(dhcp.dhcp)
         if dhcpPkt:
             handle_dhcp(dhcpPkt, dp, in_port)
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-            
             return
 
         # tratar freds anunciados # aqui apenas icmpv6 agora
-        if pkt_icmpv6:
-                
+        if pkt_icmpv6:            
             handle_icmpv6(pkt_icmpv6, eth_src, eth_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, str(dpid))
-
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-
             return
         
-        if pkt_icmpv4:
-                
+        if pkt_icmpv4:     
             handle_icmpv4(pkt_icmpv4, eth_src, eth_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, str(dpid))
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
+        
 ######################## IMCP ########################################################################################
-
 ######################## Unmactched ########################################################################################
         # fluxo novo -> classificar
         # fazer classificaçao trafego
-        flow_label = "best-effort"
-        fred = {}
+        flow_label = "be"
 
         if ip_meu_dominio(ip_src):
-
-            # se o pacote for marcado para monitoramento, apenas armazenaR timestamp, len(pkt)
-            # injetar o pacote ou contar 20 e mudar a regra -- OFPP_CONTROLLER
-            marcacao_pkt = 0
-
-            if pkt_ipv4:
-                marcacao_pkt = pkt_ipv4.tos
-            elif pkt_ipv6:
-                marcacao_pkt = pkt_ipv6.flow_label
-
-            if marcacao_pkt == MARCACAO_MONITORAMENTO:
-                if monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt): #quando o monitoramento estiver completo
-                    # mudar a regra de monitoramento do primerio switch da rota para nao enviar pacotes ao controlador  -> essa regra tem um tempo hardtimeout menor 2s e uma flag, da proxima vez que expirar deve voltar a monitorar
-                    update_regra_monitoramento(ip_ver,ip_src,ip_dst,src_port,dst_port,proto)
-                    pass
-                return
-
-            fred = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
-
-            # criar regras qos, criar fred, preencher e enviar icmpv6.
-            print("criar regras qos, criar fred, preencher e enviar icmpv6.")
-
-            if fred["label"] != "best-effort":
-                salvar_fred(fred)
-                if create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, dpid):
-                    print("Regras criadas")
-                    return
-            
+            self.tratamento_pacote_meu_dominio(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, pkt, qos_mark, dpid)
+            injetarPacote(este_switch.datapath, fila, out_port, msg)   ### onde injetar isso ....
+            return
+        
+        # se não for meu dominio ou sou backbone e não recebi fred, então fluxo BE
         # nao teve classificação ou foi best-effort
         print("criar regras best-effort")
-        create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, flow_label, flow_qos="best-effort", in_switch_id=dpid)
+
+        fredd=Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
+                         mac_dst=eth_dst, code=0, blockchain_name='', as_dst_ip_range=[], 
+                         as_src_ip_range=[],label='be',
+                         ip_genesis='', lista_peers=[], lista_rota=[], classe=SC_BEST_EFFORT, delay=0, 
+                         prioridade=0, loss=0, bandiwdth=0)
+
+        self.fredmanager.save_fred(fredd.getName(), fredd)
+        self.create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id=dpid)
 
         #injetar pacote na rede --> antes injetava direto no ultimo switch, mas não é muito realista, então vou injetar no próprio (qq coisa volta ao que era)
         # switch_ultimo = None

@@ -1,3 +1,5 @@
+import threading
+
 class Rota_Node:
     def __init__(self, switch_name:int, in_port:int, out_port:int):
         self.switch_name:int = switch_name
@@ -16,28 +18,29 @@ class Rota:
         self.dst_port:int = dst_port
         self.proto:int = proto
 
-## mudou:-: {} ip_dst: [rota_nodes]
-rotas = {}
+class RotaManager:
+    def __init__(self):
+        self.rotas = {}
+        self.lock = threading.lock()
 
-def get_rota(ip_src: str, ip_dst:str) -> list[Rota_Node]:
+    def get_rota(self,ip_src: str, ip_dst:str) -> list[Rota_Node]:
+        
+        lista_switches = self.rotas.get(ip_src+ip_dst, None)
     
-    lista_switches = rotas[ip_src+ip_dst]
-
-    return lista_switches
-
-def add_rota(ip_src: str, ip_dst:str, lista_rota_nodes:list[Rota_Node]):
-    rotas[ip_src+ip_dst] = lista_rota_nodes
-
-    return
-
-def del_rota(ip_src:str, ip_dst:str):
-    try:
-        del rotas[ip_src+ip_dst]
+        return lista_switches
+    
+    def add_rota(self,ip_src: str, ip_dst:str, lista_rota_nodes:list[Rota_Node]):
+        with self.lock:
+            self.rotas[ip_src+ip_dst] = lista_rota_nodes
+        return
+    
+    def del_rota(self,ip_src:str, ip_dst:str):
+        with self.lock:
+            if self.rotas.pop(ip_src+ip_dst, None) == None:
+                print("Rota inexistente")
+                return    
         print("Rota removida")
-    except:
-        print("Rota inexistente")
-    return
-
+        return
 
 def tratador_addRotas(novasrotas_json):
 

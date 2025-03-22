@@ -33,3 +33,6 @@ OFPT_GET_ASYNC_REQUEST	        Yes
 OFPT_GET_ASYNC_REPLY	        Yes
 OFPT_SET_ASYNC	                Yes
 OFPT_METER_MOD	                Yes
+
++oxm_
++ nicira_ext

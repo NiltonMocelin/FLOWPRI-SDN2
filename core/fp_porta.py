@@ -305,3 +305,18 @@ class Porta:
             return self.getRegrasBaixaPrio(classe) + self.getRegrasMediaPrio(classe)
         
         return []
+    
+    def getRegra(self, ip_ver:int, proto:int, ip_src:str, ip_dst:str, src_port:int,dst_port:int) -> Regra:
+
+        # correr todas até encontrar ......... pq fiz lista.....
+
+        for r in self.getRegrasC1():
+            return
+        
+        for r in self.getRegrasC2():
+            return
+        
+        for r in self.getRegrasBE():
+            return
+
+        return

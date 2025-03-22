@@ -128,6 +128,49 @@ pip install setuptools==67.6.1
 
 ####
 
-olha esse dictionay ! -> é um dicionario dentro de outro (sao 2)
- #aprender endereco MAC, evitar flood proxima vez
-self.mac_to_port[dpid][eth_src] = in_port
+#### Conjunctions
+
+##### Como usar conjunctions:
+    refs: <a href="https://manpages.ubuntu.com/manpages/focal/en/man7/ovs-fields.7.html">Referencia conjunctions</a>
+    <a href="https://ryu.readthedocs.io/en/latest/nicira_ext_ref.html?highlight=nxactionconjunction#ryu.ofproto.ofproto_v1_3_parser.NXActionConjunction">Referencia conjunctions do ryu</a>
+
+
+    # a regra conjunction possui a descricao da conjunção na acao e os valores do conjunto são colocados no match, como outra regra qualquer.
+    
+    # cada regra conjunction possui um valor do conjunto, e então a descrição da conjunção diz quantas clausulas devem ser avaliadas,a ordem de analise e o id da conjunction.
+    
+    # não se pode ter ações de encaminhamento, mas pode ter de remarcação
+
+    # ENTão, numa regra de encaminhamento, se pode ter match com apenas uma conjunction (pelo que entendi e pelo que se pode fazer)
+    
+    # porem, como as conjunctions podem ter varias ações (varios campos de match com varios valores, que se combinam como OU), pode se montar 
+    
+    # diversas listas de valores para os campos de match, apenas utilizando os ids e numero de clausula.
+
+    # Obs: no match, o primeiro campo deve ser conj_id (de outra forma não funcionou, talvez eu tenha errado)
+
+    
+    ## Criando uma conjunction:
+
+    match=parser.OFPMatch(qq coisa)
+
+    actions=[parser.NXActionConjunction(clause=nro, n_clauses=qtd_clauses,id_=unico_int)] --> nao pode ter encaminhamento aqui
+    
+    criar openflow mod [...]
+
+    ## Conectando uma conjunction a uma regra de encaminhamento:
+    match=parser.OFPMatch(conj_id=nro_id_conjunction,...)  --> coloque primeiro a conj_id, depois os outros campos
+    actions=[qq coisa]
+
+    dictiona = {'conj_id':10, 'eth_type':0x0800}
+    Pode passar dicionarios para parser.OFPMatch(**dictiona)
+
+#### Se estiver tendo problemas para remover regras com o RYU
+    
+    ## o OFPFlowMod(ofproto.OFPFC_DELETE..) não deleta
+
+    ## Tente especificar out_port e out_group parameter, ai ele remove
+
+    ## desse jeito: datapath.ofproto_parser.OFPFlowMod(datapath, command=ofproto.OFPFC_DELETE, table_id=ofproto.OFPTT_ALL, out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY)
+
+    ## se ainda não estiver removerndo, lembre-se de que alguns campos possuem dependencias, como ipv4_src depende de eth_type=0x0800 !

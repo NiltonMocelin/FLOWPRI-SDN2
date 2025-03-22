@@ -1,3 +1,7 @@
+# testing rule updates: ovs-ofctl add-flow br0 dl_type=0x0800,nw_src=192.168.0.1,nw_dst=10.0.0.1,actions=output:2,CONTROLLER
+
+
+
 python 38
 ryu
 wsgi
@@ -17,9 +21,13 @@ six>=1.4.0 \
 tinyrpc==1.0.4 \ # RPC library, BGP speaker(net_cntl)
 webob>=1.2  # wsgi
 
+pip install eventlet==0.30.2 msgpack>=0.4.0 netaddr oslo.config>=2.5.0 ovs>=2.6.0 packaging==20.9 routes six>=1.4.0 tinyrpc==1.0.4 webob>=1.2
 
 colorlog
 
+# resolver o erro de   ==>    AttributeError: module 'setuptools.command.easy_install' has no attribute 'get_script_args'
+pip uninstall setuptools 
+pip install setuptools==67.6.1
 
 #### * Got -> Cannot import name 'ALREADY_HANDLED' from 'eventlet.wsgi' ? Then run ->>> pip install eventlet==0.30.2
 
@@ -51,7 +59,7 @@ pip install docker
 - msgpack-python
 `pip install msgpack-python`
 
-- eventlet (pip install eventlet==0.33.0)
+- eventlet (pip install eventlet==0.30.2)
 `pip install eventlet`
 
 - stevedore
@@ -90,3 +98,12 @@ pip install docker
 ## Necessário !!
 
 * copiar https://github.com/hyperledger-archives/sawtooth-sdk-python/blob/main/sawtooth_signing/secp256k1.py para o local onde o pacote sawtooth-signing foi instalado. Se estiver utilizando conda, provavelmente esteja em $HOME/miniconda/envs/!!NOME_AMBIENTE_VIRTUAL_PYTHON!!/lib/python3.8/site-packages/sawtooth_signing/secp256k1.py  --> A versão recuperada pelo pip pode levar a erros !!
+
+# para utilizar ovs
+sudo apt-get install openvswitch-switch openvswitch-switch-dpdk
+
+# ou instalar manualmente :  (NOP, instalar manualmente) -> eu tive o problema de ovs-vswitchd kernel não subir corretamente ubuntu.
+# git clone https://github.com/openvswitch/ovs.git
+# cd ovs; ./boot.sh
+# ./configure
+# sudo apt-get install autoconf

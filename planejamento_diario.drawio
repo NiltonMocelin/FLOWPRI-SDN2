@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16" pages="8">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.1.1 Chrome/132.0.6834.210 Electron/34.3.3 Safari/537.36" version="26.1.1" pages="9">
   <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
     <mxGraphModel dx="1877" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -71,6 +71,15 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="c5_V7RpADRE6g5HpzqbL-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="c5_V7RpADRE6g5HpzqbL-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JcWOuOSxpqwyGr28JaXR-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="JcWOuOSxpqwyGr28JaXR-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="DS7rIpaRcRCpLhZqo8LS-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="DS7rIpaRcRCpLhZqo8LS-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-5" value="Falta implementar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="440" y="250" width="290" height="60" as="geometry" />
         </mxCell>
@@ -96,19 +105,19 @@
           <mxGeometry x="1090" y="300" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-14" value="Traffic monitoring: Hosts e controlador" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="100" y="285" width="120" height="60" as="geometry" />
+          <mxGeometry x="230" y="380" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="560" y="355" width="120" height="100" as="geometry" />
+          <mxGeometry x="410" y="140" width="120" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;e de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2: [host/flow_monitoring e qosblockchain] puxar o server e client para outro .py -&amp;gt; diferenciar flow_monitoring de fred {&quot;fred&quot;:{}} e {&quot;flow_monitoring&quot;:{}}&amp;nbsp;&lt;/p&gt;&lt;p&gt;3: [acoes]: verificar o que Acoes precisa fazer&lt;/p&gt;&lt;p&gt;4: [packet-in] Ajustar o packet in-&amp;gt; icmps&lt;/p&gt;&lt;p&gt;-&amp;gt; classificacao&lt;/p&gt;&lt;p&gt;5: ajustar a criacao de regras openflow -&amp;gt; marcacao e encaminhamento (qos e be)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;6: obs: tem que ajustar o payload da blockchain.&lt;/p&gt;&lt;p&gt;6: REvisar o que falta e verificar o funcionamento&lt;/p&gt;&lt;p&gt;8: preparar o script para instalar todos os requisitos para o funcionamento do flowpri, classificacao, blockchain...&lt;/p&gt;&lt;p&gt;7: realizar experimentos&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;3: [acoes]: verificar o que Acoes precisa fazer&lt;/p&gt;&lt;p&gt;4: [packet-in] Ajustar o packet in-&amp;gt; icmps&lt;/p&gt;&lt;p&gt;-&amp;gt; classificacao&lt;/p&gt;&lt;p&gt;5: ajustar a criacao de regras openflow -&amp;gt; marcacao e encaminhamento (qos e be)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;6: obs: tem que ajustar o payload da blockchain.&lt;/p&gt;&lt;p&gt;6: REvisar o que falta e verificar o funcionamento&lt;/p&gt;&lt;p&gt;8: preparar o script para instalar todos os requisitos para o funcionamento do flowpri, classificacao, blockchain...&lt;/p&gt;&lt;p&gt;7: realizar experimentos&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="290" y="800" width="220" height="620" as="geometry" />
         </mxCell>
         <mxCell id="utfMI5SQkQcTHa897YUp-1" value="GUI simples (swtiches, rotas, regras) -&amp;gt; esquecer isso por enquanto[deixar]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="690" y="345" width="120" height="75" as="geometry" />
+          <mxGeometry x="720" y="455" width="120" height="75" as="geometry" />
         </mxCell>
         <mxCell id="VdtekRpqjFC6Wfjtw76O-1" value="backbone G-BAM: agrupamento por ips e portas [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="430" y="360" width="120" height="60" as="geometry" />
+          <mxGeometry x="260" y="170" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="e7JyS8U2MEhxafHwqLXR-1" value="Arrumar as duas criações de chaves !! [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-450" y="245" width="150" height="110" as="geometry" />
@@ -116,26 +125,23 @@
         <mxCell id="FhFb54NLBzNOBZW-PnSw-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="FhFb54NLBzNOBZW-PnSw-1" target="FhFb54NLBzNOBZW-PnSw-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="FhFb54NLBzNOBZW-PnSw-1" value="QoSBlockchain" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="830" y="310" width="120" height="60" as="geometry" />
+        <mxCell id="FhFb54NLBzNOBZW-PnSw-1" value="QoSBlockchain[OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="140" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="FhFb54NLBzNOBZW-PnSw-3" value="Criar a versao host (que é o server_..., mas precisa ter um arquivo claro do que é host e o que é controller) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="830" y="410" width="120" height="110" as="geometry" />
+          <mxGeometry x="707" y="120" width="120" height="110" as="geometry" />
         </mxCell>
         <mxCell id="qyrjWjYYuWChkDs8PrSO-1" value="Tratar ao menos ARP e PINGv4v6" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="294" y="160" width="120" height="60" as="geometry" />
+          <mxGeometry x="150" y="455" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qyrjWjYYuWChkDs8PrSO-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Feitos (mais antigo para mais recente)&lt;/h1&gt;&lt;p&gt;* Outros controladores OK, problema é o flowpri2 msm&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;* Arrumar as importações da pasta pai [OK]&lt;/p&gt;&lt;p&gt;* Fazer funcionar numa versão mais simples&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;[OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* TIPAR todos os parametros das funcoes para evitar confusão&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* ajustar as meters: a meter id deve ser associada a regra e deve existir uma tabela de meters em cada switch para controlar a criação dos ids para novas meters&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a criação de regras e fazer funcionar do jeito que está, a criação de regras -&amp;gt; até meio dia, uma versão funcional ! (sem traffic monitoring, mas com as regras).&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Revisar e mudar-&amp;gt; parte de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;* Arrumando Alocar GBAM para cotar banda na porta entrada e saida --&amp;gt; nessa versao é assim: cada switch roda e aloca cria tudo (usar acoes), caso algum switch nao aceitar a regra, entao para o processo, nao cria as regras e envia o icmp com fluxo rejeitado. [ok]&lt;/p&gt;&lt;p&gt;1 : [arrumar host/flow_monitoring] verificar se o libpcap funciona mesmo (no desktop) [funciona]&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
-          <mxGeometry x="29" y="800" width="220" height="780" as="geometry" />
+        <mxCell id="qyrjWjYYuWChkDs8PrSO-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Feitos (mais antigo para mais recente)&lt;/h1&gt;&lt;p&gt;* Outros controladores OK, problema é o flowpri2 msm&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;* Arrumar as importações da pasta pai [OK]&lt;/p&gt;&lt;p&gt;* Fazer funcionar numa versão mais simples&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;[OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* TIPAR todos os parametros das funcoes para evitar confusão&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* ajustar as meters: a meter id deve ser associada a regra e deve existir uma tabela de meters em cada switch para controlar a criação dos ids para novas meters&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a criação de regras e fazer funcionar do jeito que está, a criação de regras -&amp;gt; até meio dia, uma versão funcional ! (sem traffic monitoring, mas com as regras).&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Revisar e mudar-&amp;gt; parte de criação e removção de regras !&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;* Arrumando Alocar GBAM para cotar banda na porta entrada e saida --&amp;gt; nessa versao é assim: cada switch roda e aloca cria tudo (usar acoes), caso algum switch nao aceitar a regra, entao para o processo, nao cria as regras e envia o icmp com fluxo rejeitado. [ok]&lt;/p&gt;&lt;p&gt;1 : [arrumar host/flow_monitoring] verificar se o libpcap funciona mesmo (no desktop) [funciona]&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;2: [host/flow_monitoring e qosblockchain] puxar o server e client para outro .py -&amp;gt; diferenciar flow_monitoring de fred {&quot;fred&quot;:{}} e {&quot;flow_monitoring&quot;:{}}&amp;nbsp; [OK]&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;1. Adaptar o código para utilizar regras de conjunções (conjunções por switch) [OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;1.1 Mover todas as constantes para variaveis staticas da classe Dinamico -&amp;gt; Mover Dinamico para FLOWPRI2 [OK]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;2. verificar o que acontece quando uma regra com multiplas portas expira.-&amp;gt; não existe regra com multiplas portas diretamente, mas existem regras conjunções; verificar, como remover esse tipo de regra. [OK]&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry x="-660" y="800" width="909" height="1140" as="geometry" />
         </mxCell>
         <mxCell id="5wksBHdEA-TXuHTnagim-1" value="GBAM precisa verificar se existe banda e pode emprestar, nas portas de entrada e saida, nao só na de saida -&amp;gt; sem criar meter e regraF para a porta de entada [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-100" y="270" width="150" height="110" as="geometry" />
         </mxCell>
         <mxCell id="5FmTdBkJ5_4LCafok2GZ-1" value="As ações se mostraram a melhor opção para o G-BAM&amp;nbsp; - implementar para: agrupamento, monitoramento, qos e best-effort." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-240" y="380" width="120" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="5FmTdBkJ5_4LCafok2GZ-3" value="Integrar as ações novamente [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="170" y="410" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="shP3xlCRC4CT-vgoB4CX-1" value="Renomear Classes priority para Alta, media, baixa, pq 1 2 e 3 nem eu lembro o que é [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-420" y="20" width="120" height="120" as="geometry" />
@@ -144,35 +150,74 @@
           <mxGeometry x="550" y="800" width="220" height="430" as="geometry" />
         </mxCell>
         <mxCell id="2OSIMMtU8khbYuAdeEzb-1" value="Arrumar as sequencias de ações corretas no packet-in, flow-removed, icmp-fred, icmp-monitoramento" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="770" y="155" width="120" height="90" as="geometry" />
+          <mxGeometry x="580" y="455" width="120" height="90" as="geometry" />
         </mxCell>
         <mxCell id="MYrXt6xUmm87GSyCe_8V-1" value="O host noh da blockchain de origem, deve ser informado pelo controlador de origem, no FRED, como sendo o primeiro par, que esta sem chave publica -&amp;gt; para que o host noh da blockcahin de destino, saiba para quem encaminhar o FRED preenchido, para criar a blockchain" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="320" y="440" width="225" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="9lIUxT6uJN9yt7C3OYEU-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9lIUxT6uJN9yt7C3OYEU-1" target="-aLrSAhBZ-N-OfGElPO0-5">
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9lIUxT6uJN9yt7C3OYEU-1" target="-aLrSAhBZ-N-OfGElPO0-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="9lIUxT6uJN9yt7C3OYEU-1" value="Host convencional monitoring [ok]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="130" y="190" width="120" height="60" as="geometry" />
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-1" value="Host convencional monitoring [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="130" y="170" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="9lIUxT6uJN9yt7C3OYEU-3" value="Management host fred(blockchain) e monitoring(transacao)[OK]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-3" value="Management host fred(blockchain) e monitoring(transacao)[OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="130" y="110" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="9lIUxT6uJN9yt7C3OYEU-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="9lIUxT6uJN9yt7C3OYEU-3" target="-aLrSAhBZ-N-OfGElPO0-5">
+        <mxCell id="9lIUxT6uJN9yt7C3OYEU-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="5FmTdBkJ5_4LCafok2GZ-3" target="-aLrSAhBZ-N-OfGElPO0-5" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="470" y="250" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="c5_V7RpADRE6g5HpzqbL-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="9lIUxT6uJN9yt7C3OYEU-3" target="5FmTdBkJ5_4LCafok2GZ-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="513" y="250" as="targetPoint" />
+            <mxPoint x="250" y="140" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5FmTdBkJ5_4LCafok2GZ-3" value="Integrar as ações novamente [OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="260" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c5_V7RpADRE6g5HpzqbL-2" value="Evento flow removed é diferente para backbone, remover por tempo dos freds" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="860" y="455" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JcWOuOSxpqwyGr28JaXR-1" value="Obs: src_port e dst_port pode ser uma lista no campo match das regras (devido ao agrupamento).&lt;div&gt;Ajustar os flow_removed, regras e outros para tratar essa lista. -&amp;gt; ou remove o agrupamento (backbone GBAM)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="570" width="190" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="JcWOuOSxpqwyGr28JaXR-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Questões em discussão&lt;/h1&gt;&lt;div&gt;1: Agrupamento de regras -&amp;gt; podemos criar regras BE agrupadas, assim como criamos regras QoS agrupadas no backbone -&amp;gt; PROBLEMA: armazenar um FRED BE para cada regra vai ficar bem mais complexo que armazenar um FRED QOS para cada regra, pois são em bem maior número. --&amp;gt; O agrupamento atualmente depende do FRED, para remover por timestamp de armazenamento. ==&amp;gt; Implementar BE por agrupamento de FRED tbm igual com QoS ?&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry x="850" y="800" width="320" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="DS7rIpaRcRCpLhZqo8LS-1" value="Mudar regras openFlow para utilizar dicionarios [ OK]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="860" y="140" width="120" height="90" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="yCrAVNZ3YxgUfBvcgkGx" name="Testes">
-    <mxGraphModel dx="1114" dy="838" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram id="yCrAVNZ3YxgUfBvcgkGx" name="Experimentos">
+    <mxGraphModel dx="1877" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="PQvJjznsTiufLVNCUXzs-1" value="Overhead" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+        <mxCell id="PQvJjznsTiufLVNCUXzs-1" value="Overhead" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="310" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qdVeWzSB0PeJH4UUnBaE-1" value="Tempo envio pacote por Encaminhamento Best-effort" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qdVeWzSB0PeJH4UUnBaE-2" value="Tempo envio pacote por quando o fluxo é identificado como qos" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qdVeWzSB0PeJH4UUnBaE-3" value="Tempo entre o envio de um pacote e o setup da qosblockchain" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qdVeWzSB0PeJH4UUnBaE-4" value="Tempo até que um bloco seja escrito na blockchain. (pensar melhor nesse)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qdVeWzSB0PeJH4UUnBaE-5" value="Overhead de comunicação do qosblockchain (qtd de pacotes gerado)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qdVeWzSB0PeJH4UUnBaE-6" value="Tempo total entre o envio de um pacote + identificado + todos os domínios configurarem a regra QoS" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-80" y="250" width="120" height="90" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
@@ -263,7 +308,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="InfWYHL0cfjfVD2tf_Pw" name="backboneGBAM">
-    <mxGraphModel dx="1231" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1050" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -301,64 +346,221 @@
         <mxCell id="_eyuS-i5_waZS2UFusAt-9" value="Remover fluxos que expiraram" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="700" y="175" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_eyuS-i5_waZS2UFusAt-12" target="qZ9Jd3IN7ahHs-uki33P-14">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="_eyuS-i5_waZS2UFusAt-12" target="qZ9Jd3IN7ahHs-uki33P-14" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="_eyuS-i5_waZS2UFusAt-12" value="Rodar a rotina que agrupa os fluxos possíveis em meters e regras com mesma classe, src_port e dst_port, ip_Ver e pode ser necessario agrupar por protocolo tbm (seria triste)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="414" y="255" width="120" height="125" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-1" value="Regra1: src_portA, dst_portA, ip_srcA, ip_dstA, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-1" value="Regra1: src_portA, dst_portA, ip_srcA, ip_dstA, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="480" width="470" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-2" value="Regra2: src_portB, dst_portB, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-2" value="Regra2: src_portB, dst_portB, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="540" width="470" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-3" value="Regra3: src_portA, dst_portB, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-3" value="Regra3: src_portA, dst_portB, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="600" width="470" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-4" value="Regra4: src_portA, dst_portA, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-4" value="Regra4: src_portA, dst_portA, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="660" width="470" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="qZ9Jd3IN7ahHs-uki33P-5">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="qZ9Jd3IN7ahHs-uki33P-5" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="700" y="510" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-5" value="Quem deve ser agrupado ?" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-5" value="Quem deve ser agrupado ?" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="50" y="440" width="260" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-7" value="Se regras 1 e 2: Nao sao pq dst_portA e dst_portB sao diferentes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-7" value="Se regras 1 e 2: Nao sao pq dst_portA e dst_portB sao diferentes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="660" y="520" width="260" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-8" value="Match: src_portA, dst_portA, ip_srcA+ip_srcB, ip_dstA + ip_dstB, porta_saidaA == &amp;gt; sem problemas" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-8" value="Match: src_portA, dst_portA, ip_srcA+ip_srcB, ip_dstA + ip_dstB, porta_saidaA == &amp;gt; sem problemas" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="550" y="615" width="570" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-9" value="Se regras 1 e 4:&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-9" value="Se regras 1 e 4:&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="660" y="585" width="260" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-10" value="Regra4: src_portB, dst_portA, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-10" value="Regra4: src_portB, dst_portA, ip_srcB, ip_dstB, porta_saidaA | classe 1, banda 1000|&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="720" width="470" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-11" value="Match: src_portA+src_portB, dst_portA, ip_srcA+ip_srcB, ip_dstA + ip_dstB, porta_saidaA ==&amp;gt; problema Aceita: sportB,dportA,ipB&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; sportA,dportA,ipB&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;sportB,dportA,ipA&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;sportA,dportA,ipA&lt;/div&gt;&lt;div&gt;Solução: ??&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-11" value="Match: src_portA+src_portB, dst_portA, ip_srcA+ip_srcB, ip_dstA + ip_dstB, porta_saidaA ==&amp;gt; problema Aceita: sportB,dportA,ipB&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; sportA,dportA,ipB&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;sportB,dportA,ipA&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;sportA,dportA,ipA&lt;/div&gt;&lt;div&gt;Solução: ??&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="550" y="750" width="570" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-12" value="Se regras 1 e 5:&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-12" value="Se regras 1 e 5:&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="660" y="720" width="260" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-13" value="Se fosse agrupar por classe e ips:&lt;div&gt;Match: ip_srcABCD, ip_dstABCD, tos:1, porta_saida:X&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-13" value="Se fosse agrupar por classe e ips:&lt;div&gt;Match: ip_srcABCD, ip_dstABCD, tos:1, porta_saida:X&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="80" y="960" width="370" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="qZ9Jd3IN7ahHs-uki33P-14" target="qZ9Jd3IN7ahHs-uki33P-16">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="qZ9Jd3IN7ahHs-uki33P-14" target="qZ9Jd3IN7ahHs-uki33P-16" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-14" value="Somar a banda de regras de mesma classe" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-14" value="Somar a banda de regras de mesma classe" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="240" y="255" width="120" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-16" value="Criar a regra de fluxo para marcar os pacotes&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-16" value="Criar a regra de fluxo para marcar os pacotes&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="60" y="255" width="120" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="qZ9Jd3IN7ahHs-uki33P-18" value="Duas abordagems para agrupamento aqui:&lt;div&gt;1- os pacotes vem marcados com a classe vindos da borda.&lt;/div&gt;&lt;div&gt;2- É feito um agrupamento desleixado usando um match com combinação de portas e ips (que vai pegar qualquer coisa)&lt;/div&gt;&lt;div&gt;3- é feito o agrupamento de fluxos que possuam a mesma src_port, dst_port, porta de saida e classe&lt;/div&gt;&lt;div&gt;-----------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 1: além da marcação tos, tem a marcação de monitoramento. porém basta utilizar uma regra que verifica mascara.&lt;/div&gt;&lt;div&gt;Outro problema: se perde o controle do que é aceito ou não, pois podem-se chegar pacotes de fluxos marcados que não foram aceitos mas caiam no match.&lt;/div&gt;&lt;div&gt;-----------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 2: vai pegar fluxos que não deveriam no match.&lt;/div&gt;&lt;div&gt;------------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 3: Não irá ocorrer tantos agrupamentos, mas é o que tem o menor colateral e o match mais restito&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=default;" vertex="1" parent="1">
+        <mxCell id="qZ9Jd3IN7ahHs-uki33P-18" value="Duas abordagems para agrupamento aqui:&lt;div&gt;1- os pacotes vem marcados com a classe vindos da borda.&lt;/div&gt;&lt;div&gt;2- É feito um agrupamento desleixado usando um match com combinação de portas e ips (que vai pegar qualquer coisa)&lt;/div&gt;&lt;div&gt;3- é feito o agrupamento de fluxos que possuam a mesma src_port, dst_port, porta de saida e classe&lt;/div&gt;&lt;div&gt;-----------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 1: além da marcação tos, tem a marcação de monitoramento. porém basta utilizar uma regra que verifica mascara.&lt;/div&gt;&lt;div&gt;Outro problema: se perde o controle do que é aceito ou não, pois podem-se chegar pacotes de fluxos marcados que não foram aceitos mas caiam no match.&lt;/div&gt;&lt;div&gt;-----------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 2: vai pegar fluxos que não deveriam no match.&lt;/div&gt;&lt;div&gt;------------------------------------------------------------&lt;/div&gt;&lt;div&gt;Problema do 3: Não irá ocorrer tantos agrupamentos, mas é o que tem o menor colateral e o match mais restito&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="1190" y="145" width="310" height="345" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="D-c96v3ZVJayj7JLHeLw-1" target="D-c96v3ZVJayj7JLHeLw-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-1" value="Remover Regras BackboneGBAM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="750" y="1080" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-2" target="D-c96v3ZVJayj7JLHeLw-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-2" value="FlowRemoved" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="1180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="D-c96v3ZVJayj7JLHeLw-3" target="D-c96v3ZVJayj7JLHeLw-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-3" value="Remover as regras e a meter associada -&amp;gt; porém elas estão agrupadas por ip_src e ip_dst, ou seja, tem multiplas portas" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="760" y="1180" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-4" target="D-c96v3ZVJayj7JLHeLw-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-4" value="Remove a regra de fluxo -&amp;gt; apenas desse switch" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="970" y="1180" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-5" target="D-c96v3ZVJayj7JLHeLw-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-5" value="Verifica os freds que estão expirados, remove-os e suas regras -&amp;gt; de todos os switches da rota" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="1180" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-6" target="D-c96v3ZVJayj7JLHeLw-13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-6" value="Verifica se alguma regra precisa ser recriada -&amp;gt; se precisar é pq foi uma, ou algumas, das agrupadas.&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="1280" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D-c96v3ZVJayj7JLHeLw-13" value="Verificar as regras que foram removidas -&amp;gt; rodar o alocarGBAM (Backbone quando o caso)" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="930" y="1280" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Pj3scuITqSNc792TWXn2-1" target="Pj3scuITqSNc792TWXn2-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="Pj3scuITqSNc792TWXn2-1" target="Pj3scuITqSNc792TWXn2-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-1" value="OBS: O agrupamento so pode ser feito utilizando mascaras ou conjunções&lt;div&gt;Ref:&amp;nbsp;&lt;a style=&quot;background-color: transparent;&quot; href=&quot;https://manpages.ubuntu.com/manpages/focal/en/man7/ovs-fields.7.html&quot;&gt;Ubuntu Manpage: ovs-fields - protocol header fields in OpenFlow and Open vSwitch&lt;/a&gt;&amp;nbsp;&lt;/div&gt;&lt;div&gt;Como usar OpenFlow13:&amp;nbsp;&lt;a style=&quot;background-color: transparent;&quot; href=&quot;https://ryu.readthedocs.io/en/latest/nicira_ext_ref.html?highlight=nxactionconjunction#ryu.ofproto.ofproto_v1_3_parser.NXActionConjunction&quot;&gt;Nicira Extension Structures — Ryu 4.34 documentation&lt;/a&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="770" y="1400" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="Pj3scuITqSNc792TWXn2-2" target="Pj3scuITqSNc792TWXn2-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-2" value="Uma máscara combina um valor e uma máscara usando os bits 1000/0x1111 por exemplo." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="1520" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Pj3scuITqSNc792TWXn2-3" target="Pj3scuITqSNc792TWXn2-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="1690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-3" value="Conjunções criam condições encadeadas entre regras, permitindo combinar e condicionar varios valores para os mesmos campos." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="940" y="1520" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-6" value="Qual e como usar, para o agrupamento de regras do backbone gbam e de best-effort" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="770" y="1650" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="Pj3scuITqSNc792TWXn2-9" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="840" y="1815" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-9" value="&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Testando as conjunções (obs, deve ser a unica acao, nao pode ter encaminhamento nessa regra)&amp;nbsp;&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="580" y="1800" width="280" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-14" value="R1: sip_a,dip_b,sport_a,d_portb" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="1880" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-15" value="R2: sip_a,dip_b,sport_c,e_portb" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="1910" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-16" value="R3: sip_a,dip_b,sport_d,r_portb" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="1940" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-17" value="Tenho diversos fluxos com&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="1850" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-18" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="827" y="1920" as="sourcePoint" />
+            <mxPoint x="930" y="1920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-19" value="Usando conjunções, extraio as portas para uma conjuncao id" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="810" y="1870" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-20" value="R1: sip_a,dip_b,actions=conj_id(1,2,3,4)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="990" y="1870" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-21" value="R2: sport_c,e_portb,conj_id=2" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="990" y="1900" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-22" value="R3: sport_d,r_portb,,conj_id=3" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="990" y="1930" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Pj3scuITqSNc792TWXn2-23" value="R4:sport_a,d_portb, conj_id=4" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="990" y="1960" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-1" value="R0: sip_a,dip_d,actions=conj_id(1,2,3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="990" y="1840" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-2" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1241" y="1939" as="sourcePoint" />
+            <mxPoint x="1344" y="1939" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-3" value="Sem conjunções seria" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="1889" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-4" value="R0: sip_a,dip_d,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="1850" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-5" value="R0: sip_a,dip_d,sport_d,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="1880" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-6" value="R0: sip_a,dip_d,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="1906" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-7" value="R0: sip_b,dip_b,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="1930" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-8" value="R0: sip_b,dip_b,sport_d,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="1955" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-9" value="R0: sip_b,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="1985" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-10" value="R0: sip_c,dip_b,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="2015" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-11" value="R0: sip_c,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="2046" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-12" value="R1: sip_c,dip_b,actions=conj_id(1,2,3,4)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="990" y="1810" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-13" value="R0: sip_c,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="2076" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-14" value="Reduz de Nportas * Nips * qos p/ Nportas + Nips * qos" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="985" y="2010" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-15" value="Colocar as conjuntions NA DISSERTAÇÃO TBM" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="2076" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-16" value="Todas as regras: QoS, BE, backboneGBAM -&amp;gt; devem ser criadas utilizando esses conjunctions. A diferenca é que o backbone gbam vai poder agrupar mais de um par de conjunctions (pq faz um BE dentro de uma fila de QoS)." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="985" y="2130" width="245" height="90" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
@@ -500,13 +702,660 @@
     </mxGraphModel>
   </diagram>
   <diagram id="rTPhyLAhTh2cVcwFYtZS" name="Diagramas_comunicacao">
+    <mxGraphModel dx="1877" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="DP9WUFka6WA4USUQD0_f-18" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3530" y="796" width="999" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-6" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="2290" y="787.5" width="1180" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="780" width="1260" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-770" y="575" width="1080" height="815" as="geometry" />
+        </mxCell>
+        <mxCell id="wRJQR5XvGe3gycmCcVVx-1" value="Diagramas explicando a comunicacao host-host: todos os processos envolvidos durante o envio de pacotes de um fluxo:&lt;div&gt;* Com base Nesses diagramas, contabilizar o overhead.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="350" y="290" width="350" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-1" value="Diagrama Todos os passos a partir de um pacote : fluxo novo" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-270" y="585" width="140" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-3" value="Diagrama Todos os passos a partir de um fluxo classificado com QoS" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1380" y="680" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-46" value="host&lt;div&gt;src/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="810" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-47" value="First-Edge Controller" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1260" y="812" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-48" value="Intermediate&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1470" y="812" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-49" value="last-edge&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1665" y="812" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-50" value="host&lt;div&gt;dst/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1872" y="812" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-51" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1090" y="1640" as="sourcePoint" />
+            <mxPoint x="1090" y="910" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-52" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-63" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1272" y="1470.800048828125" as="sourcePoint" />
+            <mxPoint x="1272" y="910" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-53" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1480" y="1750" as="sourcePoint" />
+            <mxPoint x="1480" y="910" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-54" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1685" y="1760" as="sourcePoint" />
+            <mxPoint x="1685" y="910" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-55" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1888" y="1770" as="sourcePoint" />
+            <mxPoint x="1888" y="909" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-56" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1089" y="1020" as="sourcePoint" />
+            <mxPoint x="1269" y="1020" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-57" value="Sends packet" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1129" y="990" width="101" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-58" value="Forwards FRED (ICMP)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1275" y="1136" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-59" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-58" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1269" y="1175" as="sourcePoint" />
+            <mxPoint x="1475" y="1143.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-62" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-63" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1272" y="1740" as="sourcePoint" />
+            <mxPoint x="1272" y="871" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-63" value="&lt;div&gt;0.Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (Yes)&lt;/div&gt;&lt;div&gt;2. Classification Done = Fred&lt;/div&gt;&lt;div&gt;3. Creates QoS rules&lt;/div&gt;&lt;div&gt;4. Creates Monitoring Rules&lt;/div&gt;&lt;div&gt;5. Begins qosblockchain setup&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="1135" y="1027" width="274" height="123" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-71" value="host&lt;div&gt;src/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-660" y="660" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-72" value="First-Edge Controller" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-480" y="662" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-73" value="Intermediate&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-270" y="662" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-74" value="last-edge&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-63" y="662" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-75" value="host&lt;div&gt;dst/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="150" y="662" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-76" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-650" y="1350" as="sourcePoint" />
+            <mxPoint x="-650" y="761" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-77" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-88" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-468" y="1319.800048828125" as="sourcePoint" />
+            <mxPoint x="-468" y="759" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-78" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-90" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-260" y="1321.800048828125" as="sourcePoint" />
+            <mxPoint x="-260" y="761" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-79" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-93" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-43" y="1321.800048828125" as="sourcePoint" />
+            <mxPoint x="-43" y="761" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-80" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-105" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="166" y="1221" as="sourcePoint" />
+            <mxPoint x="166" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-81" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-650" y="856" as="sourcePoint" />
+            <mxPoint x="-470" y="856" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-82" value="Sends packet" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-610" y="828" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-83" value="&lt;div&gt;Forwards packet as&lt;/div&gt;&lt;div&gt;best-effort&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-464" y="965" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-84" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-470" y="1010" as="sourcePoint" />
+            <mxPoint x="-170" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-85" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.93;entryY=0.82;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-91" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-260" y="1148" as="sourcePoint" />
+            <mxPoint x="-20" y="1148" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-86" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-45" y="1291" as="sourcePoint" />
+            <mxPoint x="165" y="1291" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-87" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-468" y="1360" as="sourcePoint" />
+            <mxPoint x="-468.0000000000002" y="971" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-88" value="&lt;div&gt;0. Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (Yes)&lt;/div&gt;&lt;div&gt;2. Begin classification&lt;/div&gt;&lt;div&gt;3. Create best-effort rules&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="-563" y="863" width="190" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-89" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-262" y="1360" as="sourcePoint" />
+            <mxPoint x="-261.60691144708426" y="1111" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-90" value="&lt;div&gt;0. Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (No)&lt;/div&gt;&lt;div&gt;2. Create best-effort rules&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="-357" y="1019" width="190" height="91" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-91" value="&lt;div&gt;Forwards packet as&lt;/div&gt;&lt;div&gt;best-effort&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-236" y="1107" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-92" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-44" y="1370" as="sourcePoint" />
+            <mxPoint x="-44.356223175965624" y="1252" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-93" value="&lt;div&gt;0. Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (No)&lt;/div&gt;&lt;div&gt;2. Create best-effort rules&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="-126" y="1161" width="165" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-94" value="&lt;div&gt;Forwards packet as&amp;nbsp;&lt;/div&gt;&lt;div&gt;best-effort&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-45" y="1250" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-96" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1272" y="1211" as="sourcePoint" />
+            <mxPoint x="1478" y="1210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-97" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1275" y="1184" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-98" value="&lt;div&gt;0.Packet intercepted (ICMP)&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;1. Creates QoS rules&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="1398" y="1225" width="212" height="49" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-99" value="Forwards FRED (ICMP)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1489" y="1265" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-100" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1478" y="1296" as="sourcePoint" />
+            <mxPoint x="1684" y="1295" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-101" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1489" y="1305" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-102" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1478" y="1330" as="sourcePoint" />
+            <mxPoint x="1684" y="1329" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-104" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="-736.5" y="746" width="186.5" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-106" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-105" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="166" y="1430" as="sourcePoint" />
+            <mxPoint x="166" y="803" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-105" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="66.5" y="764" width="199.5" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-107" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1008" y="907" width="182" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-108" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1800" y="912" width="180.5" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-109" value="&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;0. Packet intercepted (ICMP)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;1.&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Creates QoS rules&lt;/span&gt;&lt;/div&gt;&lt;div&gt;2. Begins qosblockchain setup&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="1595" y="1340" width="235" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-110" value="Forwards FRED (Socket)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1692" y="1393" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-111" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1681" y="1424" as="sourcePoint" />
+            <mxPoint x="1887" y="1423" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-112" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1698" y="1426" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-113" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1681" y="1452" as="sourcePoint" />
+            <mxPoint x="1887" y="1451" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-114" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1889" y="1469" as="sourcePoint" />
+            <mxPoint x="1089" y="1469" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-115" value="Forwards FRED (Socket)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1439" y="1438" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-116" value="&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;0. Begins qosblockchain setup (Done)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1007" y="1446" width="179" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-117" value="Diagrama Quando ocorre monitoramento" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2770" y="714" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-118" value="host&lt;div&gt;src/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2442" y="812" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-119" value="First-Edge Controller" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2622" y="814" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-120" value="Intermediate&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2832" y="814" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-121" value="last-edge&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3027" y="814" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-122" value="host&lt;div&gt;dst/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3234" y="814" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-123" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2452" y="1642" as="sourcePoint" />
+            <mxPoint x="2452" y="912" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-124" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-133" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2634" y="1470.800048828125" as="sourcePoint" />
+            <mxPoint x="2635" y="910" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-125" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="1L-dFdye4u1Uikkd51U5-151" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2832" y="1642" as="sourcePoint" />
+            <mxPoint x="2842" y="912" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-126" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3042" y="1642" as="sourcePoint" />
+            <mxPoint x="3047" y="912" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-127" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3250" y="1652" as="sourcePoint" />
+            <mxPoint x="3250" y="911" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-128" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2451" y="930" as="sourcePoint" />
+            <mxPoint x="2631" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-129" value="Sends packet" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2491" y="900" width="99" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-132" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-133" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2634" y="1617.800048828125" as="sourcePoint" />
+            <mxPoint x="2634" y="873" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-133" value="&lt;div&gt;0.Packet marked by monitoring rule&lt;/div&gt;&lt;div&gt;1. Extracts packet length and timestamp&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="2484" y="937" width="304" height="53" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-134" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2634" y="1022" as="sourcePoint" />
+            <mxPoint x="2840" y="1021" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-135" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2637" y="995" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-139" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2851" y="1077" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-140" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2840" y="1104" as="sourcePoint" />
+            <mxPoint x="3046" y="1103" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-142" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="3127" y="912" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-143" value="&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;0. Packet intercepted (Marked)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;1. Extracts packet length and timestamp&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="2921" y="1110" width="236" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-146" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3060" y="1170" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-147" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3043" y="1196" as="sourcePoint" />
+            <mxPoint x="3249" y="1195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-152" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-151" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2843" y="1646" as="sourcePoint" />
+            <mxPoint x="2842" y="916" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-151" value="&lt;div&gt;0. Packet marked:ignored (different destination)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="2748" y="1030" width="190" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-153" value="&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;0. Packet intercepted (Marked)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;1. Extracts packet length and timestamp&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="3132.25" y="1204" width="223.75" height="53" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-154" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2631" y="1155" as="sourcePoint" />
+            <mxPoint x="2633" y="1128" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-155" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2450" y="1122" as="sourcePoint" />
+            <mxPoint x="2630" y="1122" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-156" value="Sends packet" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2490" y="1092" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-157" value="&lt;div&gt;0.Packet marked by monitoring rule&lt;/div&gt;&lt;div&gt;1. Extracts packet length and timestamp&lt;/div&gt;&lt;div&gt;2. Enough packets monitored&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="2488" y="1132" width="289" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-158" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&amp;nbsp;Sends monitored metrics(ICMP)&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2633" y="1195" width="258" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-159" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2646.5" y="1223" as="sourcePoint" />
+            <mxPoint x="2826.5" y="1223" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-160" value="&lt;div&gt;0. ICMP packet:ignored (different destination)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="2732" y="1259" width="210" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-164" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2631" y="1250" as="sourcePoint" />
+            <mxPoint x="2837" y="1249" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-165" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2634" y="1223" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-166" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Forwards monitored metrics(ICMP)&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2846" y="1298.5" width="254" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-167" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2850.5" y="1322.5" as="sourcePoint" />
+            <mxPoint x="3030.5" y="1322.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-168" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2839" y="1349.5" as="sourcePoint" />
+            <mxPoint x="3045" y="1348.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-169" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="2838" y="1322.5" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-170" value="&lt;div&gt;0. ICMP packet:received&lt;/div&gt;&lt;div&gt;1. Calculates QoS&lt;/div&gt;&lt;div&gt;2. Creates QoSBlockchain transaction&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="2899" y="1358" width="284" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-171" value="&lt;span style=&quot;text-align: center;&quot;&gt;Forwards monitored metrics(Socket)&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3046" y="1406" width="264" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-172" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3050.5" y="1434" as="sourcePoint" />
+            <mxPoint x="3230.5" y="1434" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-173" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3044" y="1461" as="sourcePoint" />
+            <mxPoint x="3250" y="1460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-174" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3038" y="1434" width="200" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-175" value="&lt;div&gt;0. QoS metrics:received&lt;/div&gt;&lt;div&gt;1. Calculates QoS&lt;/div&gt;&lt;div&gt;2. Creates QoSBlockchain transaction&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="3104.5" y="1469" width="282.5" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-95" value="&lt;div&gt;Packet received&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="100" y="1302" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-176" value="Diagrama Quando ocorre a criação de regras de fluxo em um domínio" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="4043" y="720" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-178" value="Domain Controller" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3819" y="845" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-182" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3658" y="1648" as="sourcePoint" />
+            <mxPoint x="3658" y="918" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-184" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="4023" y="1653.199951171875" as="sourcePoint" />
+            <mxPoint x="4023" y="918" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-187" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3660" y="1122.5" as="sourcePoint" />
+            <mxPoint x="3840" y="1122.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-189" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3840" y="1623.800048828125" as="sourcePoint" />
+            <mxPoint x="3837" y="920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-224" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Intermediate&lt;/span&gt;&lt;div style=&quot;color: rgb(0, 0, 0);&quot;&gt;Switch&lt;/div&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3971" y="855" width="99" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-225" value="&lt;font color=&quot;#000000&quot;&gt;Last Switch&lt;/font&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="4184" y="862" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-226" value="Packet" style="shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#4495D1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.letter;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3580" y="1025.6000000000001" width="46.4" height="34.8" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-228" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3551" y="1083" as="sourcePoint" />
+            <mxPoint x="3651" y="1083" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-231" value="0. Configured with best-effort default rule + copy to controller&lt;div&gt;1. Configured to intercept any marked packet destinated to this domain&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="3540" y="924" width="228" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-232" value="Packet copy" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3709" y="1092" width="91" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-233" value="0. Packet-in: packet classified: QoS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="3777" y="1131" width="153" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-234" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3840" y="1195.5" as="sourcePoint" />
+            <mxPoint x="4020" y="1195.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-235" value="Creates QoS rules" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3868" y="1166" width="142" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-236" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3840" y="1228" as="sourcePoint" />
+            <mxPoint x="4230" y="1230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-239" value="" style="endArrow=none;html=1;rounded=0;startFill=1;startArrow=block;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3659" y="1203" as="sourcePoint" />
+            <mxPoint x="3839" y="1203" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-240" value="Creates QoS rules" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;rotation=0;" parent="1" vertex="1">
+          <mxGeometry x="3660" y="1176" width="150.5" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-241" value="0. Configured with best-effort default rule + copy to controller&lt;div&gt;1. Configured to intercept any marked packet destinated to this domain&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="3882" y="939" width="229" height="91" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-243" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="4232" y="1648" as="sourcePoint" />
+            <mxPoint x="4232" y="920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-242" value="0. Configured with best-effort rule + copy to controller&lt;div&gt;1. Configured to intercept any marked packet destinated to this domain&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="4128" y="943" width="226" height="87" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-244" value="Creates Monitoring rule (QoS rules)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3921" y="1201" width="274" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-248" value="Diagrama como ocorre a criação de um QoSBLockchain ?" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="5242" y="770" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-249" value="Domain Controller" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="5018" y="895" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-250" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="4857" y="1698" as="sourcePoint" />
+            <mxPoint x="4857" y="968" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-251" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="5222" y="1703.199951171875" as="sourcePoint" />
+            <mxPoint x="5222" y="968" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-254" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="5039" y="1673.800048828125" as="sourcePoint" />
+            <mxPoint x="5036" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-255" value="First switch of the route" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="4809" y="914" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-256" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Intermediate&lt;/span&gt;&lt;div style=&quot;color: rgb(0, 0, 0);&quot;&gt;Switch&lt;/div&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="5170" y="915" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-257" value="&lt;font color=&quot;#000000&quot;&gt;Last Switch&lt;/font&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="5353" y="912" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-269" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" target="1L-dFdye4u1Uikkd51U5-257" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="5401" y="1698" as="sourcePoint" />
+            <mxPoint x="5402.839524517088" y="1079" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-9" value="Para esclarecer, os hosts também poderiam interceptar o ICMP, porem, apenas o host destino receberia o icmp, e neste caso, o host de gerenciamento e de destino devem receber. Neste caso, o controlador consegue enviar para ambos via socket..." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="2938" y="662" width="362" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-10" value="&lt;font color=&quot;#000000&quot;&gt;First switch of the route&lt;/font&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="3609" y="855" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-11" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3660" y="1086.82" as="sourcePoint" />
+            <mxPoint x="4320" y="1089" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-12" value="Forwards packet as best-effort" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="3670" y="1057.32" width="510" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-14" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3660" y="1260.82" as="sourcePoint" />
+            <mxPoint x="4320" y="1263" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-15" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="3670" y="1231.32" width="510" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-16" value="Packet" style="shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#4495D1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.letter;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="3584" y="1202.6000000000001" width="46.4" height="34.8" as="geometry" />
+        </mxCell>
+        <mxCell id="DP9WUFka6WA4USUQD0_f-17" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3555" y="1260" as="sourcePoint" />
+            <mxPoint x="3655" y="1260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="BEvZ54K7tPOx-Mnh8blz" name="Página-9">
     <mxGraphModel dx="1050" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="wRJQR5XvGe3gycmCcVVx-1" value="Diagramas explicando a comunicacao host-host: todos os processos envolvidos durante o envio de pacotes de um fluxo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="350" y="290" width="120" height="140" as="geometry" />
-        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

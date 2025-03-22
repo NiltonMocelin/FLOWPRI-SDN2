@@ -1,33 +1,37 @@
 import json
+from fp_utils import current_milli_time
+import threading
 
 class Fred:
-    def __init__(self, code, blockchain_name, AS_src_ip_range, AS_dst_ip_range, ip_ver, proto, ip_src, ip_dst, src_port, dst_port, mac_src, 
-                 mac_dst, prioridade,classe,bandiwdth, loss, delay,jitter, label, ip_genesis, lista_peers, lista_rota):
-        self.ip_ver:str = ip_ver
-        self.proto:str = proto
+    def __init__(self, code:int, blockchain_name:str, as_src_ip_range:list, as_dst_ip_range:list, ip_ver:int, proto:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, mac_src:str, 
+                 mac_dst:str, prioridade:int,classe:int,bandiwdth:int, loss:int, delay:int,jitter:int, label:str, ip_genesis:str, lista_peers:list, lista_rota:list):
+        self.ip_ver:int = ip_ver
+        self.proto:int = proto
         self.ip_src:str  = ip_src 
         self.ip_dst:str = ip_dst
-        self.src_port:str = src_port
-        self.dst_port:str = dst_port
+        self.src_port:int = src_port
+        self.dst_port:int = dst_port
         self.mac_src:str = mac_src
         self.mac_dst:str  = mac_dst 
 
-        self.code:str = code
+        self.code:int = code
         
-        self.prioridade:str = prioridade
-        self.classe:str = classe
-        self.bandiwdth:str = bandiwdth
-        self.loss:str = loss
-        self.delay:str = delay
-        self.jitter:str  = jitter
+        self.prioridade:int = prioridade
+        self.classe:int = classe
+        self.bandiwdth:int = bandiwdth
+        self.loss:int = loss
+        self.delay:int = delay
+        self.jitter:int  = jitter
         self.label:str = label
 
         self.blockchain_name:str = blockchain_name
-        self.AS_src_ip_range:list = AS_src_ip_range
-        self.AS_dst_ip_range:list = AS_dst_ip_range
+        self.AS_src_ip_range:list = as_src_ip_range
+        self.AS_dst_ip_range:list = as_dst_ip_range
         self.ip_genesis:str = ip_genesis
         self.lista_peers:list = lista_peers
         self.lista_rota:list = lista_rota
+
+        self.timestamp = current_milli_time()
 
         # lista_peers = lista[ dict1, dict 2]
         # (dict) um peer = {"nome_peer":"", "chave_publica":"", "ip_porta":"ip:porta"}
@@ -47,6 +51,9 @@ class Fred:
     
     def getPeersPKeys(self) -> list:
         return [ip['ip_porta'] for ip in self.lista_peers]
+
+    def getName(self):
+        return str(self.ip_ver)+"_"+str(self.proto)+"_"+self.ip_src+"_"+self.ip_dst+"_"+str(self.src_port)+"_"+str(self.dst_port)
 
 def fromJsonToFred(fred_json):
     """{"FRED":{
@@ -117,13 +124,22 @@ def fromJsonToFred(fred_json):
 class FredManager:
     def __init__(self):
         self.dicionario_freds = {}
+        self.lock = threading.lock()
 
     def get_fred(self, name:str) -> Fred:
         return self.dicionario_freds.get(name, None)
 
     def save_fred(self, name:str, fred:Fred) -> bool:
-        self.dicionario_freds[name] = fred
+        with self.lock:
+            self.dicionario_freds[name] = fred
+        return True
+    
+    def del_fred(self, name:str)->bool:
+        with self.lock:
+            self.dicionario_freds.pop(name, None)
         return True
 
+    def remover_freds_expirados(self):
+        return True
 
 #"{ "FRED" : {....}}"

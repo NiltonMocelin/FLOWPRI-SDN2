@@ -1,1 +1,0 @@
-# Deixar as variáveis por aqui ?

@@ -5,7 +5,7 @@ from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, 
 from fp_regra import Regra, getRegrasExpiradas
 import sys
 
-from fp_openflow_rules import addRegraF, addRegraM, delRegraM, delRegraF, getMeterID_from_Flow, delMeter, generateMeterId
+from fp_openflow_rules import addRegraForwarding, addRegraMeter, delRegraMeter, delRegraForwarding, getMeterID_from_Flow, delMeter, generateMeterId, addRegraMonitoring
 
 
 class Switch:
@@ -27,6 +27,20 @@ class Switch:
         #5-tuple : id
         self.meter_dict = {}
 
+        self.conjunctions_rules={} # [tcp_src=port]=id # isso deve ser util para associar uma conjunção a uma regra e para remover uma conjunção.
+
+
+    def saveConjunction(self, key, value):
+        self.conjunctions_rules[key]=value
+        return True
+
+    def getConjuntion(self, key):
+        return self.conjunctions_rules.get(key,None)
+    
+    def delConjunction(self, key):
+        self.conjunctions_rules.pop(key, None)
+        return True
+
     def addPorta(self, nomePorta:int, larguraBanda:int, proximoSwitch:int):
         print("[S%s] Nova porta: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
         #criar a porta no switch
@@ -47,7 +61,7 @@ class Switch:
             return
 
         for regra in porta.getRegrasC1() + porta.getRegrasC2():
-            delRegraF(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
+            delRegraForwarding(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
 
         self.portas.pop(index)
         return 
@@ -67,7 +81,12 @@ class Switch:
     def getPortas(self)->list[Porta]:
         return self.portas
     
-    def add_regra_monitoramento_fluxo(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+    def add_regra_monitoramento_fluxo(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida):
+
+        # a regra ainda está ativa na instancia do switch, entao nao precisa mexer la, e a regra meter ainda está ativa tbm.
+        #  apenas criar a regra na tabela de fluxos novamente
+        addRegraMonitoring(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT)
+
         return
     
     def del_regra_monitoramento_fluxo(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
@@ -76,13 +95,16 @@ class Switch:
     def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida):
 
         porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, '{"qos_mark":%d, "out_port":%d, "meter_id":%d}' %(NO_QOS_MARK, porta_saida, NO_METER), False))
-        addRegraF(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT)
+        addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT)
 
         return True
 
     def addRegraQoSBackbone(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, criarMeter:bool, criarOpenFlow:bool):
         #Criar regras agrupadas, como em:[linha: 846] https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
         #match = parser.OFPMatch(vlan_vid=(0x1000, 0x1000))
+
+
+        
         return
 
     def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, criarMeter:bool, criarOpenFlow:bool):
@@ -91,14 +113,14 @@ class Switch:
         meter_id = NO_METER
         if criarMeter:
             meter_id = generateMeterId(self)
-            addRegraM(self, banda, meter_id)
+            addRegraMeter(self, banda, meter_id)
 
             #armazenar meter
             self.meter_dict[str(ip_ver)+ip_src+ip_dst+str(src_port)+str(dst_port)+str(proto)] = meter_id
         
         self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, '{"qos_mark":%d, "out_port":%d, "meter_id":%d}' %(NO_QOS_MARK, porta_saida, meter_id), emprestando))
         if criarOpenFlow:
-            addRegraF(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
+            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
             # addRegraF(porta_saida)
 
         return True
@@ -117,11 +139,11 @@ class Switch:
             meter_id = getMeterID_from_Flow(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
             if meter_id != NO_METER: # qos 
-                delRegraM(meter_id)
+                delRegraMeter(meter_id)
                 delMeter(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
         self.getPorta(porta_nome).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
-        delRegraF(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        delRegraForwarding(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
         return True
 
@@ -153,7 +175,7 @@ class Switch:
 
         #controle
         if classe == SC_CONTROL:
-            addRegraF(switch=self, qos_mark=NO_QOS_MARK, prioridade=100, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE,meter_id=None,flag=0)
+            addRegraForwarding(switch=self, qos_mark=NO_QOS_MARK, prioridade=100, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE,meter_id=None,flag=0)
             return True
 
         # fazer porta entrada e depois porta de saida
@@ -266,8 +288,8 @@ class Switch:
         # para cada key de regras_classe -> remover regras openflow e meter existentes para essas regras -> somar a banda -> criar nova meter, associar cada regra a essa meter -> criar a regra de fluxo agrupada
         # sem tempo para otimizar isso
         for regra in lista_regras:
-            delRegraF(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
-            delRegraM(self, regra.meter_id)
+            delRegraForwarding(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
+            delRegraMeter(self, regra.meter_id)
         
         # # somar banda de todas as regras a serem agrupadas e criar as meter rules -> nem precisa meter aqui
         for val in regras_classe.values(): 
@@ -361,6 +383,8 @@ class Switch:
     
 
     def delRegraGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, classe, prioridade, banda):
+        REFAZER !
+
         """ Parametro:
         ip_ver:str
         ip_src:str

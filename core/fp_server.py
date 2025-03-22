@@ -17,6 +17,12 @@ from fp_utils import tratador_addRegras, tratador_addSwitches, tratador_delRegra
 
 from fp_rota import tratador_addRotas, tratador_delRotas
 
+
+
+Criar a configuracao para definir o host de gerenciamento
+
+Criar a configuracao para resetar as regras -> poder refazer os testes
+
 def servidor_configuracoes():
 
     global IPCc

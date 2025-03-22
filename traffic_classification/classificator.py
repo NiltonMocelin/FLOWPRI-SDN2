@@ -8,6 +8,17 @@ flows_dict = {}
 
 classificador = None
 
+class ClassificacaoPayload:
+    def __init__(self, classe_label:str, application_label:str, delay:int, bandwidth:int, priority:int, loss:int, jitter:int):
+        self.classe_label = classe_label
+        self.application_label = application_label
+        self.bandwidth = bandwidth
+        self.priority = priority
+        self.loss = loss
+        self.jitter = jitter
+        self.delay = delay
+
+
 def startRandomForest():
 
     classificador = RandomForestClassifier()
@@ -17,9 +28,9 @@ def startRandomForest():
 
 def classificar_fluxo(filename):
 
-    fred_mock = { "label": "video", "banda":2000, "prioridade":1, "classe":"video_real" }
+    classificacao_mock = ClassificacaoPayload("real", "video", 2000, 1, 1,10,10 )
 
-    return fred_mock
+    return classificacao_mock
 
 def pkts_to_pcap(lista_pacotes, filename):
     return
@@ -27,7 +38,7 @@ def pkts_to_pcap(lista_pacotes, filename):
 def remover_file(filename):
     return
 
-def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
+def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt) -> ClassificacaoPayload:
     flow_five_tuple = ip_ver + "_" + ip_src + "_" + ip_dst + "_" + src_port + "_" + dst_port + "_" + proto
     #salvar em arqivo os pacotes,
     flows_dict[flow_five_tuple].append(pkt)
@@ -43,6 +54,6 @@ def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
 
         return classificacao
     
-    fred_mock = { "label": "be", "banda":0, "prioridade":0, "classe":"be" }
+    # fred_mock = { "label": "be", "banda":0, "prioridade":0, "classe":"be" }
 
-    return fred_mock
+    return ClassificacaoPayload("real", "video", 2000, 1, 1,10,10 )

@@ -1,6 +1,6 @@
 import sys
 
-from fp_constants import switches, freds, controladores_conhecidos, IPCv4, SEMBANDA, class_prio_to_queue_id
+from fp_constants import switches, controladores_conhecidos, IPCv4, SEMBANDA, class_prio_to_queue_id
 from fp_rota import Rota, Rota_Node
 
 from fp_acao import Acao
@@ -38,7 +38,6 @@ def check_domain_hosts(ip_src):
     return False
 
 
-
 def calculate_network_prefix_ipv4(ip_v4:str):
     # supomos tudo /24 -> 192.168.1.10 -> 192.168.1.0
     prefix = ip_v4.split(".")
@@ -65,69 +64,12 @@ def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
         raise SyntaxError("ERRO ao enviar fred !")
     return 
 
-def salvar_fred(fred:Fred):
-    if fred not in freds:
-        freds.append(fred)
-    return
-
-def remover_fred(ip_ver:int , proto:int , ip_src:str, ip_dst:str, src_port:int, dst_port:int):
-
-    for f in freds:
-        if f.ip_ver == ip_ver and f.proto == f.roto == proto and f.ip_srcd == ip_src and  f.ip_dstd == ip_dst and f.src_portd == src_port and f.dst_port == dst_port:
-            freds.remove(f)
-
-    return
+def get_ips_meu_dominio()->list[str]:
+    return ["192.168.0.0"] # sei la aqui
 
 def ip_meu_dominio(ip_src):
     """verificar se um host eh meu client"""
     return False
-
-
-#         #procurar em todos os switches do controlador, qual gerou um packet in de um host - ou seja - o host esta mais proximo de qual switch
-def getSwitchFromMac(mac):
-    for s in switches:
-        if s.conheceMac(mac) != -1:
-            return s.nome
-            
-def getSwitchByName(nome) -> Switch:
-    print("procurando switch: %s\n" % nome)
-    for i in switches:
-        if str(i.nome) == str(nome):
-            return i
-
-    return None
-
-def encontrarMatchFreds(ip_ver: int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
-    
-    #encontrou
-    for i in freds:
-        if i.ip_ver == ip_ver and i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
-            return i
-    #nao encontrou
-    return None, None, None
-
-
-def buscarFredId(id):
-    for i in freds:
-        if i.id == id:
-            return i
-        
-    return None
-
-def buscarFred(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
-    """ Parametros
-    ip_ver: str
-    ip_src: str
-    ip_dst: str
-    src_port: str
-    dst_port: str
-    proto: str
-    """
-    for i in freds:
-        if i.ip_ver == ip_ver and i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
-            return i
-        
-    return None
 
 
 def tratador_addSwitches(addswitch_json):
@@ -243,8 +185,6 @@ def tratador_delSwitches(switch_cfg):
             break
 
     print('Switch removido: %s' % (nome_switch))
-
-
 
 
 def tratador_addRegras(novasregras_json):
@@ -366,71 +306,10 @@ def checkControladorConhecido(ip:str):
             #conhecido
             return 1
     #desconhecido
-    return 0
+    return 0  
 
-
-def update_regra_monitoramento(ip_ver,ip_src,ip_dst,src_port,dst_port,proto, switch_name):
-
-    # encontrar o primeiro switch da rota
-    # atualizar com ligar ou desligar monitoramento do fluxo
-    rota_switches = get_rota(ip_src, ip_dst)
-    # sou o dominio de origem, e primeiro switch da rota, que faz monitoramento
-    if rota_switches[0].switch_name == switch_name and ip_meu_dominio(ip_src):
-        # se a regra estava monitorando, agora deve passar um periodo sem monitorar
-        switch = getSwitchByName(switch_name).add_regra_monitoramento_fluxo({})
-        return True
-    return False
-
-def remove_qos_rules(ip_src, ip_dst, ip_ver):
-    rota_switches = get_rota(ip_src, ip_dst)
-    # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
-    for rota_noh in rota_switches:
-        switch = getSwitchByName(rota_noh.switch_name)
-        # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
-        porta_nome = switch.getPortaSaida(ip_dst)
-
-        switch.delRegra(ip_ver)
+def remover_freds_expirados(switch):
     return
-
-def create_qos_rules(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, fred:dict, in_switch_id:int):
-
-    #flow qos
-    banda=fred["banda"]
-    prioridade=fred["prioridade"]
-    classe=fred["classe"]
-    flow_label = fred["label"]
-
-    # rota com os datapaths dos switches em ordem
-    switch_route = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id)
-
-    if switch_route == None:
-        return False
     
-    lista_acoes:list[Acao] =[]
-
-    # for switch in switch_route:
-        #GBAM
-
-    return True
-
-def create_be_rules(ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int, in_switch_id:int):
-    # rota com os datapaths dos switches em ordem
-    switch_route = get_rota(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, in_switch_id)
-
-    if switch_route == None:
-        # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
-        # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
-        # 
-        # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
-        return False
-
-    for sw in switch_route:
-
-        switchh = getSwitchByName(sw.switch_name)
-        porta_saida = sw.out_port
-        switchh.criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
-
-    return True
-
 def current_milli_time():
     return round(time.time() * 1000)

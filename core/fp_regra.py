@@ -38,6 +38,7 @@ class Regra:
         self.dst_port:int = dst_port
         self.proto:int = proto
         self.fila:int = fila
+        self.qos_mark:int = None 
         self.actions:str = actions
         self.flow_label:str = flow_label
         self.timestamp = current_milli_time()
@@ -49,6 +50,12 @@ class Regra:
 
     def getTimestamp(self):
         return self.timestamp
+    
+    def getMeterId(self):
+        return self.meter_id
+    
+    def getRegraId(self)->str:
+        return self.ip_ver+"_"+self.proto +"_"+self.ip_src+ "_"+self.ip_dst + "_"+ self.src_port + "_"+self.dst_port
 
 # parte de criação de regras 
 

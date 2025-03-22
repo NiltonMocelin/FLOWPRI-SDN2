@@ -1,29 +1,7 @@
 from netifaces import AF_INET, ifaddresses, interfaces
 
-# chamei de constants mas tem diversas variáveis aqui ....
-
-#controller singleton
-controller_singleton = None
 
 # algumas variaveis para o controlador
-arpList = {}
-
-freds = []
-
-# dict para controlar as meter rules dos switches id_switch + _ + 5-tupla = id_meter :X
-meter_ids = {}
-
-#self.mac_to_port = {} arrumar esses dois, tirar do controlador e trzer para ca
-#self.ip_to_mac = {}
-
-#vetor com os enderecos ip dos controladores conhecidos (enviaram icmps)
-controladores_conhecidos = []
-
-switches = [] #switches administrados pelo controlador
-# rotas_ipv4 = {} # ip_dst/prefix:mask :list[switch_name]
-# rotas_ipv6 = {} # ip_dst/prefix:mask :list[switch_name]
-
-
 
 IP_MANAGEMENT_HOST = "192.168.0.1" # alterar isso
 PORTA_MANAGEMENT_HOST_SERVER = 9090
@@ -111,12 +89,6 @@ SEMBANDA = -1
 CLASSIFICATION_TABLE = 0 #tabela para marcacao de pacotes
 FORWARD_TABLE = 1 #tabela para encaminhar a porta destino
 ALL_TABLES = 255 #codigo para informar que uma acao deve ser tomada em todas as tabelas
-
-CPT = {} #chave (CLASSE,PRIORIDADE,BANDA): valor TOS  
-CPF = {} #classe + prioridade = fila
-
-
-#fila + banda = tos
 
 # aqui é 5-tupla:list[(pacote,timestamp)]
 fluxos_classificacao_dict = {}
