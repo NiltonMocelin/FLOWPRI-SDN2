@@ -13,6 +13,14 @@ PORTA_MANAGEMENT_HOST_SERVER = 9090
 # CONTROLLER_INTERFACE = "eth0"
 CONTROLLER_INTERFACE = "enp7s0"
 
+CONJUNCTION_ID = 10
+
+
+TCP_SRC = 0
+TCP_DST = 1
+UDP_SRC = 2
+UDP_DST = 3
+
 CONTROLADOR_ID = "No-id"
 IPCv4 = None 
 IPCv6 = None 
@@ -114,4 +122,37 @@ class_prio_to_queue_id = {
             23: 5,
             3: 6,
             4: 7
+ }
+
+dscp_to_queue_id = {
+            11: 0,
+            12: 1,
+            13: 2,
+            21: 3,
+            22: 4,
+            23: 5,
+            3: 6,
+            4: 7,
+            71: 0, # qos_monitoring phase
+            72: 1, # qos_monitoring phase
+            73: 2, # qos_monitoring phase
+            74: 3, # qos_monitoring phase
+            75: 4, # qos_monitoring phase
+            76: 5  # qos_monitoring phase
+ }
+flowlabel_to_queue_id = {
+            11: 0,
+            12: 1,
+            13: 2,
+            21: 3,
+            22: 4,
+            23: 5,
+            3: 6,
+            4: 7,
+            71: 0, # qos_monitoring phase
+            72: 1, # qos_monitoring phase
+            73: 2, # qos_monitoring phase
+            74: 3, # qos_monitoring phase
+            75: 4, # qos_monitoring phase
+            76: 5  # qos_monitoring phase
  }

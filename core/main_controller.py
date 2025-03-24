@@ -210,6 +210,7 @@ class FLOWPRI2(app_manager.RyuApp):
         for node in route_nohs:
             switchh = self.getSwitchByName(node.switch_name)
             porta_saida = node.out_port
+            # teria que agrupar as regras em conjunctions
             switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
 
         return True
@@ -319,7 +320,6 @@ class FLOWPRI2(app_manager.RyuApp):
 
         #por agora, tanto as regras de ida quanto as de volta sao marcadas para notificar com o evento
         #atualizar no switch que gerou o evento
-        
         route_nodes = self.rotamanager.get_rota(ip_src, ip_dst)
 
         # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento

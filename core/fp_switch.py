@@ -1,11 +1,11 @@
 from fp_acao import Acao
 from fp_porta import Porta
-from fp_constants import CPT, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
-from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, class_prio_to_queue_id, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL
+from fp_constants import TCP_SRC,TCP_DST, UDP_SRC, UDP_DST, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
+from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, class_prio_to_queue_id, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID
 from fp_regra import Regra, getRegrasExpiradas
 import sys
 
-from fp_openflow_rules import addRegraForwarding, addRegraMeter, delRegraMeter, delRegraForwarding, getMeterID_from_Flow, delMeter, generateMeterId, addRegraMonitoring
+from fp_openflow_rules import addRegraForwarding, addRegraMeter, delRegraMeter, delRegraForwarding, getMeterID_from_Flow, delMeter, generateMeterId, addRegraMonitoring, add_conjunction
 
 
 class Switch:
@@ -26,20 +26,93 @@ class Switch:
 
         #5-tuple : id
         self.meter_dict = {}
+        self.tcp_src_conjunction = {}
+        self.tcp_dst_conjunction = {}
+        self.udp_src_conjunction = {}
+        self.udp_dst_conjunction = {}
+        # self.conjunctions_rules={} # [tcp_src=port]=id # isso deve ser util para associar uma conjunção a uma regra e para remover uma conjunção.
 
-        self.conjunctions_rules={} # [tcp_src=port]=id # isso deve ser util para associar uma conjunção a uma regra e para remover uma conjunção.
 
+    def saveConjunction(self, port_name:int, tipo:int): # deixar isso ser chamado la nas acoes
 
-    def saveConjunction(self, key, value):
-        self.conjunctions_rules[key]=value
+        if tipo == TCP_SRC:
+            self.tcp_src_conjunction[port_name] = self.tcp_src_conjunction(port_name, 0) + 1
+        elif tipo == TCP_DST:
+            self.tcp_dst_conjunction[port_name] = self.tcp_dst_conjunction(port_name, 0) + 1
+        elif tipo == UDP_SRC:
+            self.udp_src_conjunction[port_name] = self.udp_src_conjunction(port_name, 0) + 1
+        else: #tipo == UDP_DST:
+            self.udp_dst_conjunction[port_name] = self.udp_dst_conjunction(port_name, 0) + 1
+
         return True
 
-    def getConjuntion(self, key):
-        return self.conjunctions_rules.get(key,None)
+    def getConjuntion(self, port_name:int, tipo:int):
+        if tipo == TCP_SRC:
+            return self.tcp_src_conjunction.get(port_name,None)
+        elif tipo == TCP_DST:
+            return self.tcp_dst_conjunction.get(port_name,None)
+        elif tipo == UDP_SRC:
+            return self.tcp_dst_conjunction.get(port_name,None)
+        #tipo == UDP_DST
+        return self.udp_dst_conjunction.get(port_name,None)
     
-    def delConjunction(self, key):
-        self.conjunctions_rules.pop(key, None)
+    def isPortInConjunction(self, port_name:int, tipo:int):
+
+        if tipo == TCP_SRC:
+            if self.tcp_src_conjunction.get(port_name,None):
+                return True
+        elif tipo == TCP_DST:
+            if self.tcp_dst_conjunction.get(port_name,None):
+                return True
+        elif tipo == UDP_SRC:
+            if self.udp_src_conjunction.get(port_name,None):
+                return True
+        else: # tipo == UDP_DST
+            if self.udp_dst_conjunction.get(port_name,None):
+                return True
+        return False
+    
+    def delConjunctionByCount(self, port_name:int, tipo:int):
+        
+        if tipo == TCP_SRC:
+            val = self.tcp_src_conjunction.get(port_name,0) - 1
+            if val <= 0:
+                self.tcp_src_conjunction.pop(port_name, None)
+            else:
+                self.tcp_src_conjunction[port_name] = val
+        elif tipo == TCP_DST:
+            val= self.tcp_dst_conjunction.get(port_name,0)-1
+            if val <= 0:
+                self.tcp_dst_conjunction.pop(port_name, None)
+            else:
+                self.tcp_dst_conjunction[port_name] = val
+        elif tipo == UDP_SRC:
+            val = self.udp_src_conjunction.get(port_name,0) -1
+            if val <= 0:
+                self.udp_src_conjunction.pop(port_name,None)
+            else:
+                self.udp_src_conjunction[port_name] = val
+        else: # tipo == UDP_DST
+            val = self.udp_dst_conjunction.get(port_name,0) -1
+            if val <= 0:
+                self.udp_dst_conjunction.pop(port_name,None)
+            else:
+                self.udp_dst_conjunction[port_name] = val
         return True
+
+
+    def delConjunction(self, port_name:int, tipo:int):
+        
+        if tipo == TCP_SRC:
+            self.tcp_src_conjunction.pop(port_name,None)
+        elif tipo == TCP_DST:
+            self.tcp_dst_conjunction.pop(port_name,None)
+        elif tipo == UDP_SRC:
+            self.udp_src_conjunction.pop(port_name,None)
+        else: # tipo == UDP_DST
+            self.udp_dst_conjunction.pop(port_name,None)
+        return True
+    
 
     def addPorta(self, nomePorta:int, larguraBanda:int, proximoSwitch:int):
         print("[S%s] Nova porta: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
@@ -100,8 +173,7 @@ class Switch:
         return True
 
     def addRegraQoSBackbone(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, criarMeter:bool, criarOpenFlow:bool):
-        #Criar regras agrupadas, como em:[linha: 846] https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
-        #match = parser.OFPMatch(vlan_vid=(0x1000, 0x1000))
+        #Criar regras agrupadas, como em: https://manpages.ubuntu.com/manpages/focal/en/man7/ovs-fields.7.html
 
 
         

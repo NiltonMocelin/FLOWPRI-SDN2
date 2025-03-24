@@ -77,7 +77,7 @@
         <mxCell id="JcWOuOSxpqwyGr28JaXR-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="JcWOuOSxpqwyGr28JaXR-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="DS7rIpaRcRCpLhZqo8LS-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="DS7rIpaRcRCpLhZqo8LS-1">
+        <mxCell id="DS7rIpaRcRCpLhZqo8LS-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-5" target="DS7rIpaRcRCpLhZqo8LS-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-5" value="Falta implementar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
@@ -110,7 +110,7 @@
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="410" y="140" width="120" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;3: [acoes]: verificar o que Acoes precisa fazer&lt;/p&gt;&lt;p&gt;4: [packet-in] Ajustar o packet in-&amp;gt; icmps&lt;/p&gt;&lt;p&gt;-&amp;gt; classificacao&lt;/p&gt;&lt;p&gt;5: ajustar a criacao de regras openflow -&amp;gt; marcacao e encaminhamento (qos e be)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;6: obs: tem que ajustar o payload da blockchain.&lt;/p&gt;&lt;p&gt;6: REvisar o que falta e verificar o funcionamento&lt;/p&gt;&lt;p&gt;8: preparar o script para instalar todos os requisitos para o funcionamento do flowpri, classificacao, blockchain...&lt;/p&gt;&lt;p&gt;7: realizar experimentos&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;* Arrumar a parte de rotas: quando o destino for um host fora do domínio e quando for um host do domínio.!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;* Revisar a partir do packet-in, para resolver a criação de regras e o backbone gbam&lt;/p&gt;&lt;p&gt;3: [acoes]: verificar o que Acoes precisa fazer&lt;/p&gt;&lt;p&gt;4: [packet-in] Ajustar o packet in-&amp;gt; icmps&lt;/p&gt;&lt;p&gt;-&amp;gt; classificacao&lt;/p&gt;&lt;p&gt;5: ajustar a criacao de regras openflow -&amp;gt; marcacao e encaminhamento (qos e be)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;6: obs: tem que ajustar o payload da blockchain.&lt;/p&gt;&lt;p&gt;6: REvisar o que falta e verificar o funcionamento&lt;/p&gt;&lt;p&gt;8: preparar o script para instalar todos os requisitos para o funcionamento do flowpri, classificacao, blockchain..&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;9: preparar os scritps para rodar os experimentos: profile, talvez um pcap reproduzido ou iperf apenas...&lt;/p&gt;&lt;p&gt;7: realizar experimentos&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="290" y="800" width="220" height="620" as="geometry" />
         </mxCell>
         <mxCell id="utfMI5SQkQcTHa897YUp-1" value="GUI simples (swtiches, rotas, regras) -&amp;gt; esquecer isso por enquanto[deixar]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -187,7 +187,7 @@
         <mxCell id="JcWOuOSxpqwyGr28JaXR-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Questões em discussão&lt;/h1&gt;&lt;div&gt;1: Agrupamento de regras -&amp;gt; podemos criar regras BE agrupadas, assim como criamos regras QoS agrupadas no backbone -&amp;gt; PROBLEMA: armazenar um FRED BE para cada regra vai ficar bem mais complexo que armazenar um FRED QOS para cada regra, pois são em bem maior número. --&amp;gt; O agrupamento atualmente depende do FRED, para remover por timestamp de armazenamento. ==&amp;gt; Implementar BE por agrupamento de FRED tbm igual com QoS ?&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="850" y="800" width="320" height="430" as="geometry" />
         </mxCell>
-        <mxCell id="DS7rIpaRcRCpLhZqo8LS-1" value="Mudar regras openFlow para utilizar dicionarios [ OK]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="DS7rIpaRcRCpLhZqo8LS-1" value="Mudar regras openFlow para utilizar dicionarios [ OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="860" y="140" width="120" height="90" as="geometry" />
         </mxCell>
       </root>
@@ -409,40 +409,40 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-1" value="Remover Regras BackboneGBAM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="750" y="1080" width="240" height="60" as="geometry" />
+          <mxGeometry x="230" y="1080" width="240" height="60" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-2" target="D-c96v3ZVJayj7JLHeLw-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-2" value="FlowRemoved" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="600" y="1180" width="120" height="60" as="geometry" />
+          <mxGeometry x="80" y="1180" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="D-c96v3ZVJayj7JLHeLw-3" target="D-c96v3ZVJayj7JLHeLw-4" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-3" value="Remover as regras e a meter associada -&amp;gt; porém elas estão agrupadas por ip_src e ip_dst, ou seja, tem multiplas portas" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="760" y="1180" width="150" height="80" as="geometry" />
+          <mxGeometry x="240" y="1180" width="150" height="80" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-4" target="D-c96v3ZVJayj7JLHeLw-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-4" value="Remove a regra de fluxo -&amp;gt; apenas desse switch" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="970" y="1180" width="150" height="40" as="geometry" />
+          <mxGeometry x="450" y="1180" width="150" height="40" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-5" target="D-c96v3ZVJayj7JLHeLw-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-5" value="Verifica os freds que estão expirados, remove-os e suas regras -&amp;gt; de todos os switches da rota" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1150" y="1180" width="150" height="60" as="geometry" />
+          <mxGeometry x="630" y="1180" width="150" height="60" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="D-c96v3ZVJayj7JLHeLw-6" target="D-c96v3ZVJayj7JLHeLw-13" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-6" value="Verifica se alguma regra precisa ser recriada -&amp;gt; se precisar é pq foi uma, ou algumas, das agrupadas.&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1150" y="1280" width="150" height="60" as="geometry" />
+          <mxGeometry x="630" y="1280" width="150" height="60" as="geometry" />
         </mxCell>
         <mxCell id="D-c96v3ZVJayj7JLHeLw-13" value="Verificar as regras que foram removidas -&amp;gt; rodar o alocarGBAM (Backbone quando o caso)" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="930" y="1280" width="150" height="60" as="geometry" />
+          <mxGeometry x="410" y="1280" width="150" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Pj3scuITqSNc792TWXn2-1" target="Pj3scuITqSNc792TWXn2-2" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -451,116 +451,223 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-1" value="OBS: O agrupamento so pode ser feito utilizando mascaras ou conjunções&lt;div&gt;Ref:&amp;nbsp;&lt;a style=&quot;background-color: transparent;&quot; href=&quot;https://manpages.ubuntu.com/manpages/focal/en/man7/ovs-fields.7.html&quot;&gt;Ubuntu Manpage: ovs-fields - protocol header fields in OpenFlow and Open vSwitch&lt;/a&gt;&amp;nbsp;&lt;/div&gt;&lt;div&gt;Como usar OpenFlow13:&amp;nbsp;&lt;a style=&quot;background-color: transparent;&quot; href=&quot;https://ryu.readthedocs.io/en/latest/nicira_ext_ref.html?highlight=nxactionconjunction#ryu.ofproto.ofproto_v1_3_parser.NXActionConjunction&quot;&gt;Nicira Extension Structures — Ryu 4.34 documentation&lt;/a&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="770" y="1400" width="380" height="80" as="geometry" />
+          <mxGeometry x="250" y="1400" width="380" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="Pj3scuITqSNc792TWXn2-2" target="Pj3scuITqSNc792TWXn2-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-2" value="Uma máscara combina um valor e uma máscara usando os bits 1000/0x1111 por exemplo." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="600" y="1520" width="270" height="80" as="geometry" />
+          <mxGeometry x="80" y="1520" width="270" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Pj3scuITqSNc792TWXn2-3" target="Pj3scuITqSNc792TWXn2-6" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1170" y="1690" as="targetPoint" />
+            <mxPoint x="650" y="1690" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-3" value="Conjunções criam condições encadeadas entre regras, permitindo combinar e condicionar varios valores para os mesmos campos." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="940" y="1520" width="270" height="80" as="geometry" />
+          <mxGeometry x="420" y="1520" width="270" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-6" value="Qual e como usar, para o agrupamento de regras do backbone gbam e de best-effort" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="770" y="1650" width="270" height="80" as="geometry" />
+          <mxGeometry x="250" y="1650" width="270" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="Pj3scuITqSNc792TWXn2-9" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="1815" as="targetPoint" />
+            <mxPoint x="320" y="1815" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-9" value="&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Testando as conjunções (obs, deve ser a unica acao, nao pode ter encaminhamento nessa regra)&amp;nbsp;&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="580" y="1800" width="280" height="30" as="geometry" />
+          <mxGeometry x="60" y="1800" width="280" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-14" value="R1: sip_a,dip_b,sport_a,d_portb" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="550" y="1880" width="210" height="30" as="geometry" />
+          <mxGeometry x="30" y="1880" width="210" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-15" value="R2: sip_a,dip_b,sport_c,e_portb" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="550" y="1910" width="210" height="30" as="geometry" />
+          <mxGeometry x="30" y="1910" width="210" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-16" value="R3: sip_a,dip_b,sport_d,r_portb" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="550" y="1940" width="210" height="30" as="geometry" />
+          <mxGeometry x="30" y="1940" width="210" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-17" value="Tenho diversos fluxos com&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="560" y="1850" width="180" height="30" as="geometry" />
+          <mxGeometry x="40" y="1850" width="180" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-18" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="827" y="1920" as="sourcePoint" />
-            <mxPoint x="930" y="1920" as="targetPoint" />
+            <mxPoint x="307" y="1920" as="sourcePoint" />
+            <mxPoint x="410" y="1920" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-19" value="Usando conjunções, extraio as portas para uma conjuncao id" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="810" y="1870" width="130" height="30" as="geometry" />
+          <mxGeometry x="290" y="1870" width="130" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-20" value="R1: sip_a,dip_b,actions=conj_id(1,2,3,4)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="990" y="1870" width="210" height="30" as="geometry" />
+          <mxGeometry x="470" y="1870" width="210" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-21" value="R2: sport_c,e_portb,conj_id=2" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="990" y="1900" width="210" height="30" as="geometry" />
+          <mxGeometry x="470" y="1900" width="210" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-22" value="R3: sport_d,r_portb,,conj_id=3" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="990" y="1930" width="210" height="30" as="geometry" />
+          <mxGeometry x="470" y="1930" width="210" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Pj3scuITqSNc792TWXn2-23" value="R4:sport_a,d_portb, conj_id=4" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="990" y="1960" width="210" height="30" as="geometry" />
+          <mxGeometry x="470" y="1960" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-1" value="R0: sip_a,dip_d,actions=conj_id(1,2,3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="990" y="1840" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-1" value="R0: sip_a,dip_d,actions=conj_id(1,2,3)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="470" y="1840" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-2" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-2" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1241" y="1939" as="sourcePoint" />
-            <mxPoint x="1344" y="1939" as="targetPoint" />
+            <mxPoint x="721" y="1939" as="sourcePoint" />
+            <mxPoint x="824" y="1939" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-3" value="Sem conjunções seria" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1224" y="1889" width="130" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-3" value="Sem conjunções seria" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="704" y="1889" width="130" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-4" value="R0: sip_a,dip_d,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="1850" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-4" value="R0: sip_a,dip_d,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="1850" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-5" value="R0: sip_a,dip_d,sport_d,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="1880" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-5" value="R0: sip_a,dip_d,sport_d,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="1880" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-6" value="R0: sip_a,dip_d,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="1906" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-6" value="R0: sip_a,dip_d,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="1906" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-7" value="R0: sip_b,dip_b,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="1930" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-7" value="R0: sip_b,dip_b,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="1930" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-8" value="R0: sip_b,dip_b,sport_d,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="1955" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-8" value="R0: sip_b,dip_b,sport_d,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="1955" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-9" value="R0: sip_b,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="1985" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-9" value="R0: sip_b,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="1985" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-10" value="R0: sip_c,dip_b,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="2015" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-10" value="R0: sip_c,dip_b,sport_c,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="2015" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-11" value="R0: sip_c,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="2046" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-11" value="R0: sip_c,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="2046" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-12" value="R1: sip_c,dip_b,actions=conj_id(1,2,3,4)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="990" y="1810" width="210" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-12" value="R1: sip_c,dip_b,actions=conj_id(1,2,3,4)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="470" y="1810" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-13" value="R0: sip_c,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1371" y="2076" width="210" height="30" as="geometry" />
+        <mxCell id="TifLLYvegCwPGcm7LZRK-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="UJb8fyEG3CVLfN0-wd_n-13" target="TifLLYvegCwPGcm7LZRK-1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-14" value="Reduz de Nportas * Nips * qos p/ Nportas + Nips * qos" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="985" y="2010" width="220" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-13" value="R0: sip_c,dip_b,sport_a,dport_b" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="851" y="2076" width="210" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-15" value="Colocar as conjuntions NA DISSERTAÇÃO TBM" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="980" y="2076" width="220" height="30" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-14" value="Reduz de Nportas * Nips * qos p/ Nportas + Nips * qos" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="465" y="2010" width="220" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="UJb8fyEG3CVLfN0-wd_n-16" value="Todas as regras: QoS, BE, backboneGBAM -&amp;gt; devem ser criadas utilizando esses conjunctions. A diferenca é que o backbone gbam vai poder agrupar mais de um par de conjunctions (pq faz um BE dentro de uma fila de QoS)." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="985" y="2130" width="245" height="90" as="geometry" />
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-15" value="Colocar as conjuntions NA DISSERTAÇÃO TBM" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="460" y="2076" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UJb8fyEG3CVLfN0-wd_n-16" value="Todas as regras: QoS, BE, backboneGBAM -&amp;gt; devem ser criadas utilizando esses conjunctions. A diferenca é que o backbone gbam vai poder agrupar mais de um par de conjunctions (pq faz um BE dentro de uma fila de QoS)." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="465" y="2130" width="245" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="TifLLYvegCwPGcm7LZRK-1" target="TifLLYvegCwPGcm7LZRK-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-1" value="Se os pacotes estiverem marcados com um dscp ou flow_label = 0 Nao classificado, 1 (Classe 1), 2 (Classe 2), 3 (Classe 3), 4 Classe 4 -&amp;gt; isso vai ajudar a fazer a classificacao com conjunctions -&amp;gt; podemos utilizar outros valores para definir que o fluxo está sendo monitorado" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="851" y="2180" width="210" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.41;entryY=1.04;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="TifLLYvegCwPGcm7LZRK-3" target="TifLLYvegCwPGcm7LZRK-53">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1255" y="2058" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-3" value="Isso permite utilizar o mesmo conjunto de portas para definir a fila e assim agrupar muitas regras" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="2205" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1.017;entryY=0.846;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryPerimeter=0;" edge="1" parent="1" source="TifLLYvegCwPGcm7LZRK-55" target="TifLLYvegCwPGcm7LZRK-23">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="1615" as="sourcePoint" />
+            <mxPoint x="1080" y="1635" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="TifLLYvegCwPGcm7LZRK-21" target="TifLLYvegCwPGcm7LZRK-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-21" value="Reduz de 2(par_ip)*5(src_port)*4(dst_port) = 40 qtd de regras no pior caso, para apenas 2(par_ip)+5(src_port)+4(dst_port) = 11&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;OBS: Reduz a quantidade de regras pelo custo de aumentar uma consulta a tabela e provavelmente a quantidade de comparações&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1690" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="TifLLYvegCwPGcm7LZRK-23" target="TifLLYvegCwPGcm7LZRK-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-23" value="Algoritmo de criacao de conjunctions:&lt;div&gt;conj_src e conj_dst.&lt;/div&gt;&lt;div&gt;1. Cada regra nova, verificar se existe uma entrada para as portas nas conjunctions, se não tiver, colocar.&lt;/div&gt;&lt;div&gt;2. No momento de criar a regra, colocar o dscp ou flow_label correspondente e criar a regra.&lt;/div&gt;&lt;div&gt;3. Se tiver que colocar meter, coloca tbm.&lt;/div&gt;&lt;div&gt;4. Permite que no backbone se coloque prefixos de rede ao inves de utilizar regras individuais.&lt;/div&gt;&lt;div&gt;5. Permite que no backbone remova regras/prefixo, cujos FREDs expiraram. -&amp;gt; Só precisa manter o FRED da fila e outport mais recentes.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="771" y="1440" width="290" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="TifLLYvegCwPGcm7LZRK-25" target="TifLLYvegCwPGcm7LZRK-56">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-25" value="Modificar isso na Dissertação" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="1450" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-31" value="src_port=a,actions=(id=10,2/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1754" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-32" value="src_port=b,actions=(id=10,2/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1784" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-33" value="src_port=c,actions=(id=10,2/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1810" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-34" value="src_port=d,actions=(id=10,2/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1834" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-35" value="src_port=e,actions=(id=10,2/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1859" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-36" value="dst_port=a,actions=(id=10,3/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1889" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-37" value="dst_port=b,actions=(id=10,3/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1919" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-38" value="dst_port=c,actions=(id=10,3/3)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1950" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-39" value="R0: conj_id=10,sip_a,dip_d,dscp=1,actions=(fila1)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1704" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-40" value="R0: conj_id=10,sip_c,dip_e,dscp=1,actions=(fila1)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="1654" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-45" value="Precisamos verificar o comportamento das conjunctions ::: Assim, se as conjnctions rodar primeiro, o que vai acontecer caso não de match no dscp? O Esperado é que, falhe nessa regra e continue a procurar nas outras, até dar match ou ser enviada ao controlador --&amp;gt; provavelmente é o que ocorre&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;OBS2: colocando o dscp na regra é mais lento que colocando na conjunção, porém, cria menos regras! (vamos fazer mais lento mesmo), pq verifica toda a tabela de conjunções antes de falhar comparando o dscp, azar, é fácil modificar isso caso de muito problema&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;NO momento, Regras conjunction foram implementadas apenas para IPv4&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#CC0000;" vertex="1" parent="1">
+          <mxGeometry x="1910" y="1340" width="250" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-46" value="src_port=a,actions=(id=10,1/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1784" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-47" value="src_port=b,actions=(id=10,1/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1814" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-48" value="src_port=c,actions=(id=10,1/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1840" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-49" value="src_port=d,actions=(id=10,1/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1864" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-50" value="src_port=e,actions=(id=10,1/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1889" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-51" value="dst_port=a,actions=(id=10,2/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1919" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-52" value="dst_port=b,actions=(id=10,2/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1949" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-53" value="dst_port=c,actions=(id=10,2/2)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1980" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-54" value="R0: conj_id=10,sip_a,dip_d,dscp=1,actions=(fila1)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1734" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-55" value="R0: conj_id=10,sip_c,dip_e,dscp=1,actions=(fila1)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1684" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="TifLLYvegCwPGcm7LZRK-56" value="Abstrair a remoção e criação de conjuncções dos switches.. deixar em addregra_Conjuncoes e delregra_conjuncoes" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="1450" width="260" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
