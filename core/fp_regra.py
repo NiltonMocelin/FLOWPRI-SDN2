@@ -1,10 +1,11 @@
 from fp_utils import current_milli_time
 from fp_constants import BE_HARD_TIMEOUT, QOS_HARD_TIMEOUT
+import json
 
 class Regra:
     def __init__(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int,
                 dst_port:int, proto:int, porta_entrada:int, porta_saida:int, meter_id:int,
-                banda: int, prioridade: int, classe: int, fila: int, flow_label:str, actions:str, emprestando: bool):
+                banda: int, prioridade: int, classe: int, fila: int, application_class:int, qos_mark:int, actions:dict, emprestando: bool):
         """Parametros: 
         ip_ver: str
         ip_src: str
@@ -16,9 +17,9 @@ class Regra:
         porta_saida: int
         meter_id: int
         tos: int
-        banda: str
-        prioridade: str
-        classe: str
+        banda: int
+        prioridade: int
+        classe: int
         emprestando: bool
         fila: int
         actions: ""
@@ -38,15 +39,25 @@ class Regra:
         self.dst_port:int = dst_port
         self.proto:int = proto
         self.fila:int = fila
-        self.qos_mark:int = None 
-        self.actions:str = actions
-        self.flow_label:str = flow_label
+        self.qos_mark:int = qos_mark 
+        self.actions:dict = actions
+        self.application_class:int = application_class
+        self.monitorando:bool = False
         self.timestamp = current_milli_time()
 
         #print]("[criando-regra-controlador]src:%s; dst=%s; banda:%s, porta_dst=%d, tos=%s, emprestando=%d" % (self.ip_src, self.ip_dst, self.banda, self.porta_dst, self.tos, self.emprestando)) 
 
     def toString(self):
-        return "[regra]ip_ver:%s; ip_src:%s; ip_dst=%s; src_port=%d; dst_port=%d; proto=%d; banda:%d, porta_dst=%d, tos=%s, emprestando=%b" % (self.ip_ver, self.ip_src, self.ip_dst, self.src_port, self.dst_port, self.proto, self.banda, self.porta_entrada, self.porta_saida, self.emprestando) 
+
+        return json.dumps(self.toDictionary())
+    
+    def toDictionary(self):
+        dicionario = {'ip_ver':self.ip_ver, 'ip_src':self.ip_src, 'ip_dst':self.ip_dst, 'src_port':self.src_port,
+                       'dst_port':self.dst_port, 'proto':self.proto, 'porta_entrada':self.porta_entrada, 'porta_saida':self.porta_saida,
+                       'meter_id':self.meter_id, 'emprestando':self.emprestando, 'banda':self.banda, 'prioridade':self.prioridade, 'classe':self.classe,
+                       'fila':self.fila, 'qos_mark':self.qos_mark, 'actions':self.actions, 'application_class':self.application_class, 'timestamp':self.timestamp}
+
+        return dicionario
 
     def getTimestamp(self):
         return self.timestamp

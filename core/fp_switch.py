@@ -1,16 +1,30 @@
 from fp_acao import Acao
 from fp_porta import Porta
 from fp_constants import TCP_SRC,TCP_DST, UDP_SRC, UDP_DST, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
-from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, class_prio_to_queue_id, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID
+from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID, METER_PRIO, CONJUNCTION_PRIO, MONITORING_PRIO, MONITORING_TIMEOUT
+from fp_constants import PORTA_ENTRADA, PORTA_SAIDA
 from fp_regra import Regra, getRegrasExpiradas
 import sys
 
-from fp_openflow_rules import addRegraForwarding, addRegraMeter, delRegraMeter, delRegraForwarding, getMeterID_from_Flow, delMeter, generateMeterId, addRegraMonitoring, add_conjunction
+from fp_utils import getQueueId, getEquivalentMonitoringMark, getQOSMark
+
+from fp_openflow_rules import addRegraForwarding, addRegraMeter, delRegraMeter, delRegraForwarding, getMeterID_from_Flow, delMeter, generateMeterId, addRegraMonitoring, addRegraForwarding_com_Conjunction, delRegraForwarding_com_Conjunction, desligar_regra_monitoramento
 
 
 class Switch:
+    # TIPOS DE SWITCH
+    SWITCH_FIRST_HOP=1
+    SWITCH_LAST_HOP=2
+    SWITCH_OUTRO=3 # backbone
+
     def __init__(self, datapath, name:int, controller): 
-        
+        """ Existem 3 tipos de switches: 1. borda emissora primeiro salto, 2. borda emissora ultimo salto, 3.backbones 
+        1. configurar marcação de qos e meter utilizando addRegraForwarding e addRegraMeter
+        2. configurar regra marcacao monitoring/matching qos(Vai alternando)
+        3. configurar regra matching qos e matching monitoring
+        . Os tipos variam conforme o contexto, o switch pode ser borda para um fluxo e backbone para outro
+        """
+                
         print("Novo switch: nome = S%s" % (str(name)))
 
         self.controller = controller
@@ -46,6 +60,10 @@ class Switch:
 
         return True
 
+    def remover_regras_expiradas(self):
+        print("[switch] remover regras expiradas [nao implementado]")
+        return True
+
     def getConjuntion(self, port_name:int, tipo:int):
         if tipo == TCP_SRC:
             return self.tcp_src_conjunction.get(port_name,None)
@@ -72,33 +90,37 @@ class Switch:
                 return True
         return False
     
-    def delConjunctionByCount(self, port_name:int, tipo:int):
-        
+    def delConjunctionByCount(self, port_name:int, tipo:int)->bool:
+        "returns: True if the conjunction was actually removed, False if it was decremented, because there are more flows using it right now"
         if tipo == TCP_SRC:
             val = self.tcp_src_conjunction.get(port_name,0) - 1
             if val <= 0:
                 self.tcp_src_conjunction.pop(port_name, None)
+                return True
             else:
                 self.tcp_src_conjunction[port_name] = val
         elif tipo == TCP_DST:
             val= self.tcp_dst_conjunction.get(port_name,0)-1
             if val <= 0:
                 self.tcp_dst_conjunction.pop(port_name, None)
+                return True
             else:
                 self.tcp_dst_conjunction[port_name] = val
         elif tipo == UDP_SRC:
             val = self.udp_src_conjunction.get(port_name,0) -1
             if val <= 0:
                 self.udp_src_conjunction.pop(port_name,None)
+                return True
             else:
                 self.udp_src_conjunction[port_name] = val
         else: # tipo == UDP_DST
             val = self.udp_dst_conjunction.get(port_name,0) -1
             if val <= 0:
                 self.udp_dst_conjunction.pop(port_name,None)
+                return True
             else:
                 self.udp_dst_conjunction[port_name] = val
-        return True
+        return False
 
 
     def delConjunction(self, port_name:int, tipo:int):
@@ -139,9 +161,6 @@ class Switch:
         self.portas.pop(index)
         return 
 
-    def getQueueId(self, classe, prioridade):
-        return class_prio_to_queue_id[classe*10+prioridade]
-
     def getPorta(self, nomePorta:int) -> Porta:
 
         for i in self.portas:
@@ -159,79 +178,100 @@ class Switch:
         # a regra ainda está ativa na instancia do switch, entao nao precisa mexer la, e a regra meter ainda está ativa tbm.
         #  apenas criar a regra na tabela de fluxos novamente
         addRegraMonitoring(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT)
-
         return
     
-    def del_regra_monitoramento_fluxo(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+    def del_regra_monitoramento_fluxo(self,ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
+        """Quem chama essa funcao é apenas o flow removed"""
+        desligar_regra_monitoramento(switch=self, ip_ver=ip_ver,ip_src=ip_src,ip_dst=ip_dst,src_port=src_port,dst_port=dst_port,proto=proto)
         return
 
-    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida):
-
-        porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, '{"qos_mark":%d, "out_port":%d, "meter_id":%d}' %(NO_QOS_MARK, porta_saida, NO_METER), False))
-        addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT)
-
+    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar:bool=False):
+        qos_mark = NO_QOS_MARK
+        if marcar:
+            qos_mark = getQOSMark(SC_BEST_EFFORT, 1)
+        porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":NO_METER}, False))
+        addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, qos_mark, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
         return True
 
-    def addRegraQoSBackbone(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, criarMeter:bool, criarOpenFlow:bool):
-        #Criar regras agrupadas, como em: https://manpages.ubuntu.com/manpages/focal/en/man7/ovs-fields.7.html
+    def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False):
+        """Como as regras sao agrupadas, nao se pode adicionar de qualquer jeito"""
+        """Tipo_porta = PORTA_ENTRADA ou PORTA_SAIDA"""
+        """[caso 1] para Switch first-hop tem regras (tipo 1) meter e regras forwarding com marcacao de qos (tipo 2) --> essas pode remover as duas sempre que preciso"""
+        """[caso 2] Para switch last-hop e outros (backbone), se  tem a regra com o par ips + matching_qos (tipo 3), se tem as regras com as portas entrada e saida (tipo 4) e se tem as regras com o par ips + matching qos_monitoring (tipo 5)"""
+        """[caso 3] Em portas de entrada, as regras de fluxo não são criadas, apenas devem ser adicionadas na instancia do switch e não no switch real"""
+        # !arrumar a regra, falta campos
+        # !na porta de entrada, nao cria a regra, e desconta banda
+        # !na porta de saida, cria a regra, e desconta banda
+        if tipo_switch == Switch.SWITCH_FIRST_HOP:
 
+            if tipo_porta == PORTA_SAIDA: # porta de saida, cria regra no switch real e na instancia
+                meter_id = generateMeterId(self)
+                addRegraMeter(self, banda, meter_id)
 
-        
-        return
+                #armazenar meter
+                self.meter_dict[str(ip_ver)+'_'+ip_src+'_'+ip_dst+'_'+str(src_port)+'_'+str(dst_port)+'_'+str(proto)] = meter_id
+                addRegraForwarding(switch=self,ip_ver=ip_ver,ip_src=ip_src,meter_id=meter_id)
 
-    def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, criarMeter:bool, criarOpenFlow:bool):
+            # porta de entrada, apenas cria regra na instancia
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            #criar meter + encaminhamento com marcacao
+            
+        elif tipo_switch == Switch.SWITCH_LAST_HOP:
+            
+            if tipo_porta == PORTA_SAIDA:
+                # nao é aqui que liga ou desliga a regra de monitoramento, é no flow removed
+                addRegraForwarding_com_Conjunction(switch=self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, porta_entrada=porta_entrada, porta_saida=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_maching=qos_mark,qos_mark_action=NO_QOS_MARK, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT)
 
-    #adiciona uma regra, na porta entrada e saida, criar meter
-        meter_id = NO_METER
-        if criarMeter:
-            meter_id = generateMeterId(self)
-            addRegraMeter(self, banda, meter_id)
+            # rotina monitoring
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            # forwarding matching qos_mark - timeout de monitoring
 
-            #armazenar meter
-            self.meter_dict[str(ip_ver)+ip_src+ip_dst+str(src_port)+str(dst_port)+str(proto)] = meter_id
-        
-        self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, '{"qos_mark":%d, "out_port":%d, "meter_id":%d}' %(NO_QOS_MARK, porta_saida, meter_id), emprestando))
-        if criarOpenFlow:
-            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
-            # addRegraF(porta_saida)
+        else: #tipo_switch == Switch.SWITCH_OUTRO:
+
+            if tipo_porta == PORTA_SAIDA:
+                # regra matching qos_mark e regra matching monitoring_mark
+                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
+
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
 
         return True
     
-    # def delRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, emprestando:bool):
-        
-    #     self.delRegra(ip_ver,ip_src,ip_dst,src_port,dst_port,proto,porta_saida)
-    #     self.delRegra(ip_ver,ip_src,ip_dst,src_port,dst_port,proto,porta_entrada)
-        
-    #     return True
-    
-    def delRegra(self,ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_nome:int, removerMeter:bool):
-    #remove uma regra
+    def delRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, qos_mark:int,tipo_switch:int):
+        """Como as regras sao agrupadas, nao se pode remover de qualquer jeito"""
+        """[caso 1] para Switch first-hop tem regras (tipo 1) meter e regras forwarding com marcacao de qos (tipo 2) --> essas pode remover as duas sempre que preciso"""
+        """[caso 2] Para switch last-hop e outros (backbone), se  tem a regra com o par ips + matching_qos (tipo 3), se tem as regras com as portas entrada e saida (tipo 4) e se tem as regras com o par ips + matching qos_monitoring (tipo 5)"""
+        """[caso 3] Em portas de entrada, as regras não são criadas, apenas devem ser removidas da instancia do switch"""
 
-        if removerMeter:
+        # tipo_switch = Switch.SWITCH_FIRST_HOP (utiliza addforwarding)
+
+        # remover da porta de entrada primeiro
+        self.getPorta(porta_entrada).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            
+        # remover da porta de saida
+        if tipo_switch == Switch.SWITCH_FIRST_HOP:
             meter_id = getMeterID_from_Flow(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
             if meter_id != NO_METER: # qos 
                 delRegraMeter(meter_id)
                 delMeter(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
-        self.getPorta(porta_nome).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
-        delRegraForwarding(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            self.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            self.getPorta(porta_entrada).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            delRegraForwarding(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
+        else: # tipo_switch = Switch.SWITCH_LAST_HOP + Switch.SWITCH_OUTRO (utiliza addforwarding_conjunction)
+            self.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            self.getPorta(porta_entrada).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+            delRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qos_mark, porta_saida) # checando se eu der um remover com matching que pega duas regras, ele remove as duas ou so uma
+            delRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, getEquivalentMonitoringMark(qos_mark), porta_saida) # checando se eu der um remover com matching que pega duas regras, ele remove as duas ou so uma
         return True
 
 #porta_switch antes era dport -> eh a porta onde a regra vai ser salva -> porta de saida do switch
-    def GBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
-        """ Parametros:
-        ip_ver: str
-        ip_src: str
-        ip_dst: str
-        src_port:str
-        dst_port:str
-        proto:str
-        porta_saida:str
-        banda:str
-        prioridade:str
-        classe:str
+    def GBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int, application_class:int, tipo_switch:int):
+        """ Existem 3 tipos de switches: 1. borda emissora primeiro salto, 2. borda emissora ultimo salto, 3.backbones 
+        1. configurar marcação de qos e meter utilizando addRegraForwarding e addRegraMeter
+        2. configurar regra marcacao monitoring/matching qos(Vai alternando)
+        3. configurar regra matching qos e matching monitoringk
         """
 
         # tem uma diferenca do GBAM de borda e do gbam backbone....
@@ -243,20 +283,33 @@ class Switch:
         #best-effort
         if classe == SC_BEST_EFFORT:
             self.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
-            return True
+            return []
 
         #controle
         if classe == SC_CONTROL:
-            addRegraForwarding(switch=self, qos_mark=NO_QOS_MARK, prioridade=100, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE,meter_id=None,flag=0)
-            return True
+            addRegraForwarding(switch=self, qos_mark_maching=getQOSMark(classe, prioridade), prioridade=100, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE,meter_id=None,flag=0)
+            return []
 
         # fazer porta entrada e depois porta de saida
         # as duas devem alocar 
-        return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe)
+        if tipo_switch==Switch.SWITCH_FIRST_HOP:
+            return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
 
-    def _alocarGBAM_borda(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int) -> list[Acao] :
+        if tipo_switch==Switch.SWITCH_LAST_HOP:
+            return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
+        
+        # tipo_switch==Switch.SWITCH_OUTRO
+        return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
+        #self._backboneGBAM(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe)
+
+    def _alocarGBAM_borda(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int, application_class:int, tipo_switch:int) -> list[Acao] :
         """Criar em porta de entrada significa: essa regra deve ser salva na porta de entrada ? = Sim -> apenas armazena a regra e reduz a banda;;; Não, é na porta de saída -> entrao armazena a regra, reduz a banda e cria a regra openflow nos switches para traffic shaping"""
         # retornar uma lista de acoes
+
+        outraClasse = SC_REAL
+        if outraClasse == classe:
+            outraClasse = SC_NONREAL
+
         lista_acoes = []
         resp_entrada, lista_remover_entrada = self._ondeAlocarFluxoQoS(porta_entrada, classe, prioridade, banda)
 
@@ -270,36 +323,36 @@ class Switch:
         if lista_remover_saida != []:
             # print("remover regras")
             for regra in lista_remover_saida:
-                lista_acoes.append(Acao(self,porta_saida, REMOVER, regra))         
+                lista_acoes.append(Acao(self,porta_saida, REMOVER, regra, tipo_switch), PORTA_SAIDA,tipo_switch)         
         
         # remover fluxos que emprestam ou com menor prioridade
         if lista_remover_entrada != []:
             for regra in lista_remover_saida:
-                lista_acoes.append(Acao(self,porta_entrada, REMOVER, regra))
+                lista_acoes.append(Acao(self,porta_entrada, REMOVER, regra, tipo_switch), PORTA_ENTRADA, tipo_switch)
             # print("remover regras")    
 
         # tem banda na propria classe
         if resp_saida == NAOEMPRESTANDO:
             print("criar regra na propria classe")
-            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, self.getQueueId(classe, prioridade), "flow_label", "actions", False)))
+            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, getQueueId(classe, prioridade), application_class,getQOSMark(classe,prioridade), {}, False), PORTA_SAIDA, tipo_switch))
             return lista_acoes
         
         # tem banda na propria classe
         if resp_entrada == NAOEMPRESTANDO:
             # print("criar regra na propria classe")
-            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, self.getQueueId(classe, prioridade), "flow_label", "actions", False)))
+            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, getQueueId(classe, prioridade), application_class, getQOSMark(classe,prioridade), {}, False), PORTA_ENTRADA, tipo_switch))
             return lista_acoes
         
         # nao tem banda na propria classe, mas pode emprestar
         if resp_saida == EMPRESTANDO:
             # print("criar regra na outra classe")
-            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, self.getQueueId(classe, prioridade), "flow_label", "actions", True)))
+            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, outraClasse, getQueueId(outraClasse, prioridade), application_class, getQOSMark(outraClasse,prioridade), {}, True),PORTA_SAIDA, tipo_switch))
             return lista_acoes
         
         # nao tem banda na propria classe, mas pode emprestar
         if resp_entrada == EMPRESTANDO:
             print("criar regra na outra classe")
-            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, self.getQueueId(classe, prioridade), "flow_label", "actions", True)))
+            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, outraClasse, getQueueId(outraClasse, prioridade), application_class, getQOSMark(outraClasse,prioridade), {}, True),PORTA_ENTRADA,tipo_switch))
             return lista_acoes
         
         #algum erro ocorreu -> rejeitar
@@ -331,110 +384,6 @@ class Switch:
 
         return SEMBANDA, [] # rejeitar 
 
-    def agruparRegrasFluxo(self, ip_ver:int, ip_src:str, ip_dst:str, porta_nome:int, classe:int):
-        """[assumido que todas as regras armazenadas foram aceitas pelo gbam] regra de agrupamento, agrupar fluxos que possuem mesma classe, mesma porta destino na mesma regra, com uma meter agregada (nao sei qual o limite
-        de uma meter, mas neste momento nao importa) -> solução não otima, mas que pode reduzir o tamanho da tabela de fluxos no backbone"""
-
-
-        # obter todos os fluxos que possuem a mesma classe e porta destino
-
-        regras_classe = {}
-
-        lista_regras = []
-        lista_acoes = []
-
-        if classe == SC_BEST_EFFORT:
-            lista_regras = self.getPorta(porta_nome).getRegrasBE()
-        elif classe == SC_REAL:
-            lista_regras = self.getPorta(porta_nome).getRegrasC1()
-        elif classe == SC_NONREAL:
-            lista_regras = self.getPorta(porta_nome).getRegrasC2()
-
-        # agrupando por porta destino e porta de saida
-        for r in lista_regras:
-            if not regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)]:
-                regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)] = [r]
-            else:
-                regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)].append(r)
-
-        # para cada key de regras_classe -> remover regras openflow e meter existentes para essas regras -> somar a banda -> criar nova meter, associar cada regra a essa meter -> criar a regra de fluxo agrupada
-        # sem tempo para otimizar isso
-        for regra in lista_regras:
-            delRegraForwarding(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
-            delRegraMeter(self, regra.meter_id)
-        
-        # # somar banda de todas as regras a serem agrupadas e criar as meter rules -> nem precisa meter aqui
-        for val in regras_classe.values(): 
-        #     somabanda = 0
-            ip_ver = -1
-            proto = -1
-            src_port = -1
-            dst_port = -1
-            ip_srcs = []
-            ip_dsts = []
-            porta_destino = porta_nome
-            fila = -1
-            for regra in val:
-
-                if porta_destino == -1:
-                    src_port = regra.src_port
-                    dst_port = regra.dst_port
-                    fila = self.getQueueId(regra.classe, regra.prioridade)
-                    
-                ip_srcs.append(regra.ip_src)
-                ip_dsts.append(regra.ip_dst)
-                lista_acoes.append(Acao(self, porta_nome, REMOVER, regra))
-
-            lista_acoes.append(Acao(self, porta_nome, CRIAR, Regra({})))
-            #addRegraF()
-
-        #         somabanda += regra.banda
-
-            # criar meter rule e associar a cada regra
-
-            # criar os matchings para src_port, ip_src, ip_dst, e dst_port
-            # criar a regra openflow no switch
-
-
-        return lista_acoes
-
-    def _backboneGBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
-
-        # alocar banda para um fluxo em um switch sem reservar banda, apenas utilizando os freds, podendo até emprestar banda
-        lista_acoes = []
-
-        porta_entrada_obj = self.getPorta(porta_entrada)
-
-
-        # buscar as regras (freds) expirados
-        lista_regras_expiradas = getRegrasExpiradas(porta_entrada_obj.getRegrasBE() + porta_entrada_obj.getRegrasC1() + porta_entrada_obj.getRegrasC2())
-
-        for regra in lista_regras_expiradas:
-            self.delRegra(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port,regra.dst_port, regra.proto, regra.porta_entrada, False)
-            self.delRegra(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port,regra.dst_port, regra.proto, regra.porta_saida, True)
-
-        # verificar onde se pode alocar o fluxo
-        resp_entrada, lista_remover_entrada = self._ondeAlocarFluxoQoS(porta_entrada, classe, prioridade, banda)
-
-        resp_saida, lista_remover_saida = self._ondeAlocarFluxoQoS(porta_saida, classe, prioridade, banda)  
-        
-        # remover o que for necessario
-        # remover fluxos que emprestam ou com menor prioridade
-        if lista_remover_saida != []:
-            # print("remover regras")
-            for regra in lista_remover_saida:
-                lista_acoes.append(Acao(self,porta_saida, REMOVER, regra))         
-        
-        # remover fluxos que emprestam ou com menor prioridade
-        if lista_remover_entrada != []:
-            for regra in lista_remover_saida:
-                lista_acoes.append(Acao(self,porta_entrada, REMOVER, regra))
-            # print("remover regras")  
-
-        # criar a regra para backboneGBAM -> depois que todos aceitarem, cada switch precisa salvar o fred (que é a regra) e roda o agrupadorde regras de fluxo
-        # self.agruparRegrasFluxo(ip_ver, ip_src, ip_dst)
-
-        return lista_acoes
 
     def getFreeBandwForQoS(self, in_port, classe, prioridade, banda):
         # verifica banda disponível -> retorna 0 se for na própria classe, 1 se for emprestando e -1 se for rejeitado
@@ -452,41 +401,6 @@ class Switch:
             elif banda_classe2 >= banda:
                 return 0
         return -1
-    
-
-    def delRegraGBAM(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, classe, prioridade, banda):
-        REFAZER !
-
-        """ Parametro:
-        ip_ver:str
-        ip_src:str
-        ip_dst:str
-        src_port:str
-        dst_port:str
-        proto:str
-        porta_saida: str
-        classe: str
-        prioridade: str
-        banda: str
-        """
-
-        #tem que remover por tupla: ip_src, ip_dst, porta_src, porta_dst, proto
-        porta_saida_obj = self.getPorta(porta_saida)
-
-        #obtenho a classe onde a regra estava (1 ou 2, -1 == falha)  
-        classe_removida = porta_saida_obj.delRegra(ip_ver=ip_ver, ip_src= ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
-
-        #estava emprestando -- na verdade nessa implementacao nao faz diferenca pois estou pesquisando em todas as filas (ok eh ruim, mas por agora fica assim)
-        # if classe_removida != classe:
-
-        if(classe_removida>0):
-            # tos_aux = CPT[(str(classe_removida), str(prioridade), str(banda))] 
-            self.delRegraT(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto,tos = int(tos),tabela= ALL_TABLES)
-            print("[S%s]regra removida - ip_src:%s, ip_dst:%s, proto:%s, src_port:%s, dst_port:%s, tos:%s\n" % (self.nome,ip_src,ip_dst,proto, src_port, dst_port, tos))
-            return True
-        else:
-            print("[S%s]regra NAO removida - ip_src:%s, ip_dst:%s, proto:%s, src_port:%s, dst_port:%s, tos:%s\n" % (self.nome,ip_src,ip_dst,proto, src_port, dst_port, tos))
-        return False
     
     #adicionar rotas no switch - por agora fica com o nome de rede
     def addRedeIPv4(self, ip_dst, porta): 
@@ -551,5 +465,110 @@ class Switch:
             for rp3c2 in porta1.getRegrasBaixaPrio(SC_NONREAL):
                 print(rp3c2.toString()+"\n")
 
+# DESISTIDO/MUDADO PARA GBAM APENAS
 
- 
+    # def addRegraQoSBackbone(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, criarMeter:bool, criarOpenFlow:bool):
+    #     #Criar regras agrupadas, como em: https://manpages.ubuntu.com/manpages/focal/en/man7/ovs-fields.7.html     
+    #     return
+    # def _backboneGBAM(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int):
+
+    #     # alocar banda para um fluxo em um switch sem reservar banda, apenas utilizando os freds, podendo até emprestar banda
+    #     lista_acoes = []
+
+    #     porta_entrada_obj = self.getPorta(porta_entrada)
+
+
+    #     # buscar as regras (freds) expirados
+    #     lista_regras_expiradas = getRegrasExpiradas(porta_entrada_obj.getRegrasBE() + porta_entrada_obj.getRegrasC1() + porta_entrada_obj.getRegrasC2())
+
+    #     for regra in lista_regras_expiradas:
+    #         self.delRegra(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port,regra.dst_port, regra.proto, regra.porta_entrada, False)
+    #         self.delRegra(regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port,regra.dst_port, regra.proto, regra.porta_saida, True)
+
+    #     # verificar onde se pode alocar o fluxo
+    #     resp_entrada, lista_remover_entrada = self._ondeAlocarFluxoQoS(porta_entrada, classe, prioridade, banda)
+
+    #     resp_saida, lista_remover_saida = self._ondeAlocarFluxoQoS(porta_saida, classe, prioridade, banda)  
+        
+    #     # remover o que for necessario
+    #     # remover fluxos que emprestam ou com menor prioridade
+    #     if lista_remover_saida != []:
+    #         # print("remover regras")
+    #         for regra in lista_remover_saida:
+    #             lista_acoes.append(Acao(self,porta_saida, REMOVER, regra))         
+        
+    #     # remover fluxos que emprestam ou com menor prioridade
+    #     if lista_remover_entrada != []:
+    #         for regra in lista_remover_saida:
+    #             lista_acoes.append(Acao(self,porta_entrada, REMOVER, regra))
+    #         # print("remover regras")  
+
+    #     # criar a regra para backboneGBAM -> depois que todos aceitarem, cada switch precisa salvar o fred (que é a regra) e roda o agrupadorde regras de fluxo
+    #     # self.agruparRegrasFluxo(ip_ver, ip_src, ip_dst)
+
+    #     return lista_acoes
+
+    # def agruparRegrasFluxo(self, ip_ver:int, ip_src:str, ip_dst:str, porta_nome:int, classe:int):
+        # """[assumido que todas as regras armazenadas foram aceitas pelo gbam] regra de agrupamento, agrupar fluxos que possuem mesma classe, mesma porta destino na mesma regra, com uma meter agregada (nao sei qual o limite
+        # de uma meter, mas neste momento nao importa) -> solução não otima, mas que pode reduzir o tamanho da tabela de fluxos no backbone"""
+
+        # # obter todos os fluxos que possuem a mesma classe e porta destino
+        # regras_classe = {}
+
+        # lista_regras = []
+        # lista_acoes = []
+
+        # if classe == SC_BEST_EFFORT:
+        #     lista_regras = self.getPorta(porta_nome).getRegrasBE()
+        # elif classe == SC_REAL:
+        #     lista_regras = self.getPorta(porta_nome).getRegrasC1()
+        # elif classe == SC_NONREAL:
+        #     lista_regras = self.getPorta(porta_nome).getRegrasC2()
+
+        # # agrupando por porta destino e porta de saida
+        # for r in lista_regras:
+        #     if not regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)]:
+        #         regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)] = [r]
+        #     else:
+        #         regras_classe[str(r.src_port) + '_'+ str(r.dst_port) + '_'+ str(r.prioridade) + '_' +str(r.porta_saida)+ '_' +str(r.ip_ver)].append(r)
+
+        # # para cada key de regras_classe -> remover regras openflow e meter existentes para essas regras -> somar a banda -> criar nova meter, associar cada regra a essa meter -> criar a regra de fluxo agrupada
+        # # sem tempo para otimizar isso
+        # for regra in lista_regras:
+        #     delRegraForwarding(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
+        #     delRegraMeter(self, regra.meter_id)
+        
+        # # # somar banda de todas as regras a serem agrupadas e criar as meter rules -> nem precisa meter aqui
+        # for val in regras_classe.values(): 
+        # #     somabanda = 0
+        #     ip_ver = -1
+        #     proto = -1
+        #     src_port = -1
+        #     dst_port = -1
+        #     ip_srcs = []
+        #     ip_dsts = []
+        #     porta_destino = porta_nome
+        #     fila = -1
+        #     for regra in val:
+
+        #         if porta_destino == -1:
+        #             src_port = regra.src_port
+        #             dst_port = regra.dst_port
+        #             fila = getQueueId(regra.classe, regra.prioridade)
+                    
+        #         ip_srcs.append(regra.ip_src)
+        #         ip_dsts.append(regra.ip_dst)
+        #         lista_acoes.append(Acao(self, porta_nome, REMOVER, regra))
+
+        #     lista_acoes.append(Acao(self, porta_nome, CRIAR, Regra({})))
+        #     #addRegraF()
+
+        # #         somabanda += regra.banda
+
+        #     # criar meter rule e associar a cada regra
+
+        #     # criar os matchings para src_port, ip_src, ip_dst, e dst_port
+        #     # criar a regra openflow no switch
+
+
+        # return lista_acoes

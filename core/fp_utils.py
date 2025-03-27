@@ -1,21 +1,12 @@
-import sys
+from main_controller import FLOWPRI2
+from fp_constants import IPCv4, class_prio_to_queue_id, qos_mark_to_monitoring_mark
 
-from fp_constants import switches, controladores_conhecidos, IPCv4, SEMBANDA, class_prio_to_queue_id
-from fp_rota import Rota, Rota_Node
-
-from fp_acao import Acao
 from fp_switch import Switch
 
 #para invocar scripts e comandos tc qdisc
 import subprocess
 import time
 import socket
-
-import psutil
-
-from fp_rota import get_rota
-
-from fp_fred import Fred
 
 def souDominioBorda(ip_ver:int, ip_src:str, ip_dst:str):
     if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
@@ -36,6 +27,21 @@ def check_domain_hosts(ip_src):
         return True
 
     return False
+
+def enviar_msg(msg_str, server_ip, server_port):
+    print("Enviando msg_str para -> %s:%s\n" % (server_ip,server_port))
+
+    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp.connect((server_ip, server_port))
+
+    print(msg_str)
+    vetorbytes = msg_str.encode("utf-8")
+    tcp.send(len(vetorbytes).to_bytes(4, 'big'))
+    print(tcp.send(vetorbytes))
+    print('len: ', len(vetorbytes))    
+    
+    tcp.close()
+    return 
 
 
 def calculate_network_prefix_ipv4(ip_v4:str):
@@ -82,7 +88,7 @@ def tratador_addSwitches(addswitch_json):
         nome_switch = i['nome_switch']
 
         #procurando o switch
-        switch = getSwitchByName(nome_switch)
+        switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
     
         #encontrar o switch pelo nome
         #criar as portas conforme a configuracao do json
@@ -173,16 +179,16 @@ def tratador_addSwitches(addswitch_json):
 def tratador_delSwitches(switch_cfg):
 
     nome_switch = switch_cfg['nome_switch']
+    #encontrar o switch
+    switch_obj:Switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
 
-    for switch in switches:
-        if switch.nome == nome_switch:
-            
-            #remover as portas e as regras primeiro ? acho que sim...
-            for porta in switch.getPortas():
-                switch.delPorta(porta.nome)
+    if switch_obj == None:
+        return
+    
+    for porta in switch_obj.getPortas():
+        switch_obj.delPorta(porta.nome)
 
-            switches.remove(switch)
-            break
+    FLOWPRI2.getControllerInstance().switches.remove(switch_obj)
 
     print('Switch removido: %s' % (nome_switch))
 
@@ -204,10 +210,7 @@ def tratador_addRegras(novasregras_json):
         switch_obj = None
         
         #encontrar o switch
-        for switch in switches:
-            if switch.nome == nome_switch:
-                switch_obj = switch
-                break
+        switch_obj:Switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
         
         if switch_obj == None:
             print("Regra falhou!!")
@@ -238,10 +241,8 @@ def tratador_delRegras(regras_json):
         switch_obj = None
     
         #encontrar o switch
-        for switch in switches:
-            if switch.nome == nome_switch:
-                switch_obj = switch
-                break
+        switch_obj:Switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
+        
         if switch_obj == None:
             print("Regra falhou!!")
             #tentar a proxima regra
@@ -297,11 +298,11 @@ def addControladorConhecido(ipnovo:str):
         #print]("controlador ja conhecido\n")
         return
 
-    controladores_conhecidos.append(ipnovo)
+    FLOWPRI2.getControllerInstance().controladores_conhecidos.append(ipnovo)
     #print]("novo controlador conhecido\n")
 
 def checkControladorConhecido(ip:str):
-    for i in controladores_conhecidos:
+    for i in FLOWPRI2.getControllerInstance().controladores_conhecidos:
         if i == ip:
             #conhecido
             return 1
@@ -313,3 +314,17 @@ def remover_freds_expirados(switch):
     
 def current_milli_time():
     return round(time.time() * 1000)
+
+
+def getQueueId(classe, prioridade):
+    return class_prio_to_queue_id[classe*10+prioridade]
+
+
+def getEquivalentMonitoringMark(qos_mark):
+    return qos_mark+2
+
+def getQoSMark(classe:int, prio:int):
+    return getQueueId(classe, prio) + 1
+
+def getQOSMark(classe:int, prioridade:int):
+    return classe*10+prioridade

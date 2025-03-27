@@ -4,8 +4,22 @@ pip install ryu (se der erro instalar versão correta do setuptools )
 pip uninstall setuptools 
 pip install setuptools==67.6.1
 
-# A FAZER 
-{
+# Componentes principais
+
+* QoSBlockchain
+
+* Flow Monitoring
+
+* Flow Classification
+
+* QoS Multi-domínio
+
+* GBAM
+
+* Agrupamento de fluxos -> Conjunction
+
+
+<!-- <!-- <!-- {
 *Virou tudo estático, não vou fazer automático* <--- { Configurar a criação das portas e switches no fp_topology_discovery -- configurar o addporta lá
 * Descobrir com quem cada porta dos switches se conecta. -- verificar como o topology discovery do ryu faz isso e implementar tbm}
 
@@ -44,7 +58,7 @@ pip install setuptools==67.6.1
 
  * Aplicacao no host informando QoS dos seus fluxos
 
- * Suporte a redes virtuais --- por último....
+ * Suporte a redes virtuais --- por último.... -->
 
 ## Ordem de desenvolvimento{
 
@@ -66,7 +80,7 @@ pip install setuptools==67.6.1
 
 * #Resolver a parte de QoS as a Service.
 
-}
+} -->
 
 ## DHCPv6
 

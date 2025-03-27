@@ -141,8 +141,9 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
             
         elif "Monitoring" in data_json:
             print("flow monitoring")
+            flow_monitoring = loadFlowMonitoringFromJson(data_json)
             # receber o flow monitoring -> armazenar em flowmonitorings, mas caso ja exista um armazenado, fazer o calculo do qos e retornar um dicionario de qos -> caso contrario retornar null
-            tratar_flow_monitoring(data_json, blockchainManager, fredmanager, monitoringmanager)
+            tratar_flow_monitoring(flow_monitoring, blockchainManager, fredmanager, monitoringmanager)
 
     
 if __name__ == "__main__":

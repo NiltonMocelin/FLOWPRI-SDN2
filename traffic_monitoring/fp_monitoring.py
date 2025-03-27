@@ -1,50 +1,40 @@
 import sys
 import time
-from core.fp_constants import QTD_MONITORAMENTO
-from traffic_monitoring.monitoring_utils_ import FlowMonitoring
-
-# 5-tupla: [{"timestamp": "timestamp", "tamanho": "tamanho"}]
-fluxos_monitorados = {}
+from core.fp_constants import QTD_MONITORAMENTO, IPV4_CODE, IPV6_CODE
+from traffic_monitoring.monitoring_utils import FlowMonitoring, MonitoringManager
+from core.main_controller import FLOWPRI2
+from core.fp_icmp import send_icmpv4, send_icmpv6
 
 def current_milli_time():
     return round(time.time() * 1000)
 
 
-def monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt):
+def monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt, monitoringmanager:MonitoringManager)->FlowMonitoring:
 
-    label = ip_ver + ip_src + ip_dst + src_port + dst_port + proto
+    label = ip_ver +'_' + ip_src +'_' + ip_dst +'_' + src_port +'_' + dst_port +'_' + proto
     
     timestamp = current_milli_time()
 
-    if label not in fluxos_monitorados.keys():
-        fluxos_monitorados[label] = []
+    flow_monitoring = monitoringmanager.getMonitoring(label)
+
+    if flow_monitoring == None:
+        flow_monitoring = FlowMonitoring(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, 0, FLOWPRI2.CONTROLADOR_ID, [], [])
 
     # armazenar FlowMonitorings
-    fluxos_monitorados[label].append( {"timestamp": timestamp, "tamanho": len(pkt)}  ) 
-
-    # se eu for bordade origem
-    if len(fluxos_monitorados[label]) >= QTD_MONITORAMENTO:
-        #enviar_icmp para destino com o monitoramento
-        fluxos_monitorados[label].clear()
-        return True
-
-    return False
-
-def get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto):
-
-    label = ip_ver + ip_src + ip_dst + src_port + dst_port + proto
-
-    return fluxos_monitorados[label]
-
-def fazer_calculo_qos(flow_monitoring:FlowMonitoring):
-    # se eu sou borda de destino
-
-    # buscar o registro de qos armazenado em fluxos_monitorados
-    # calcular as medias
-    label = flow_monitoring.ip_ver + flow_monitoring.ip_src + flow_monitoring.ip_dst + flow_monitoring.src_port + flow_monitoring.dst_port + flow_monitoring.proto
-
+    flow_monitoring.addMonitoring(len(pkt), timestamp)
     
+    # se eu for bordade origem
+    if flow_monitoring.qtd_pacotes >= QTD_MONITORAMENTO:
+        #enviar_icmp para destino com o monitoramento -- enviar fora disso no flowpri
+        
+        return monitoringmanager.delMonitoring(label)
 
-    del fluxos_monitorados[label]
+    monitoringmanager.saveMonitoring(label, flow_monitoring)
 
-    return #retornar qos
+    return None
+
+def get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, monitoringmanager:MonitoringManager):
+
+    label = ip_ver +'_' + ip_src +'_' + ip_dst +'_' + src_port +'_' + dst_port +'_' + proto
+
+    return monitoringmanager.getMonitoring(label)

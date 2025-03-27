@@ -55,6 +55,15 @@ class Fred:
     def getName(self):
         return str(self.ip_ver)+"_"+str(self.proto)+"_"+self.ip_src+"_"+self.ip_dst+"_"+str(self.src_port)+"_"+str(self.dst_port)
 
+    def addNoh(self, nome_peer:str, chave_publica:str, nsaltos:int):
+        """ordem":"1", "nome_peer":"", "chave_publica":"", "nro_saltos(qtd_switches_rota)":"""
+        self.lista_rota.append({"ordem":len(self.lista_rota)+1, "nome_peer":nome_peer, "chave_publica":chave_publica, "nro_saltos":nsaltos})
+        return
+    
+    def addPeer(self, nome_peer:str, chave_publica:str, ip_porta:str):
+        """{nome_peer":"", "chave_publica":"", "ip_porta":"ip:porta}"""
+        self.lista_peers.append({'nome_peer':nome_peer, 'chave_publica':chave_publica, 'ip_porta':ip_porta})
+        return
 def fromJsonToFred(fred_json):
     """{"FRED":{
     "ip_ver":"",

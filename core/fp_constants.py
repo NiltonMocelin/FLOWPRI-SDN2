@@ -9,29 +9,21 @@ PORTA_MANAGEMENT_HOST_SERVER = 9090
 #Listar interfaces disponiveis
 # print(interfaces())
 
-#cada controlador deve ter o seu
-# CONTROLLER_INTERFACE = "eth0"
-CONTROLLER_INTERFACE = "enp7s0"
-
 CONJUNCTION_ID = 10
-
 
 TCP_SRC = 0
 TCP_DST = 1
 UDP_SRC = 2
 UDP_DST = 3
 
-CONTROLADOR_ID = "No-id"
-IPCv4 = None 
-IPCv6 = None 
-IPCc = None
-
 BAIXA_PRIO=3
 MEDIA_PRIO=2
 ALTA_PRIO=1
 
-MACC = None
-
+# usar isso na hora de criar as regras
+MONITORING_PRIO = 30
+METER_PRIO = 20
+CONJUNCTION_PRIO = 10
 
 PORTAC_H = 4444 #porta para receber contratos de hosts
 PORTAC_C = 8888 #porta para receber contratos de controladores
@@ -70,11 +62,15 @@ SC_CONTROL     = 4
 MARCACAO_MONITORAMENTO = 0x7 # 7 decimal 
 QTD_MONITORAMENTO      = 20
 
+
+PORTA_ENTRADA = 1
+PORTA_SAIDA = 2
 ANY_PORT= -1
 NO_METER = -1
 NO_IDLE_TIMEOUT = 0
 NO_HARD_TIMEOUT = 0
-NO_QOS_MARK = -1
+NO_QOS_MARK = -1 # for matching
+NO_QOS_MARK_ACTION = -1
 
 OFP_NO_BUFFER = 0xffffffff
 
@@ -120,9 +116,44 @@ class_prio_to_queue_id = {
             21: 3,
             22: 4,
             23: 5,
+            31: 6,
+            41: 7
+ }
+
+
+class_prio_to_dscp = {
+            11: 0,
+            12: 1,
+            13: 2,
+            21: 3,
+            22: 4,
+            23: 5,
+            31: 6,
+            41: 7
+ }
+
+class_prio_to_flowlabel = {
+            11: 0,
+            12: 1,
+            13: 2,
+            21: 3,
+            22: 4,
+            23: 5,
             3: 6,
             4: 7
  }
+
+class_prio_to_monitoring_mark = {
+            11: 50,
+            12: 51,
+            13: 52,
+            21: 53,
+            22: 54,
+            23: 55,
+            3: 56,
+            4: 57
+ }
+
 
 dscp_to_queue_id = {
             11: 0,

@@ -4,6 +4,8 @@ from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar
 from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show
 from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
 from qosblockchain.one_container.processor.qos_state import FlowTransacao
+from fp_utils import enviar_msg, calculate_network_prefix_ipv4
+from fp_fred import Fred
 
 from netifaces import AF_INET, ifaddresses
 
@@ -12,6 +14,8 @@ from netifaces import AF_INET, ifaddresses
 import psutil
 
 import subprocess
+
+FRED_SERVER_PORT = 5555
 
 def get_meu_ip():
     IPCv4 = str(ifaddresses('eth0')[AF_INET][0]['addr'])
@@ -99,4 +103,32 @@ def criar_blockchain_api(nome_blockchain, PEERS_IP:list=None, chaves_peers:list 
     chave_publica, chave_privada = criar_chave_sawadm()
 
     criar_blockchain(nome_blockchain, get_meu_ip(), chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
-    return True
+    return NETWORK_PORT
+
+def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
+    nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
+                
+    chave_publica, chave_privada = criar_chave_sawadm()
+    lista_chaves_publicas = fred.getPeersPKeys()
+    lista_peers_ip = fred.getPeerIPs() 
+ 
+    is_genesis = False
+    genesis_node_ip = fred.ip_genesis
+    meu_ip = get_meu_ip()
+    if meu_ip == genesis_node_ip:
+        is_genesis = True
+
+    for chave in fred.lista_peers:
+        lista_chaves_str += chave
+
+    # criar_chave.. adicionar ao fred
+    porta_blockchain = criar_blockchain_api(nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
+    blockchainManager.save_blockchain(fred.ip_src, fred.ip_dst, serverip,porta_blockchain)
+
+    # isso deve ser feito fora dessa funcao
+    # if not is_genesis:
+    #     fred.addPeer(meu_ip, chave_publica,meu_ip+':'+porta_blockchain)
+    #     # se sou borda destino, enviar a borda origem 
+    #     enviar_msg(fred_json=fred.toString(), server_ip=genesis_node_ip, server_port=FRED_SERVER_PORT)
+    
+    return porta_blockchain

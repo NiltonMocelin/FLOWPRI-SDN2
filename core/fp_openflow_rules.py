@@ -1,9 +1,11 @@
-from fp_constants import FORWARD_TABLE,CLASSIFICATION_TABLE,FILA_CONTROLE, ALL_TABLES, IPV4_CODE, IPV6_CODE, TCP, UDP, BE_IDLE_TIMEOUT, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, MONITORING_TIMEOUT, NO_METER,NO_QOS_MARK, OFP_NO_BUFFER, MARCACAO_MONITORAMENTO, CONJUNCTION_ID, TCP_SRC, TCP_DST, UDP_SRC, UDP_DST
+from fp_constants import FORWARD_TABLE,CLASSIFICATION_TABLE,FILA_CONTROLE, ALL_TABLES, IPV4_CODE, IPV6_CODE, TCP, UDP, BE_IDLE_TIMEOUT, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, MONITORING_TIMEOUT, NO_METER,NO_QOS_MARK, OFP_NO_BUFFER, MARCACAO_MONITORAMENTO, CONJUNCTION_ID, TCP_SRC, TCP_DST, UDP_SRC, UDP_DST, MONITORING_PRIO, CONJUNCTION_PRIO, METER_PRIO
 from fp_switch import Switch
 
 from ryu.lib.packet import ether_types, in_proto
 from ryu.ofproto.ofproto_v1_3_parser import OFPFlowMod, OFPMatch
 from ryu.ofproto import ofproto_parser
+from fp_utils import getEquivalentMonitoringMark, getQOSMark, getQueueId
+
 
 # mudar os matches para:
 # match.set_in_port(in_port)
@@ -132,9 +134,12 @@ def add_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int, clause_n
     add_flow(datapath=datapath,priority=0,match=matchh,actions=actions)
     return
 
-def del_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int):
+def del_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int)->bool:
 
-    switch.delConjunction(port_name, tipo)
+    removido = switch.delConjunctionByCount(port_name, tipo)
+
+    if not removido: # tem mais fluxos usando, mas o conjunction count foi decrementado e numa proxima pode ser removido
+        return False
     matchh = {}
 
     if tipo == TCP_SRC:
@@ -147,7 +152,7 @@ def del_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int):
         matchh = {"eth_type":ip_ver, "ip_proto":TCP, "udp_dst":port_name}
 
     del_flow(switch.datapath, matchh)
-    return
+    return True
 
 def desligar_regra_monitoramento(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int):
     # atualizar regra no switch, para que ela pare de enviar copias de pacotes ao controlador e sem marcacao de pacotes
@@ -156,25 +161,50 @@ def desligar_regra_monitoramento(switch:Switch, ip_ver:int, ip_src:str, ip_dst:s
         print("ERRO em addRegraMonitoring: "+ ip_src+"_"+ip_dst)
         return False
     
-    addRegraForwarding(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, fila=regra_salva.fila, meter_id=regra_salva.meter_id, qos_mark=NO_QOS_MARK, idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, toController=False)
+    addRegraForwarding_com_Conjunction(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, fila=regra_salva.fila, qos_mark_maching=getQOSMark(regra_salva.classe, regra_salva.prioridade), prioridade=CONJUNCTION_PRIO, qos_mark_action=NO_QOS_MARK, idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, toController=False)
 
     return True
 
-def addRegraMonitoring(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, toController:bool=True):
+def addRegraMonitoring(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, marcar:bool=False, toController:bool=True):
     #igual a addRegraForwarding -> diferenca timeouts 2s (realizar o monitoramento a cada 2s) e action para o controlador ou não
-    
+    # Essa nao precisa retornar quando expirar
+
     # recuperar a regra que existe
     regra_salva = switch.getPorta(out_port).getRegra(ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port)
     if regra_salva == None:
         print("ERRO em addRegraMonitoring: "+ ip_src+"_"+ip_dst)
         return False
     
-    addRegraForwarding(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, fila=regra_salva.fila, meter_id=regra_salva.meter_id, qos_mark=MARCACAO_MONITORAMENTO, idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, toController=True)
+    addRegraForwarding_com_Conjunction(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, fila=regra_salva.fila, meter_id=NO_METER, qos_mark_maching=getQOSMark(regra_salva.classe, regra_salva.prioridade), qos_mark_action=getEquivalentMonitoringMark(regra_salva.classe, regra_salva.prioridade), idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, prioridade=MONITORING_PRIO, toController=True, flow_removed=False)
 
     return True
 
+def delRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, porta_saida:int):
+    """remover a regra do switch antes"""
+    """Aqui se remove a conjunction, do switch, e da instancia, mas nao a regra de encaminhamento da instancia"""
+    """Retorna True se removeu a conjunction e a regra de encaminhamento """
+    # tentar remover o conjunction (par src port e dst_port)
+    del_conjunction(switch=switch, ip_ver=ip_ver, port_name=src_port, tipo=TCP_SRC if proto == TCP else UDP_SRC)
+    del_conjunction(switch=switch, ip_ver=ip_ver, port_name=dst_port, tipo=TCP_DST if proto == UDP else UDP_DST)
+    
+    # se removeu o par:
+    ## verificar se mais alguma regra ativa com ip_src e ip_dst
+    ## se nao tiver, remover a regra ip_src ip_dst qos_mark
+    if switch.getPorta(porta_saida).getRegra_com_QoSMark(ip_ver, ip_src, ip_dst, qos_mark) == None:
+        dict_matching = {"eth_type":IPV6_CODE, "ipv6_src":ip_src, 'ipv6_dst':ip_dst, 'ipv6_flabel': qos_mark}
+        if ip_ver == IPV4_CODE:
+            dict_matching = {"eth_type":ip_ver, "ipv4_src":ip_src, 'ipv4_dst':ip_dst, 'ip_dscp': qos_mark}
+        
+        del_flow(switch.datapath,dict_matching)
+        return True
 
-def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, meter_id:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
+    return False
+
+# regras agrupadas, não usar meter !!
+def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, qos_mark_maching:int, qos_mark_action:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
+    # switches backbone ou que nao sao o primeiro da rota de borda devem usar essa regra, para agrupar os fluxos e encaminhar os fluxos marcados com qos ou com monitoramento (sim sao 2 regras por fluxo de qos)
+    # ou o ultimo switch da rota de borda precisa ter a regra para remarcar os fluxos com qos para monitoring... ( continua sendo duas regras)
+
     # se precisar recuperar o buffer_id = msg.buffer_id
 
     # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
@@ -184,22 +214,8 @@ def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip
     
     dicionario_parametros = {}
 
-    # #ref para implementar com o ryu corretamente https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/nicira_ext.py
-    # formato esperado
-    # pelo visto precisa configurar como um campo experimental, o matching com conjunctions
-    # "OFPMatch": {
-    #     "length": 12, 
-    #     "oxm_fields": [
-    #        {
-    #           "OXMTlv": {
-    #              "field": "conj_id", 
-    #              "mask": null, 
-    #              "value": 11259375
-    #           }
-    #        }
-    #     ], 
-    # aparentemente todos os match fields são tradados como oxm fields, e os nicira_ext(conjunctions), sao concatenados com os oxm_fields (ver ryu/ryu/ofproto/ofproto_v1_3.py)
-    # só adicionar o conj_id em OFMAtch(conj_id=id)
+    add_conjunction(switch=switch, ip_ver=ip_ver, port_name=src_port, tipo=TCP_SRC if proto == TCP else UDP_SRC, clause_number=1,n_clauses=2,idd=CONJUNCTION_ID)
+    add_conjunction(switch=switch, ip_ver=ip_ver, port_name=dst_port, tipo=TCP_DST if proto == TCP else UDP_DST, clause_number=2,n_clauses=2,idd=CONJUNCTION_ID)
 
     dicionario_parametros['conj_id']=CONJUNCTION_ID
     dicionario_parametros['eth_type'] = ip_ver
@@ -212,25 +228,30 @@ def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip
         dicionario_parametros['ipv6_src'] = ip_src
         dicionario_parametros['ipv6_dst'] = ip_dst
     
-    if qos_mark != NO_QOS_MARK:
+    if qos_mark_maching != NO_QOS_MARK:
         if ip_ver == IPV4_CODE:
-            dicionario_parametros['ip_dscp'] = qos_mark
+            dicionario_parametros['ip_dscp'] = qos_mark_maching
         elif ip_ver == IPV6_CODE:
-            dicionario_parametros['ipv6_flabel'] = qos_mark
+            dicionario_parametros['ipv6_flabel'] = qos_mark_maching
       
     #tratamento especial para este tipo de trafego
     match:OFPMatch = parser.OFPMatch(**dicionario_parametros)
-    actions = [parser.OFPActionSetQueue(fila), parser.OFPActionOutput(out_port)]
 
+    actions = []
+    if qos_mark_action != NO_QOS_MARK:
+        if ip_ver == IPV4_CODE:
+            actions.append(parser.OFPActionSetField(ip_dscp=qos_mark_action))
+        elif ip_ver == IPV6_CODE:
+            actions.append(parser.OFPActionSetField(ipv6_flabel=qos_mark_action))
+
+    actions.append(parser.OFPActionSetQueue(fila))
+    actions.append(parser.OFPActionOutput(out_port))
+    
     if toController:
         actions.append(parser.OFPActionOutput(parser.OFPP_CONTROLLER))
 
-    inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)] # essa instrucao eh necessaria?
+    inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
 
-    if meter_id != NO_METER:
-        # inst.append(parser.OFPInstructionMeter(meter_id=meter_id)) # ou é um ou é o outro...
-        inst.append(parser.OFPInstructionMeter(meter_id, ofproto.OFPIT_METER))
-        
     #marcar para gerar o evento FlowRemoved
     if flow_removed:
         mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=FORWARD_TABLE, flags=ofproto.OFPFF_SEND_FLOW_REM)
@@ -240,23 +261,8 @@ def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip
     datapath.send_msg(mod)
 
 #add regra tabela FORWARD
-def addRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, meter_id:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
-    """ Parametros:
-    ip_ver:str
-    ip_src: str
-    ip_dst: str
-    ip_dscp: int
-    out_port: int
-    src_port: int
-    dst_port: int 
-    proto: str
-    fila: int
-    meter_id: int 
-    flag: int
-    hardtime=None
-    """
-
-    # se precisar recuperar o buffer_id = msg.buffer_id
+def addRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, meter_id:int, qos_mark_maching:int, idle_timeout:int, hard_timeout:int, qos_mark_action:int=NO_QOS_MARK, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
+    # apenas primeiro switch da roda do dominio de origem devem usar essa regra, para marcar com qos e usar a meter
 
     # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
     datapath = switch.datapath
@@ -286,11 +292,11 @@ def addRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_po
         if dst_port != -1:
             dicionario_parametros['udp_dst'] = dst_port
     
-    if qos_mark != NO_QOS_MARK:
+    if qos_mark_maching != NO_QOS_MARK:
         if ip_ver == IPV4_CODE:
-            dicionario_parametros['ip_dscp'] = qos_mark
+            dicionario_parametros['ip_dscp'] = qos_mark_maching
         elif ip_ver == IPV6_CODE:
-            dicionario_parametros['ipv6_flabel'] = qos_mark
+            dicionario_parametros['ipv6_flabel'] = qos_mark_maching
 
     #https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html#flow-instruction-structures
     # hardtimeout = 5 segundos # isso eh para evitar problemas com pacotes que sao marcados como best-effort por um contrato nao ter chego a tempo. Assim vou garantir que daqui 5s o controlador possa identifica-lo. PROBLEMA: fluxos geralmente nao duram 5s, mas eh uma abordagem.
@@ -300,7 +306,17 @@ def addRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_po
       
     #tratamento especial para este tipo de trafego
     match:OFPMatch = parser.OFPMatch(**dicionario_parametros)
-    actions = [parser.OFPActionSetQueue(fila), parser.OFPActionOutput(out_port)]
+    
+    actions = []
+    if qos_mark_action != NO_QOS_MARK:
+        if ip_ver == IPV4_CODE:
+            actions.append(parser.OFPActionSetField(ip_dscp=qos_mark_action))
+        elif ip_ver == IPV6_CODE:
+            actions.append(parser.OFPActionSetField(ipv6_flabel=qos_mark_action))
+
+    actions.append(parser.OFPActionSetQueue(fila))
+    actions.append(parser.OFPActionOutput(out_port))
+
     if toController:
         actions.append(parser.OFPActionOutput(parser.OFPP_CONTROLLER))
 
@@ -519,3 +535,24 @@ def delRegraMeter(switch:Switch, meter_id):
 #     #mod = datapath.ofproto_parser.OFPFlowMod(datapath, command=ofproto.OFPFC_DELETE, table_id=ofproto.OFPTT_ALL, out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY)
 #     datapath.send_msg(mod)
 #     return 0
+
+
+
+
+####################### EXPLICAÇÂO CONJUNCTIONS #########################
+    # #ref para implementar com o ryu corretamente https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/nicira_ext.py
+    # formato esperado
+    # pelo visto precisa configurar como um campo experimental, o matching com conjunctions
+    # "OFPMatch": {
+    #     "length": 12, 
+    #     "oxm_fields": [
+    #        {
+    #           "OXMTlv": {
+    #              "field": "conj_id", 
+    #              "mask": null, 
+    #              "value": 11259375
+    #           }
+    #        }
+    #     ], 
+    # aparentemente todos os match fields são tradados como oxm fields, e os nicira_ext(conjunctions), sao concatenados com os oxm_fields (ver ryu/ryu/ofproto/ofproto_v1_3.py)
+    # só adicionar o conj_id em OFMAtch(conj_id=id)

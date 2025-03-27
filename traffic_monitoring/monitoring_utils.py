@@ -9,7 +9,11 @@ from pylibpcap.pcap import sniff
 from scapy.all import Ether, IP
 import socket
 from threading import Thread
-
+from core.fp_fred import FredManager
+from core.fp_api_qosblockchain import BlockchainManager, enviar_transacao_blockchain
+from qosblockchain.one_container.processor.qos_state import FlowTransacao, QoSRegister
+from core.main_controller import FLOWPRI2
+from core.fp_utils import enviar_msg
 
 class FlowMonitoring:
 
@@ -30,6 +34,12 @@ class FlowMonitoring:
         retorno = { "Monitoring": { "ip_src": self.ip_src, "ip_dst": self.ip_dst, "src_port": self.src_port, "dst_port": self.dst_port, "proto": self.proto, "qtd_pacotes": self.qtd_pacotes, "monitor_name": self.monitor_name, "timestamps": self.lista_pkttimestamps, "pktsizes": self.lista_pktsizes}}
     
         return json.dumps(retorno)
+    
+    def addMonitoring(self, pktsize, timestamp):
+        self.lista_pktsizes.append(pktsize)
+        self.lista_pkttimestamps.append(timestamp)
+        self.qtd_pacotes+=1
+        return
 
 def loadFlowMonitoringFromJson(monitoring_json):
 
@@ -62,8 +72,7 @@ class MonitoringManager:
         return self.monitorings.get(nome, None) # fazer isso em todos os get para dicionarios ...
 
     def delMonitoring(self, nome:str):
-        del self.monitorings[nome]
-        return True
+        return self.monitorings.pop(nome,None)
     
 
 ## tamo aqui
@@ -113,20 +122,47 @@ def send_flowmonitoring(flowmonitoring:FlowMonitoring, server_ip:str, server_por
     Thread(target=enviar_msg, args=[flowmonitoring.toString(), server_ip, server_port]).start()
     return 
 
-def enviar_msg(msg_str, server_ip, server_port):
-    print("Enviando msg_str para -> %s:%s\n" % (server_ip,server_port))
+def get_meu_ip():
+    return FLOWPRI2.IPCv4
 
-    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp.connect((server_ip, server_port))
+def tratar_flow_monitoring(flow_monitoring_recebido:FlowMonitoring, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
+# tratar o flow monitoring recebido + criar transação para a blockchain
 
-    print(msg_str)
-    vetorbytes = msg_str.encode("utf-8")
-    tcp.send(len(vetorbytes).to_bytes(4, 'big'))
-    print(tcp.send(vetorbytes))
-    print('len: ', len(vetorbytes))    
+    nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
+    fred_flow = fredmanager.get_fred(nome_fred)
+
+    meu_ip = get_meu_ip()
+
+    #calcular as medias para atraso, banda e perda
+    flow_monitoring_local = monitoringmanager.getMonitoring(nome_fred)
     
-    tcp.close()
-    return 
+    # precisa receber dois para fazer o calculo
+    if flow_monitoring_local == None:
+        monitoringmanager.saveMonitoring(nome_fred, flow_monitoring_recebido)
+        return
+
+    # ja havia recebido um flow monitoring antes
+    qos_calculado = calcular_qos(flow_monitoring_local, flow_monitoring_recebido)
+
+    #remover monitoramento anterior
+    monitoringmanager.delMonitoring(nome_fred)
+
+    blockchain_ip_porta = blockchainManager.get_blockchain(flow_monitoring_recebido.ip_dst)
+    
+    # criar_transacao_blockchain()
+    if blockchain_ip_porta:
+        blockchain_ip = blockchain_ip_porta.split(':')[0]
+        blockchain_porta = blockchain_ip_porta.split(':')[1]
+
+        qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
+        # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
+        transacao = FlowTransacao(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst, flow_monitoring_recebido.ip_ver, flow_monitoring_recebido.src_port, flow_monitoring_recebido.dst_port, flow_monitoring_recebido.proto, qosregister)
+
+        enviar_transacao_blockchain(flowname=nome_fred, ip_blockchain=blockchain_ip, port_blockchain=blockchain_porta, transacao=transacao)
+        return True
+    
+    return False
+
 
 def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:str):
     local_flowmonitorings_dict = {} 
@@ -150,10 +186,13 @@ def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:st
     # we can just take the 3th byte of the header (16-32), then, compare to the mask of the bitlike 7 (0111)(actually, unnecessary)
     # filters = "(ip and ip[3]  == 0x7)"
     # for plen, t, buf in sniff("eth0", filters="(ip and ip[3]  == 0x7) ", count=-1, promisc=0):
-    monitoring_mark = 0x7
+
+    qos_marks = [50,51,52,53,54,55] # sim, agora virou uma lista de valores ..., que sao os mesmos para ipv4 e ipv6
+    
+    # monitoring_mark = 0x7
     QTD_PACOTES = 20
-    ipv4_dscp_monitoring_filter = "(ip and (ip[1] & 0xfc) >> 2 == %d)" % (monitoring_mark)
-    ipv6_flow_label_monitoring_filter = "(ip6 and ip[3]  == %d)" % (monitoring_mark)
+    ipv4_dscp_monitoring_filter = "(ip and ((ip[1] & 0xfc) >> 2 == %d) or (ip[1] & 0xfc) >> 2 == %d) or (ip[1] & 0xfc) >> 2 == %d) or (ip[1] & 0xfc) >> 2 == %d) or (ip[1] & 0xfc) >> 2 == %d) or (ip[1] & 0xfc) >> 2 == %d)))" % (qos_marks[0],qos_marks[1],qos_marks[2],qos_marks[3],qos_marks[4],qos_marks[5])
+    ipv6_flow_label_monitoring_filter = "(ip6 and (ip[3]  == %d or ip[3]  == %d or ip[3]  == %d or ip[3]  == %d or ip[3]  == %d or ip[3]  == %d))" % (qos_marks[0],qos_marks[1],qos_marks[2],qos_marks[3],qos_marks[4],qos_marks[5])
     for plen, t, buf in sniff("eth0", filters=ipv4_dscp_monitoring_filter + " or "+ ipv6_flow_label_monitoring_filter, count=-1, promisc=0):
 
         # se for um pacote marcado, busca no dicionario e adiciona

@@ -3,43 +3,26 @@ from ryu.lib.packet import ethernet
 from ryu.ofproto import ofproto_v1_3, inet, ether
 from ryu.lib.packet import ipv4, arp, icmp, udp, tcp, lldp, ipv6, dhcp, icmpv6
 
-from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPCc
+from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPV4_CODE, IPV6_CODE, IP_MANAGEMENT_HOST
 
-import fp_fred
+from fp_fred import Fred, fromJsonToFred
 
 import json
 
-from fp_utils import get_rota,send_fred_socket, remove_qos_rules, create_qos_rules, remover_fred, salvar_fred
-from fp_utils import getSwitchByName
+from fp_utils import current_milli_time, getQoSMark, enviar_msg
 
 # from fp_api_qosblockchain import get_blockchain, criar_blockchain
 
 from fp_utils import souDominioBorda, check_domain_hosts
 
-from traffic_monitoring.monitoring_utils import Register, FlowMonitoring, loadFlowMonitoringFromJson
+from traffic_monitoring.monitoring_utils import MonitoringManager, FlowMonitoring, loadFlowMonitoringFromJson
 
-from traffic_monitoring.fp_monitoring import fazer_calculo_qos
+from traffic_monitoring.monitoring_utils import tratar_flow_monitoring
 
-from fp_api_qosblockchain import criar_chave_sawadm
-from main_controller import create_qos_rules
+from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm
+from main_controller import FLOWPRI2
 
-from fp_api_qosblockchain import enviar_transacao_blockchain
-
-
-def rejeitar_fred(fred, in_switch_id):
-    switches_rota = get_rota(fred.ip_dst, fred.ip_src, fred.ip_ver, fred.dst_port, fred.src_port, fred.proto, in_switch_id)
-    if switches_rota == None:
-        print("Nao há rotas configuradas para o destino %s " % (fred.ip_dst))
-        return False
-
-    for s in switches_rota:
-        getSwitchByName(switches_rota[-1].switch_name)
-        remove_qos_rules(fred)
-
-    send_icmpv6(getSwitchByName(switches_rota[-1].switch_name).datapath, fred.mac_src, )
-
-    return
-
+from fp_switch import Switch
 
 ############# send_icmp TORNADO GLOBAL EM 06/10 - para ser aproveitado em server socket ###################
 #https://ryu-devel.narkive.com/1CxrzoTs/create-icmp-pkt-in-the-controller
@@ -95,235 +78,125 @@ def send_icmpv6(datapath, srcMac, srcIp, dstMac, dstIp, outPort, data, type=8, t
     datapath.send_msg(out)
     return 0
 
+def tratar_icmp_rejeicao(fred_icmp:Fred, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
+    controller:FLOWPRI2 = FLOWPRI2.controller_singleton
+    nohs_rota = controller.rotamanager.get_rota(fred_icmp.ip_src, fred_icmp.ip_dst)
 
-def tratador_icmp_flow_monitoring(flow_monitoring:FlowMonitoring):
-    
-    # verificar se sou borda ou backbone
-    if souDominioBorda(flow_monitoring.ip_ver, flow_monitoring.ip_src, flow_monitoring.ip_dst):
+    dominio_borda = False
+    # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
+    if check_domain_hosts(ip_src):
+        dominio_borda = True
 
-        # tem monitoramento -> comparar com meu monitoramento -> criar 
-        qos = fazer_calculo_qos(flow_monitoring)
-        
-        # criar transacao na blockchain
-        enviar_transacao_blockchain({}) # se existir a blockchain -> se nao existir emitir erro
+    primeiro_switch = 0
+    ultimo_switch = len(nohs_rota)
     
+    # remover a regra que encaminha fluxo monitorado -- somente se nao tiver outro fluxo utilizando... == remover a regra da instancia, verificar se existe algum fluxo com mesmo ips e mesmo qos_mark, se nao tiver, remover a regra monitoramento e regra qos_mark agrupadas
+    if dominio_borda:
+        primeiro_switch+=1
+        ultimo_switch-=1
+        switchh_first_hop = controller.getSwitchByName(nohs_rota[primeiro_switch].switch_name)
+        switchh_first_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[primeiro_switch].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=Switch.SWITCH_FIRST_HOP)
+        switchh_last_hop = controller.getSwitchByName(nohs_rota[ultimo_switch].switch_name)
+        switchh_last_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[-1].in_port, porta_saida=nohs_rota[-1].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=Switch.SWITCH_LAST_HOP)
+    for i in range(primeiro_switch, ultimo_switch):
+        switchh = controller.getSwitchByName(nohs_rota[i].switch_name)
+        switchh.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[i].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=Switch.SWITCH_OUTRO)
+        # remove_qos_rules(ip_ver=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
+
+    # criar a regra best-effort
+    controller.create_be_rules(fred_icmp.ip_src, fred_icmp.ip_dst, fred_icmp.ip_ver, fred_icmp.src_port, fred_icmp.dst_port, fred_icmp.proto)    
     # dar sequencia no icmp
+    
+    INFORMATION_REPLY = 16
+    # enviar fred rejeitando fluxo, apenas para trás <-, nao precisa enviar para frente tbm
+    # Fazer a rejeicao de fred
+    if fred_icmp.ip_ver == IPV4_CODE:# ips trocados para devolver o icmp
+        send_icmpv4(controller.getSwitchByName(nohs_rota[0].switch_name).datapath, eth_dst, ip_dst, eth_src, ip_src,  nohs_rota[0].in_port, 0, fred_icmp.toString(),type=INFORMATION_REPLY)
+    else: 
+        send_icmpv6(controller.getSwitchByName(nohs_rota[0].switch_name).datapath, eth_dst, ip_dst, eth_src, ip_src,  nohs_rota[0].in_port, fred_icmp.toString(), icmpv6.ICMPV6_NI_REPLY)
+
     return
 
-def tratador_icmp_fred(fred:fp_fred.Fred):
+def tratador_icmp_flow_monitoring(flow_monitoring:FlowMonitoring):
+    controller:FLOWPRI2 = FLOWPRI2.getControllerInstance()
+    tratar_flow_monitoring(flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager)
 
+    # dar sequencia no icmp - na verdade aqui envia o flowmonitoring via socket para o host management
+    enviar_msg(flow_monitoring.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
+    return
+
+def tratador_icmp_fred(fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
+    """ eu sou dominio de borda de destino -> devo tratar o fred e enviar via socket para o meu host_management"""
+    INFORMATION_REPLY = 16
+    # todos os switches aqui sao tratados como switches backbone
     # verificar se sou borda ou backbone
-    if souDominioBorda(fred.ip_ver, fred.ip_src, fred.ip_dst):
+    controller:FLOWPRI2 = FLOWPRI2.controller_singleton
+    nohs_rota = controller.rotamanager.get_rota(fred.ip_src, fred.ip_dst)
+    minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
+    fred.addNoh(FLOWPRI2.IPCv4, minha_chave_publica, len(nohs_rota))
 
-        # tem fred -> criar regras qos para borda -> criar blockchain se nao existir (rotina blockchain)
-        if create_qos_rules({}): # modo borda
-            rotina_blockchain() # cria se nao existe, preenche os campos do fred
+    if nohs_rota == None:
+        print('[trat_meu-domin] erro: sem rotas para %s -> %s'%(fred.ip_src,fred.ip_dst))
+        return
+        
+    controller.fredmanager.save_fred(fred.getName(), fred)
+    if controller.create_qos_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, fred, False):
+        print("Regras criadas")
+        if souDominioBorda(fred.ip_ver, fred.ip_src, fred.ip_dst):        
+            # salvar ou atualizar fred no dicionario
+            controller.fredmanager.save_fred(fred.getName(),fred) # apenas os dominios participantes da blockchain salvam o fred ? (acho que sim)
+            porta_blockchain = controller.qosblockchainmanager.get_blockchain(fred.ip_src, fred.ip_dst)
+            # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
+            if porta_blockchain == None:
+                if fred.ip_ver == IPV4_CODE:
+                    porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, controller.qosblockchainmanager)
+                    fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
+                else: #ip_ver == IPV6_CODE
+                    porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, controller.qosblockchainmanager)
+                    fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
+            else:
+                if fred.ip_ver == IPV4_CODE:
+                    fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
+                    # send_icmpv4(datapath=controller.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
+                    enviar_msg(fred.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
+                else:
+                    fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
+                    # send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
+                    enviar_msg(fred.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
+    else:# so para deixar organizado
+        controller.create_be_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    
+        # enviar fred rejeitando fluxo, apenas para trás <-, nao precisa enviar para frente tbm
+        # Fazer a rejeicao de fred
+        if fred.ip_ver == IPV4_CODE:# ips trocados para devolver o icmp
+            send_icmpv4(controller.getSwitchByName(nohs_rota[0].switch_name).datapath, eth_dst, ip_dst, eth_src, ip_src,  nohs_rota[0].in_port, 0, fred.toString(),type=INFORMATION_REPLY)
+        else: 
+            send_icmpv6(controller.getSwitchByName(nohs_rota[0].switch_name).datapath, eth_dst, ip_dst, eth_src, ip_src,  nohs_rota[0].in_port, fred.toString(), icmpv6.ICMPV6_NI_REPLY)
 
-    else:
-        create_qos_rules({}) # modo borda
-
-    # salvar ou atualizar fred no dicionario
-    salvar_fred(fred)
+    print("[tratador_icmp_fred] fim "+ current_milli_time())
     return 
 
-
-def handle_icmps(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
+def handle_icmps(pkt_icmp, tipo_icmp, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
     
     # verificar o conteudo do icmp
     fred_icmp = None
     monitoramento_icmp = None
-
-    if "FRED" in pkt_icmpv6.data:
-        fred_icmp = fp_fred.fromJsonToFred(json.loads(pkt_icmpv6.data))
-        
-    if "Monitoring" in pkt_icmpv6.data:
-        flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmpv6.data))   
-
-    # verificar o tipo do icmp
-    if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_QUERY:
-        tratador_icmp_fred(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
-        tratador_icmp_flow_monitoring(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
-
-    elif pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_REPLY:
-        tratar_icmp_rejeicao(fred_icmp, monitoramento_icmp, ip_ver, ip_src, ip_dst)
-
-    return 
-
-def handle_icmpv6(pkt_icmpv6, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
-    #print("\n Recebeu Pacote ICMP: \n")
-
-    # icmpv6.ICMPV6_NI_QUERY == anuncio de FRED
-    if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_QUERY:
-
-        # aqui pode ser duas coisas: anuncio fred ou flow monitoring
-        fred = tratador_icmp_fred(pkt_icmpv6, in_switch_id)
-        flow_monitoring = tratador_icmp_flow_monitoring(pkt_icmpv6, in_switch_id)
-
-        # modificar fred                
-        minha_chave_publica, minha_chave_privada = criar_chave_sawadm()
-    
-         # verificar se sou um controlador de borda -> sou um par da blockchain
-        if souDominioBorda(ip_ver, ip_src, ip_dst):
-            
-            if fred == None:
-                print("ICMPv6 %d incorreto" % (icmpv6.ICMPV6_NI_QUERY))
-                return False
-
-            ip_blockchain, port_blockchain = "",""# get_blockchain(ip_dst)
-
-            fred.lista_peers.append({"nome_peer":IPCc, "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
-
-            # apenas o nó genesis (host origem do primeiro fluxo entre os dois dominios de borda)
-            # é quem cria a transação -> pois só após ele subir a blockchain com o bloco genesis é que os pares podem enviar transações.
-        
-            if ip_blockchain == None:
-               ip_blockchain, port_blockchain= "",""#criar_blockchain()
-
-            create_qos_rules({}) # modo borda
-
-        else: # nao sou dominio de borda
-            
-            # criar regras G-BAM backbone             
-            fred.lista_rota.append({"ordem": str(ordem), "nome_peer": IPCc, "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
-            
-            create_qos_rules({}) # modo backbone
-            return
-
-        if fred == None:
-            print("ICMPv6 %d incorreto" % (icmpv6.ICMPV6_NI_QUERY))
-            return False
-
-        ordem = len(fred.lista_peers) 
-        fred.lista_rota.append({"ordem": str(ordem), "nome_peer": IPCc, "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
-
-
-        # salvar fred
-        fp_fred.salvar_novo_fred(fred)
-
-        switch_final_rota_dp = getSwitchByName(switches_rota[-1].switch_name).datapath
-        switch_final_rota_out_port = switches_rota[-1].out_port
-
-        # enviar fred para frente
-        # send_icmpv6(fred)
-
-        # se eu sou um controlador da borda destino, o host aceita fred via socket apenas
-        if check_domain_hosts(ip_dst):
-            send_fred_socket(fred, ip_dst, PORTA_MANAGEMENT_HOST_SERVER)
-        else:
-            send_icmpv6(switch_final_rota_dp, mac_src, ip_src, mac_dst, ip_dst, switch_final_rota_out_port, fred)
-
-        # criar as regras de qos conforme o fred
-        if not create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, in_switch_id):
-            
-            """fred rejeitado"""
-            rejeitar_fred()
-            return
-
-    # FRED rejeitado
-    if pkt_icmpv6.type_ == icmpv6.ICMPV6_NI_REPLY:
-        print("fred rejeitado...")
-
-        # remover regras do fred
-        remove_qos_rules(fred)
-
-        # remover fred da lista de freds
-        remover_fred(fred)
-
-        switches_rota = get_rota(fred.ip_dst, fred.ip_src, fred.ip_ver, fred.dst_port, fred.src_port, fred.proto, in_switch_id)
-        if switches_rota == None:
-            print("Nao há rotas configuradas para o destino %s " % (ip_dst))
-            return False
-        
-        switch_final_rota_dp = getSwitchByName(switches_rota[-1].switch_name).datapath
-        switch_final_rota_out_port = switches_rota[-1].out_port
-
-        # enviar icmpv6 para a origem, informando que foi rejeitado
-        send_icmpv6(switch_final_rota_dp, mac_dst, ip_dst, mac_src, ip_src, switch_final_rota_out_port, fred)
-
-
-def tratador_icmpv4_monitoring(pkt_icmpv4, in_switch_id):
-    return
-
-def handle_icmpv4(pkt_icmpv4, mac_src, mac_dst, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, in_switch_id):
-    #print("\n Recebeu Pacote ICMP: \n")
-
     INFORMATION_REQUEST = 15
     INFORMATION_REPLY = 16
 
-    # icmpv6.ICMPV6_NI_QUERY == anuncio de FRED
-    if pkt_icmpv4.type == INFORMATION_REQUEST:
-        fred = tratador_icmp_fred(pkt_icmpv4, in_switch_id)
-
-        if fred == None:
-            
-            
-
-            return False
-
-        # modificar fred                
-        minha_chave_publica = ''
-        switches_rota = get_rota(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, in_switch_id)
-        if switches_rota == None:
-            print("Nao há rotas configuradas para o destino %s " % (ip_dst))
-            return False
+    if "FRED" in pkt_icmp.data:
+        fred_icmp = fromJsonToFred(json.loads(pkt_icmp.data))
         
-        ordem = len(fred.lista_peers) 
-        fred.lista_rota.append({"ordem": str(ordem), "nome_peer": "controllerXX", "chave_publica": minha_chave_publica, "saltos": len(switches_rota)})
+    if "Monitoring" in pkt_icmp.data:
+        flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmp.data))   
+    # verificar o tipo do icmp
+    if tipo_icmp == icmpv6.ICMPV6_NI_QUERY or tipo_icmp == INFORMATION_REQUEST:
+        if fred_icmp:
+            tratador_icmp_fred(fred_icmp, eth_src, ip_src, eth_dst, ip_dst)
+        if flow_monitoring:
+            tratador_icmp_flow_monitoring(flow_monitoring)
 
-         # verificar se sou um controlador de borda -> sou um par da blockchain
-        if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
-            ip_blockchain, port_blockchain = "","" #get_blockchain(ip_dst)
+    elif tipo_icmp == icmpv6.ICMPV6_NI_REPLY or tipo_icmp == INFORMATION_REPLY:
+        if fred_icmp:
+            tratar_icmp_rejeicao(fred_icmp, ip_ver, eth_src, ip_src, eth_dst, ip_dst)
 
-            fred.lista_peers.append({"nome_peer":"controllerX", "chave_publica":minha_chave_publica, "ip_porta":"%s:%s" % (ip_blockchain,str(port_blockchain))})
-
-            # apenas o nó genesis (host origem do primeiro fluxo entre os dois dominios de borda)
-            # é quem cria a transação -> pois só após ele subir a blockchain com o bloco genesis é que os pares podem enviar transações.
-
-            if ip_blockchain == None:
-               ip_blockchain, port_blockchain= "",""#criar_blockchain()
-
-
-        # salvar fred
-        fp_fred.salvar_novo_fred(fred)
-
-        switch_final_rota_dp = getSwitchByName(switches_rota[-1].switch_name).datapath
-        switch_final_rota_out_port = switches_rota[-1].out_port
-
-        # enviar fred para frente
-        # send_icmpv6(fred)
-
-        # se eu sou um controlador da borda destino, o host aceita fred via socket apenas
-        if check_domain_hosts(ip_dst):
-            send_fred_socket(fred, ip_dst, PORTA_MANAGEMENT_HOST_SERVER)
-        else:
-            send_icmpv6(switch_final_rota_dp, mac_src, ip_src, mac_dst, ip_dst, switch_final_rota_out_port, fred)
-
-        # criar as regras de qos conforme o fred
-        if not create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred, in_switch_id):
-            
-            """fred rejeitado"""
-            rejeitar_fred()
-            return
-
-    # FRED rejeitado
-    if pkt_icmpv4.type_ == INFORMATION_REPLY:
-        fred = tratador_icmpv4_fred(pkt_icmpv4, in_switch_id)
-
-        print("fred rejeitado...")
-
-        # remover regras do fred
-        remove_qos_rules(fred)
-
-        # remover fred da lista de freds
-        remover_fred(fred)
-
-        switches_rota = get_rota(fred.ip_dst, fred.ip_src, fred.ip_ver, fred.dst_port, fred.src_port, fred.proto, in_switch_id)
-        if switches_rota == None:
-            print("Nao há rotas configuradas para o destino %s " % (ip_dst))
-            return False
-        
-        switch_final_rota_dp = getSwitchByName(switches_rota[-1].switch_name).datapath
-        switch_final_rota_out_port = switches_rota[-1].out_port
-
-        # enviar icmpv6 para a origem, informando que foi rejeitado
-        send_icmpv4(switch_final_rota_dp, mac_dst, ip_dst, mac_src, ip_src, switch_final_rota_out_port, fred)
+    return 

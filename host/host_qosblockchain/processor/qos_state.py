@@ -32,8 +32,7 @@ def _make_qos_address(name):
 
 class QoSRegister:
     #medida de QoS
-    def __init__(self, nodename:str, route_nodes:list[str], blockchain_nodes:list[str], state:int, service_label:int, application_label:int, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):
-        
+    def __init__(self, nodename:str, route_nodes:list[str], blockchain_nodes:list[str], state:int, service_label:int, application_label:int, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):  
         #fred data
         self.nodename:str = nodename #nó que calculou
         self.route_nodes:list[str] = route_nodes
@@ -52,43 +51,33 @@ class QoSRegister:
         self.jitter:int = jitter
 
     def toString(self):
-        qos_json = '{\"nodename\":\"%s\", \
-        \"route_nodes\":[%s], \
-        \"blockchain_nodes\":[%s], \
-        \"state\":%d, \
-        \"service_label\":%d, \
-        \"application_label\":%d, \
-        \"req_bandwidth\":%d, \
-        \"req_delay\":%d, \
-        \"req_loss\":%d, \
-        \"req_jitter\":%d, \
-        \"bandwidth\":%d, \
-        \"delay\":%d, \
-        \"loss\":%d,  \
-        \"jitter\": %d \
-        }' % (self.nodename,self.route_nodes, self.blockchain_nodes, self.state, self.service_label, self.application_label, self.req_bandwidth, self.req_delay, self.req_loss, self.req_jitter,self.bandwidth, self.delay, self.loss, self.jitter)
+        qos_json = {"nodename":self.nodename, 
+        "route_nodes":self.route_nodes, 
+        "blockchain_nodes":self.blockchain_nodes, 
+        "state":self.state, 
+        "service_label":self.service_label, 
+        "application_label":self.application_label, 
+        "req_bandwidth":self.req_bandwidth, 
+        "req_delay":self.req_delay, 
+        "req_loss":self.req_loss, 
+        "req_jitter":self.req_jitter, 
+        "bandwidth":self.bandwidth, 
+        "delay":self.delay, 
+        "loss":self.loss,  
+        "jitter": self.jitter}
 
-        return qos_json
+        return json.dumps(qos_json)
 
 class FlowTransacao:
     # dissecar o FRED aqui
     def __init__(self, ip_src, ip_dst, ip_ver, src_port:str, dst_port:str, proto:str, qosregisters:list[QoSRegister]):
-        self.name:str = ip_src+'_'+ip_dst +'_'+ str(ip_ver) +'_'+ str(src_port) +'_'+str(dst_port) +'_'+ str(proto)
+        self.name:str = str(ip_ver) +'_'+ str(proto)+ '_'+  ip_src+'_'+ip_dst +'_'+ str(src_port) +'_'+str(dst_port)
         self.qosregisters:list[QoSRegister] = qosregisters # class QoS # lista de registros de qos para um fluxo
 
     def toString(self):
-        ####
-        qos_json_str = ""
-        for qos in self.qosregisters:
-            qos_json_str+= ',' + qos.toString()
-        qos_json_str = qos_json_str.replace(',','',1)# tem outros jeitos, depois mudar
-        ####
-
-        flow_json = "{\"name\": \"%s\", \
-            \"qosregisters\":[%s]\
-            }" % (self.name,  qos_json_str)
-        
-        return flow_json
+        flow_json = {"name": self.name, "qosregisters":[qosreg.toString() for qosreg in self.qosregisters]}
+        return json.dumps(flow_json)
+    
     
 class QoSState:
 
