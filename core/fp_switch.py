@@ -170,7 +170,7 @@ class Switch:
         #print("[getPorta] porta inexistente: %s\n" % (nomePorta))
         return None
     
-    def getPortas(self)->list[Porta]:
+    def getPortas(self)->list:
         return self.portas
     
     def add_regra_monitoramento_fluxo(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida):
@@ -302,7 +302,7 @@ class Switch:
         return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
         #self._backboneGBAM(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe)
 
-    def _alocarGBAM_borda(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int, application_class:int, tipo_switch:int) -> list[Acao] :
+    def _alocarGBAM_borda(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, banda:int, prioridade:int, classe:int, application_class:int, tipo_switch:int) -> list:
         """Criar em porta de entrada significa: essa regra deve ser salva na porta de entrada ? = Sim -> apenas armazena a regra e reduz a banda;;; Não, é na porta de saída -> entrao armazena a regra, reduz a banda e cria a regra openflow nos switches para traffic shaping"""
         # retornar uma lista de acoes
 
@@ -358,7 +358,7 @@ class Switch:
         #algum erro ocorreu -> rejeitar
         return []
 
-    def _ondeAlocarFluxoQoS(self, porta_nome:int, classe:int, prioridade:int, banda:int) -> tuple[int, list[Regra]]:
+    def _ondeAlocarFluxoQoS(self, porta_nome:int, classe:int, prioridade:int, banda:int):
         """Retorna se o fluxo deve ser armazenado emprestando banda ou nao, e a lista de regras que se deve remover para aloca-lo"""
 
         porta_obj = self.getPorta(porta_nome)
@@ -436,7 +436,7 @@ class Switch:
         #print("[%s]Rede deletada %s: %s" % (self.nome, ip_dst, porta))
         return
 
-    def getPortas(self) -> list[Porta]:
+    def getPortas(self) -> list:
         return self.portas
     
     def getDP(self):

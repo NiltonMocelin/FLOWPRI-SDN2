@@ -143,14 +143,14 @@ class Porta:
         self.controlrules = []
    
 
-    def getRegrasC1(self) -> list[Regra]:
+    def getRegrasC1(self) -> list:
         return self.regrasPrioBaixaClasseReal + self.regrasPrioMediaClasseReal + self.regrasPrioAltaClasseReal
 
 
-    def getRegrasC2(self) -> list[Regra]:
+    def getRegrasC2(self) -> list:
         return self.regrasPrioBaixaClasseNaoReal + self.regrasPrioMediaClasseNaoReal + self.regrasPrioAltaClasseNaoReal
 
-    def getRegrasBaixaPrio(self, classe:int) -> list[Regra]:
+    def getRegrasBaixaPrio(self, classe:int) -> list:
         if classe == SC_REAL:
             return self.regrasPrioBaixaClasseReal
         elif classe == SC_NONREAL:
@@ -158,14 +158,14 @@ class Porta:
         return []
         
 
-    def getRegrasMediaPrio(self, classe:int) -> list[Regra]:
+    def getRegrasMediaPrio(self, classe:int) -> list:
         if classe == SC_REAL:
             return self.regrasPrioMediaClasseReal
         elif classe == SC_NONREAL:
             return self.regrasPrioMediaClasseNaoReal
         return []
         
-    def getRegrasAltaPrio(self, classe:int) -> list[Regra]:
+    def getRegrasAltaPrio(self, classe:int) -> list:
         if classe == SC_REAL:
             return self.regrasPrioAltaClasseReal
         elif classe == SC_NONREAL:
@@ -175,7 +175,7 @@ class Porta:
         
         
 
-    def getRegrasC1Emprestando(self) -> list[Regra]:
+    def getRegrasC1Emprestando(self) -> list:
 
         regras = []
         
@@ -207,7 +207,7 @@ class Porta:
         return regras
 
     
-    def getRegrasC2Emprestando(self) -> list[Regra]:
+    def getRegrasC2Emprestando(self) -> list:
 
         regras = []
         
@@ -238,23 +238,23 @@ class Porta:
                 
         return regras
 
-    def getRegrasBE(self) -> list[Regra]:
+    def getRegrasBE(self) -> list:
         return self.berules
     
-    def getRegrasCtrl(self) -> list[Regra]:
+    def getRegrasCtrl(self) -> list:
         return self.controlrules
 
-    def getBandaDisponivelQoS(self) -> tuple[int, int]:
+    def getBandaDisponivelQoS(self):
         #retorna a banda para classe1, classe2
         return self.bandaTotalClasseReal - self.bandaUtilizadaClasseReal, self.bandaTotalClasseNaoReal - self.bandaUtilizadaClasseNaoReal
     
-    def getBandaUtilizadaETotal(self, classe:int) -> tuple[int, int]:
+    def getBandaUtilizadaETotal(self, classe:int):
         if classe == SC_REAL:
             return self.bandaUtilizadaClasseReal, self.bandaTotalClasseReal
         # SC_NONREAL
         return self.bandaUtilizadaClasseNaoReal, self.bandaTotalClasseNaoReal
     
-    def getRegrasEmprestandoAteBandaNecessaria(self, classe:int, bandaNecessaria:int) -> list[Regra]:
+    def getRegrasEmprestandoAteBandaNecessaria(self, classe:int, bandaNecessaria:int) -> list:
         emprestando = []
         bandaE = 0
 
@@ -280,7 +280,7 @@ class Porta:
 
         return emprestando[:contadorE]
     
-    def getLowerPriorityRules(self, classe:int, prioridade:int) -> list[Regra]:
+    def getLowerPriorityRules(self, classe:int, prioridade:int) -> list:
         
         if prioridade == BAIXA_PRIO:
             return []
@@ -293,7 +293,7 @@ class Porta:
         
         return []
 
-    def getLowerPriorityRulesAteBandaNecessaria(self, classe:int, prioridade:int, banda:int) -> list[Regra]:
+    def getLowerPriorityRulesAteBandaNecessaria(self, classe:int, prioridade:int, banda:int) -> list:
         
         if prioridade == BAIXA_PRIO:
             return []

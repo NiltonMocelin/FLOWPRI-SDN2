@@ -12,12 +12,12 @@ from threading import Thread
 from core.fp_fred import FredManager
 from core.fp_api_qosblockchain import BlockchainManager, enviar_transacao_blockchain
 from qosblockchain.one_container.processor.qos_state import FlowTransacao, QoSRegister
-from core.main_controller import FLOWPRI2
+# from core.main_controller import FLOWPRI2
 from core.fp_utils import enviar_msg
 
 class FlowMonitoring:
 
-    def __init__(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qtd_pacotes, monitor_name, lista_pkttimestamps:list[int], lista_pktsizes:list[int]):
+    def __init__(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qtd_pacotes, monitor_name, lista_pkttimestamps:list, lista_pktsizes:list):
         self.ip_ver=ip_ver
         self.ip_src=ip_src
         self.ip_dst=ip_dst
@@ -107,7 +107,8 @@ def calcular_qos(flow_monitoring_local:FlowMonitoring, flow_monitoring_recebido:
     soma_pacotes_recebido = int(soma_pacotes_recebido/qtd_pacotes_obitda)
     
     lbanda = soma_pacotes_recebido if soma_pacotes_recebido < soma_pacotes_local else soma_pacotes_local
-    atraso = int(atraso/qtd_pacotes_obitda), jitter = 0
+    atraso = int(atraso/qtd_pacotes_obitda)
+    jitter = 0
     taxaperda = int((1- qtd_pacotes_obitda/qtd_pacotes_esperada)*10) if qtd_pacotes_obitda != 0 else 0
 
     # jitter soma das diferencas entre |atraso1 e atraso2| / qtd_pacotes_recebido
@@ -122,16 +123,12 @@ def send_flowmonitoring(flowmonitoring:FlowMonitoring, server_ip:str, server_por
     Thread(target=enviar_msg, args=[flowmonitoring.toString(), server_ip, server_port]).start()
     return 
 
-def get_meu_ip():
-    return FLOWPRI2.IPCv4
-
-def tratar_flow_monitoring(flow_monitoring_recebido:FlowMonitoring, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
+def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
 
     nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
     fred_flow = fredmanager.get_fred(nome_fred)
 
-    meu_ip = get_meu_ip()
 
     #calcular as medias para atraso, banda e perda
     flow_monitoring_local = monitoringmanager.getMonitoring(nome_fred)

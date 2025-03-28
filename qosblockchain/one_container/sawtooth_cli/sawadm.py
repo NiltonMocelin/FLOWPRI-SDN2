@@ -22,9 +22,9 @@ import pkg_resources
 
 from colorlog import ColoredFormatter
 
-from sawtooth_cli.exceptions import CliException
-from sawtooth_cli.admin_command.keygen import add_keygen_parser
-from sawtooth_cli.admin_command.keygen import do_keygen
+from .exceptions import CliException
+from .admin_command.keygen import add_keygen_parser
+from .admin_command.keygen import do_keygen
 
 
 DISTRIBUTION_NAME = 'sawadm'

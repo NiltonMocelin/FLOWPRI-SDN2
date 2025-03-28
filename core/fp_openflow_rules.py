@@ -1,5 +1,5 @@
 from fp_constants import FORWARD_TABLE,CLASSIFICATION_TABLE,FILA_CONTROLE, ALL_TABLES, IPV4_CODE, IPV6_CODE, TCP, UDP, BE_IDLE_TIMEOUT, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, MONITORING_TIMEOUT, NO_METER,NO_QOS_MARK, OFP_NO_BUFFER, MARCACAO_MONITORAMENTO, CONJUNCTION_ID, TCP_SRC, TCP_DST, UDP_SRC, UDP_DST, MONITORING_PRIO, CONJUNCTION_PRIO, METER_PRIO
-from fp_switch import Switch
+# from fp_switch import Switch
 
 from ryu.lib.packet import ether_types, in_proto
 from ryu.ofproto.ofproto_v1_3_parser import OFPFlowMod, OFPMatch
@@ -101,7 +101,7 @@ def injetarPacote(datapath, fila:int, out_port:int, packet, buffer_id=OFP_NO_BUF
 
     datapath.send_msg(out)
 
-def add_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int, clause_number:int, n_clauses:int, idd:int): # conjunction 
+def add_conjunction(switch, ip_ver:int, port_name:int, tipo:int, clause_number:int, n_clauses:int, idd:int): # conjunction 
 
     # Como usar conjunctions:
     # a regra conjunction possui a descricao da conjunção na acao e os valores do conjunto são colocados no match, como outra regra qualquer.
@@ -134,7 +134,7 @@ def add_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int, clause_n
     add_flow(datapath=datapath,priority=0,match=matchh,actions=actions)
     return
 
-def del_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int)->bool:
+def del_conjunction(switch, ip_ver:int, port_name:int, tipo:int)->bool:
 
     removido = switch.delConjunctionByCount(port_name, tipo)
 
@@ -154,7 +154,7 @@ def del_conjunction(switch:Switch, ip_ver:int, port_name:int, tipo:int)->bool:
     del_flow(switch.datapath, matchh)
     return True
 
-def desligar_regra_monitoramento(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int):
+def desligar_regra_monitoramento(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int):
     # atualizar regra no switch, para que ela pare de enviar copias de pacotes ao controlador e sem marcacao de pacotes
     regra_salva = switch.getPorta(out_port).getRegra(ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port)
     if regra_salva == None:
@@ -165,7 +165,7 @@ def desligar_regra_monitoramento(switch:Switch, ip_ver:int, ip_src:str, ip_dst:s
 
     return True
 
-def addRegraMonitoring(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, marcar:bool=False, toController:bool=True):
+def addRegraMonitoring(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, marcar:bool=False, toController:bool=True):
     #igual a addRegraForwarding -> diferenca timeouts 2s (realizar o monitoramento a cada 2s) e action para o controlador ou não
     # Essa nao precisa retornar quando expirar
 
@@ -179,7 +179,7 @@ def addRegraMonitoring(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_po
 
     return True
 
-def delRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, porta_saida:int):
+def delRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, porta_saida:int):
     """remover a regra do switch antes"""
     """Aqui se remove a conjunction, do switch, e da instancia, mas nao a regra de encaminhamento da instancia"""
     """Retorna True se removeu a conjunction e a regra de encaminhamento """
@@ -201,7 +201,7 @@ def delRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip
     return False
 
 # regras agrupadas, não usar meter !!
-def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, qos_mark_maching:int, qos_mark_action:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
+def addRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, qos_mark_maching:int, qos_mark_action:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
     # switches backbone ou que nao sao o primeiro da rota de borda devem usar essa regra, para agrupar os fluxos e encaminhar os fluxos marcados com qos ou com monitoramento (sim sao 2 regras por fluxo de qos)
     # ou o ultimo switch da rota de borda precisa ter a regra para remarcar os fluxos com qos para monitoring... ( continua sendo duas regras)
 
@@ -261,7 +261,7 @@ def addRegraForwarding_com_Conjunction(switch:Switch, ip_ver:int, ip_src:str, ip
     datapath.send_msg(mod)
 
 #add regra tabela FORWARD
-def addRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, meter_id:int, qos_mark_maching:int, idle_timeout:int, hard_timeout:int, qos_mark_action:int=NO_QOS_MARK, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
+def addRegraForwarding(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, meter_id:int, qos_mark_maching:int, idle_timeout:int, hard_timeout:int, qos_mark_action:int=NO_QOS_MARK, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
     # apenas primeiro switch da roda do dominio de origem devem usar essa regra, para marcar com qos e usar a meter
 
     # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
@@ -336,7 +336,7 @@ def addRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, out_po
     
 #add regra tabela CLASSIFICATION
 #se o destino for um ip de controlador, 
-def addRegraClassification(switch:Switch, ip_ver:int ,ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10):
+def addRegraClassification(switch, ip_ver:int ,ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10):
     """  ADD regra monitoring
     parametros:
     ip_ver: int
@@ -391,7 +391,7 @@ def addRegraClassification(switch:Switch, ip_ver:int ,ip_src:str, ip_dst:str, sr
     mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout = hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=CLASSIFICATION_TABLE)
     datapath.send_msg(mod)
 
-def delRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
+def delRegraForwarding(switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
     # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
     datapath = switch.datapath
     ofproto = datapath.ofproto
@@ -427,7 +427,7 @@ def delRegraForwarding(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_po
     datapath.send_msg(mod)
     return
 
-def generateMeterId(switch:Switch):
+def generateMeterId(switch):
 
     id_valido = 0
 
@@ -441,7 +441,7 @@ def generateMeterId(switch:Switch):
         
     return id_valido
 
-def getMeterID_from_Flow(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
+def getMeterID_from_Flow(switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
     meter_id = NO_METER
     try:
         meter_id = switch.meter_dict[str(ip_ver)+ip_src+ip_dst+str(src_port)+str(dst_port)+str(proto)]
@@ -450,7 +450,7 @@ def getMeterID_from_Flow(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_
 
     return meter_id
 
-def delMeter(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
+def delMeter(switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
     # essas funcoes deveriam estar em switch. ....
     try:
         del switch.meter_dict[str(ip_ver)+ip_src+ip_dst+str(src_port)+str(dst_port)+str(proto)]
@@ -459,7 +459,7 @@ def delMeter(switch:Switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, ds
     return
 
  #criando regra meter
-def addRegraMeter(switch:Switch, banda, meter_id = None):
+def addRegraMeter(switch, banda, meter_id = None):
 
     if meter_id == None:
         print("[addRegraM] meter id missing")
@@ -476,7 +476,7 @@ def addRegraMeter(switch:Switch, banda, meter_id = None):
     datapath.send_msg(req)
     return
 
-def delRegraMeter(switch:Switch, meter_id):
+def delRegraMeter(switch, meter_id):
     datapath = switch.datapath
     ofproto = datapath.ofproto
     parser = datapath.ofproto_parser

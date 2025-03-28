@@ -57,18 +57,15 @@ import logging
 import sys, os
 
 #codigos das acoes
-from fp_constants import REMOVER, MARCACAO_MONITORAMENTO, IPV4_CODE, IPV6_CODE, TCP, UDP, IP_MANAGEMENT_HOST, ANY_PORT, class_prio_to_monitoring_mark
+from fp_constants import IPV4_CODE, IPV6_CODE, TCP, UDP, IP_MANAGEMENT_HOST, class_prio_to_monitoring_mark
 
-from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm
+import fp_api_qosblockchain as api_qosblockchain # import tratar_blockchain_setup, criar_chave_sawadm
 
-from fp_constants import SC_BEST_EFFORT, SC_CONTROL,SC_NONREAL,SC_REAL
+from fp_constants import SC_BEST_EFFORT
 
-# try:
 from fp_switch import Switch
-# except ImportError:
-#     print('Erro de importacao da classe SwitchOVS')
 
-from fp_server import servidor_configuracoes
+# from fp_server import servidor_configuracoes
 
 from fp_acao import Acao
 
@@ -77,18 +74,18 @@ from fp_openflow_rules import add_default_rule, injetarPacote, addRegraMonitorin
 from fp_utils import check_domain_hosts
 from fp_utils import current_milli_time, get_ips_meu_dominio
 
-# print('importando fp_topo_discovery')
-#descoberta de topologia
-from fp_topology_discovery import handler_switch_enter, handler_switch_leave
-# print('importando fp_dhcp')
-#tratador DHCPv4
+# # print('importando fp_topo_discovery')
+# #descoberta de topologia
+# from fp_topology_discovery import handler_switch_enter, handler_switch_leave
+# # print('importando fp_dhcp')
+# #tratador DHCPv4
 from fp_dhcp import handle_dhcp
 
 from fp_icmp import handle_icmps, send_icmpv4, send_icmpv6
 
-# print('importando interface_web')
-# import wsgiWebSocket.interface_web as iwb
-from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocket_snd, dados_json
+# # print('importando interface_web')
+# # import wsgiWebSocket.interface_web as iwb
+# from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocket_snd, dados_json
 
 from traffic_classification.classificator import classificar_pacote
 
@@ -117,35 +114,26 @@ class FLOWPRI2(app_manager.RyuApp):
     IPCc = None
     MACC = None
 
-    #self.mac_to_port = {} arrumar esses dois, tirar do controlador e trzer para ca
-    #self.ip_to_mac = {}
-
-    #vetor com os enderecos ip dos controladores conhecidos (enviaram icmps)
-
-     #switches administrados pelo controlador
-    # rotas_ipv4 = {} # ip_dst/prefix:mask :list[switch_name]
-    # rotas_ipv6 = {} # ip_dst/prefix:mask :list[switch_name]
-
     def __init__(self, *args, **kwargs):
         print("CONTROLADOR - \n Init Start\n" )# % (IPC))
-        setup()
+        # setup()
         print("done")
 
         super(FLOWPRI2,self).__init__(*args,**kwargs)
         self.mac_to_port = {}
         self.ip_to_mac = {}
 
-        # onde as principais coisas são armazenadas
-        self.fredmanager = FredManager()
-        self.qosblockchainmanager = BlockchainManager()
-        self.rotamanager = RotaManager()
-        self.flowmonitoringmanager = MonitoringManager()
+        # # onde as principais coisas são armazenadas
+        # self.fredmanager = FredManager()
+        # self.qosblockchainmanager = api_qosblockchain.BlockchainManager()
+        # self.rotamanager = RotaManager()
+        # self.flowmonitoringmanager = MonitoringManager()
 
-        self.arpList = {}
+        # self.arpList = {}
 
-        self.controladores_conhecidos = []
+        # self.controladores_conhecidos = []
 
-        self.switches = {}
+        # self.switches = {}
 
         FLOWPRI2.controller_singleton = self
 
@@ -380,7 +368,7 @@ class FLOWPRI2(app_manager.RyuApp):
 
         dominio_borda = False
         # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
-        if ip_meu_dominio(ip_src):
+        if check_domain_hosts(ip_src):
             dominio_borda = True
             # se quem expirou foi a regra de monitoramento, entao, verificar se deve ligar ou desligar
             if dp.id == route_nodes[-1].switch_name:
@@ -459,7 +447,7 @@ class FLOWPRI2(app_manager.RyuApp):
                          ip_genesis=IP_MANAGEMENT_HOST, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
                          prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
 
-            minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
+            minha_chave_publica,minha_chave_privada = api_qosblockchain.criar_chave_sawadm()
             # me adicionar como par no fred
             fred.addNoh(FLOWPRI2.IPCv4, minha_chave_publica, len(nohs_rota))
 
@@ -471,10 +459,10 @@ class FLOWPRI2(app_manager.RyuApp):
                 # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
                 if porta_blockchain == None:
                     if ip_ver == IPV4_CODE:
-                        porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, self.qosblockchainmanager)
+                        porta_blockchain=api_qosblockchain.tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, self.qosblockchainmanager)
                         fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
                     else: #ip_ver == IPV6_CODE
-                        porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, self.qosblockchainmanager)
+                        porta_blockchain=api_qosblockchain.tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, self.qosblockchainmanager)
                         fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
                 else:
                     if ip_ver == IPV4_CODE:
@@ -673,28 +661,28 @@ def setup():
 
 
 
-### NAo utilizado 
-    # def remove_qos_rules(self,ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
+# ### NAo utilizado 
+#     # def remove_qos_rules(self,ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
         
-    #     # comportamento borda = remover as regras de fluxos
-    #     rota_nodes = self.rotamanager.get_rota(ip_src, ip_dst)
-    #     # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
-    #     for rota_noh in rota_nodes:
-    #         switch = self.getSwitchByName(rota_noh.switch_name)
-    #         # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
-    #         porta_nome = switch.getPortaSaida(ip_dst)
+#     #     # comportamento borda = remover as regras de fluxos
+#     #     rota_nodes = self.rotamanager.get_rota(ip_src, ip_dst)
+#     #     # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
+#     #     for rota_noh in rota_nodes:
+#     #         switch = self.getSwitchByName(rota_noh.switch_name)
+#     #         # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
+#     #         porta_nome = switch.getPortaSaida(ip_dst)
 
-    #         switch.delRegra(ip_ver)
+#     #         switch.delRegra(ip_ver)
 
-    #         # comportamento backbone -> remover os freds que estão a mais tempo que o hardtimeout ! e reagrupar as regras que restaram
-    #     IDLE_TIMEOUT = 1
-    #     # se o fluxo foi removido por idle_timeout
-    #     if IDLE_TIMEOUT:
-    #         self.fredmanager.del_fred({})
-    #     # remover_freds_expirados() -> que ja sria necessário mesmo
-    #     self.fredmanager.remover_freds_expirados()
-    #     # verificar quais regras precisam ser recriadas (em caso de backbone) -> 
+#     #         # comportamento backbone -> remover os freds que estão a mais tempo que o hardtimeout ! e reagrupar as regras que restaram
+#     #     IDLE_TIMEOUT = 1
+#     #     # se o fluxo foi removido por idle_timeout
+#     #     if IDLE_TIMEOUT:
+#     #         self.fredmanager.del_fred({})
+#     #     # remover_freds_expirados() -> que ja sria necessário mesmo
+#     #     self.fredmanager.remover_freds_expirados()
+#     #     # verificar quais regras precisam ser recriadas (em caso de backbone) -> 
 
-    #     # reagrupar_regras_backbone() (em caso de backbone)
+#     #     # reagrupar_regras_backbone() (em caso de backbone)
 
-    #     return
+#     #     return

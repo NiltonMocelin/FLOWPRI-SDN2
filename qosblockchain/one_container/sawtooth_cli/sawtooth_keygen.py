@@ -23,11 +23,11 @@ import argparse
 from colorlog import ColoredFormatter
 import pkg_resources
 
-from sawtooth_cli.admin_command.sawtooth_signing1 import create_context
+from .admin_command.sawtooth_signing1 import create_context
 
-from sawtooth_cli.exceptions import CliException
+from .exceptions import CliException
 
-from sawtooth_cli.cli_config import load_cli_config
+from .cli_config import load_cli_config
 
 DISTRIBUTION_NAME = 'sawtooth-cli'
 

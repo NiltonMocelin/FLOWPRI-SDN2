@@ -1,19 +1,15 @@
-import sys
-
 from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar_blockchain
-from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show
-from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
+# from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show # problema auqi
+from qosblockchain.one_container.qosblockchain_utils import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
 from qosblockchain.one_container.processor.qos_state import FlowTransacao
-from fp_utils import enviar_msg, calculate_network_prefix_ipv4
-from fp_fred import Fred
+# from fp_utils import calculate_network_prefix_ipv4
+# from fp_fred import Fred
 
 from netifaces import AF_INET, ifaddresses
 
 # from fp_utils import get_meu_ip
 
 import psutil
-
-import subprocess
 
 FRED_SERVER_PORT = 5555
 
@@ -45,19 +41,19 @@ def criar_chave_sawadm():
 def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transacao:FlowTransacao):
 # python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
     args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao.toString(), username='controller_key')
-    do_reg_flowqos(args)
+    # do_reg_flowqos(args)
     return True
 
 def show_bloco_blockchain(ip_blockchain, port_blockchain, flowname):
 # python main_qos_cli.py show '192.168.0.0-192.168.0.1-5000-5002-tcp'
     args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, username='controller_key')
-    flow = do_show(args)
+    # flow = do_show(args)
     return
 
 def listar_todos_blocos_blockchain(ip_blockchain,port_blockchain):
     # python main_qos_cli.py list
     args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, username='controller_key')
-    flows = do_list(args)
+    # flows = do_list(args)
     return
 
 class BlockchainManager:
@@ -105,8 +101,8 @@ def criar_blockchain_api(nome_blockchain, PEERS_IP:list=None, chaves_peers:list 
     criar_blockchain(nome_blockchain, get_meu_ip(), chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
     return NETWORK_PORT
 
-def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
-    nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
+def tratar_blockchain_setup(serverip:str, fred, blockchainManager:BlockchainManager ):
+    nome_blockchain = ''# calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
     lista_chaves_publicas = fred.getPeersPKeys()

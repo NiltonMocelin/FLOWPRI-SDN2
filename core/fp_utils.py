@@ -1,12 +1,14 @@
-from main_controller import FLOWPRI2
-from fp_constants import IPCv4, class_prio_to_queue_id, qos_mark_to_monitoring_mark
+from fp_constants import class_prio_to_queue_id
 
-from fp_switch import Switch
+# from fp_switch import Switch
 
 #para invocar scripts e comandos tc qdisc
 import subprocess
 import time
 import socket
+
+# import main_controller as FL2 
+# from main_controller import FLOWPRI2 as FL2
 
 def souDominioBorda(ip_ver:int, ip_src:str, ip_dst:str):
     if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
@@ -51,7 +53,7 @@ def calculate_network_prefix_ipv4(ip_v4:str):
     return prefix[0]+"."+prefix[1]+"."+prefix[2]+".0"
 
 def get_meu_ip():
-    return IPCv4
+    return '192.168.0.1'
 
 
 def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
@@ -70,7 +72,7 @@ def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
         raise SyntaxError("ERRO ao enviar fred !")
     return 
 
-def get_ips_meu_dominio()->list[str]:
+def get_ips_meu_dominio()->list:
     return ["192.168.0.0"] # sei la aqui
 
 def ip_meu_dominio(ip_src):
@@ -78,7 +80,7 @@ def ip_meu_dominio(ip_src):
     return False
 
 
-def tratador_addSwitches(addswitch_json):
+def tratador_addSwitches(addswitch_json,controller):
     """[arrumar] nome dos switches e o id, se comparar como string vai dar ruim, tem que armazenar como inteiro e comparar com inteiro -> pois eles se anunciam como 0000000000000001, as vezes"""
 
     print("Adicionando configuracao de switch")
@@ -88,7 +90,7 @@ def tratador_addSwitches(addswitch_json):
         nome_switch = i['nome_switch']
 
         #procurando o switch
-        switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
+        switch = controller.getSwitchByName(nome_switch)
     
         #encontrar o switch pelo nome
         #criar as portas conforme a configuracao do json
@@ -176,11 +178,11 @@ def tratador_addSwitches(addswitch_json):
             else:
                 print("[new_switch_handler] FALHA - Erro em novas configuracoes de filas porta {}\n{}".format(interface,script_qos))
  
-def tratador_delSwitches(switch_cfg):
+def tratador_delSwitches(switch_cfg, controller):
 
     nome_switch = switch_cfg['nome_switch']
     #encontrar o switch
-    switch_obj:Switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
+    switch_obj = controller.getSwitchByName(nome_switch)
 
     if switch_obj == None:
         return
@@ -188,12 +190,12 @@ def tratador_delSwitches(switch_cfg):
     for porta in switch_obj.getPortas():
         switch_obj.delPorta(porta.nome)
 
-    FLOWPRI2.getControllerInstance().switches.remove(switch_obj)
+    controller.switches.remove(switch_obj)
 
     print('Switch removido: %s' % (nome_switch))
 
 
-def tratador_addRegras(novasregras_json):
+def tratador_addRegras(novasregras_json, controller):
     #   *Nao implementado*
     # -> encontrar o switch onde as regras devem ser instaladas
     # tipos de regras possiveis
@@ -210,7 +212,7 @@ def tratador_addRegras(novasregras_json):
         switch_obj = None
         
         #encontrar o switch
-        switch_obj:Switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
+        switch_obj = controller.getSwitchByName(nome_switch)
         
         if switch_obj == None:
             print("Regra falhou!!")
@@ -233,7 +235,7 @@ def tratador_addRegras(novasregras_json):
 
     return None
 
-def tratador_delRegras(regras_json):
+def tratador_delRegras(regras_json, controller):
 
     for regra in regras_json:
 
@@ -241,7 +243,7 @@ def tratador_delRegras(regras_json):
         switch_obj = None
     
         #encontrar o switch
-        switch_obj:Switch = FLOWPRI2.getControllerInstance().getSwitchByName(nome_switch)
+        switch_obj = controller.getSwitchByName(nome_switch)
         
         if switch_obj == None:
             print("Regra falhou!!")
@@ -292,17 +294,17 @@ def get_udp_header(udp_pkt):
     return None,None,None,None
 
 
-def addControladorConhecido(ipnovo:str):
+def addControladorConhecido(ipnovo:str, controller):
     #print]("Verificando se ja conhece o controlador: %s \n" %(ipnovo))
     if checkControladorConhecido(ipnovo) == 1:
         #print]("controlador ja conhecido\n")
         return
 
-    FLOWPRI2.getControllerInstance().controladores_conhecidos.append(ipnovo)
+    controller.controladores_conhecidos.append(ipnovo)
     #print]("novo controlador conhecido\n")
 
-def checkControladorConhecido(ip:str):
-    for i in FLOWPRI2.getControllerInstance().controladores_conhecidos:
+def checkControladorConhecido(ip:str, controller):
+    for i in controller.controladores_conhecidos:
         if i == ip:
             #conhecido
             return 1

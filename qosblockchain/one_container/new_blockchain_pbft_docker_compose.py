@@ -4,7 +4,7 @@
 #https://gitee.com/bison-fork/sawtooth-pbft/blob/main/tests/test_liveness.yaml#
 
 # try:
-import docker
+# import docker
 # except:
 #     print("Install docker sdk !!")
 #     exit(0)

@@ -70,12 +70,12 @@ class Regra:
 
 # parte de criação de regras 
 
-def ordenaRegrasPorBandaMaiorMenor(lista_regras) -> list[Regra]:
+def ordenaRegrasPorBandaMaiorMenor(lista_regras) -> list:
 
     _mergeSortRegras(lista_regras, 0, len(lista_regras)-1)
 
 
-def _merge(lista_regras:list[Regra], esq:int, meio:int, dir:int):
+def _merge(lista_regras:list, esq:int, meio:int, dir:int):
     n1 = meio - esq + 1
     n2 = dir - meio
 
@@ -123,7 +123,7 @@ def _mergeSortRegras(lista_regras:int, esq:int, dir:int):
     _merge(lista_regras, esq, meio, dir)
 
 
-def getRegrasExpiradas(lista_regras:list[Regra]) -> list[Regra]:
+def getRegrasExpiradas(lista_regras:list) -> list:
     tempo_atual = current_milli_time()
     lista_regras_expiradas = []
 

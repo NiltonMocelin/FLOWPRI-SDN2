@@ -20,7 +20,7 @@ from traffic_monitoring.monitoring_utils import MonitoringManager, FlowMonitorin
 from traffic_monitoring.monitoring_utils import tratar_flow_monitoring
 
 from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm
-from main_controller import FLOWPRI2
+# from main_controller import FLOWPRI2
 
 from fp_switch import Switch
 
@@ -78,8 +78,7 @@ def send_icmpv6(datapath, srcMac, srcIp, dstMac, dstIp, outPort, data, type=8, t
     datapath.send_msg(out)
     return 0
 
-def tratar_icmp_rejeicao(fred_icmp:Fred, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
-    controller:FLOWPRI2 = FLOWPRI2.controller_singleton
+def tratar_icmp_rejeicao(controller, fred_icmp:Fred, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
     nohs_rota = controller.rotamanager.get_rota(fred_icmp.ip_src, fred_icmp.ip_dst)
 
     dominio_borda = False
@@ -117,23 +116,21 @@ def tratar_icmp_rejeicao(fred_icmp:Fred, ip_ver, eth_src, ip_src, eth_dst, ip_ds
 
     return
 
-def tratador_icmp_flow_monitoring(flow_monitoring:FlowMonitoring):
-    controller:FLOWPRI2 = FLOWPRI2.getControllerInstance()
+def tratador_icmp_flow_monitoring(controller, flow_monitoring:FlowMonitoring):
     tratar_flow_monitoring(flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager)
 
     # dar sequencia no icmp - na verdade aqui envia o flowmonitoring via socket para o host management
     enviar_msg(flow_monitoring.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
     return
 
-def tratador_icmp_fred(fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
+def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
     """ eu sou dominio de borda de destino -> devo tratar o fred e enviar via socket para o meu host_management"""
     INFORMATION_REPLY = 16
     # todos os switches aqui sao tratados como switches backbone
     # verificar se sou borda ou backbone
-    controller:FLOWPRI2 = FLOWPRI2.controller_singleton
     nohs_rota = controller.rotamanager.get_rota(fred.ip_src, fred.ip_dst)
     minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
-    fred.addNoh(FLOWPRI2.IPCv4, minha_chave_publica, len(nohs_rota))
+    fred.addNoh(controller.IPCv4, minha_chave_publica, len(nohs_rota))
 
     if nohs_rota == None:
         print('[trat_meu-domin] erro: sem rotas para %s -> %s'%(fred.ip_src,fred.ip_dst))
@@ -149,18 +146,18 @@ def tratador_icmp_fred(fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
             # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
             if porta_blockchain == None:
                 if fred.ip_ver == IPV4_CODE:
-                    porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, controller.qosblockchainmanager)
-                    fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
+                    porta_blockchain=tratar_blockchain_setup(controller.IPCv4, fred, controller.qosblockchainmanager)
+                    fred.addPeer(controller.IPCv4, minha_chave_publica, controller.IPCv4+':'+str(porta_blockchain))
                 else: #ip_ver == IPV6_CODE
-                    porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, controller.qosblockchainmanager)
-                    fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
+                    porta_blockchain=tratar_blockchain_setup(controller.IPCv6, fred, controller.qosblockchainmanager)
+                    fred.addPeer(controller.IPCv6, minha_chave_publica, controller.IPCv6+':'+str(porta_blockchain))
             else:
                 if fred.ip_ver == IPV4_CODE:
-                    fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
+                    fred.addPeer(controller.IPCv4, minha_chave_publica, controller.IPCv4+':'+str(porta_blockchain))
                     # send_icmpv4(datapath=controller.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
                     enviar_msg(fred.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
                 else:
-                    fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
+                    fred.addPeer(controller.IPCv6, minha_chave_publica, controller.IPCv6+':'+str(porta_blockchain))
                     # send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
                     enviar_msg(fred.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
     else:# so para deixar organizado

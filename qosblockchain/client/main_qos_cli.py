@@ -25,8 +25,8 @@ import pkg_resources
 
 from colorlog import ColoredFormatter
 
-from qos_client import QoSClient
-from qos_exceptions import QoSException
+from . import qos_client #import QoSClient
+from . import qos_exceptions #import QoSException
 
 DISTRIBUTION_NAME = 'flowqos'
 
@@ -259,7 +259,7 @@ def do_list(args):
     url = _get_url(args)
     auth_user, auth_password = _get_auth_info(args)
 
-    client = QoSClient(base_url=url, keyfile=None)
+    client = qos_client.QoSClient(base_url=url, keyfile=None)
 
     flows = [f.decode() for f in client.list(auth_user=auth_user,
                                  auth_password=auth_password)]
@@ -268,7 +268,7 @@ def do_list(args):
         print(flows)
         return flows
     else:
-        raise QoSException("Could not retrieve flow listing.")
+        raise qos_exceptions.QoSException("Could not retrieve flow listing.")
     
 def do_show(args):
     flow_name = args.flow_name
@@ -276,7 +276,7 @@ def do_show(args):
     url = _get_url(args)
     auth_user, auth_password = _get_auth_info(args)
 
-    client = QoSClient(base_url=url, keyfile=None)
+    client = qos_client.QoSClient(base_url=url, keyfile=None)
 
     # print('show 1')
     
@@ -287,7 +287,7 @@ def do_show(args):
         # print(data)
         return data
     else:
-        raise QoSException("Flow not found: {}".format(flow_name))
+        raise qos_exceptions.QoSException("Flow not found: {}".format(flow_name))
 
 
 def do_reg_flowqos(args):
@@ -299,7 +299,7 @@ def do_reg_flowqos(args):
     keyfile = _get_keyfile(args)
     auth_user, auth_password = _get_auth_info(args)
 
-    client = QoSClient(base_url=url, keyfile=keyfile)
+    client = qos_client.QoSClient(base_url=url, keyfile=keyfile)
 
     if args.wait and args.wait > 0:
         response = client.reg_flowqos(
@@ -354,22 +354,22 @@ def main(prog_name=os.path.basename(sys.argv[0]), args=None):
     elif args.command == 'show':
         do_show(args)
     else:
-        raise QoSException("invalid command: {}".format(args.command))
+        raise qos_exceptions.QoSException("invalid command: {}".format(args.command))
 
-def main_wrapper():
-    try:
-        main()
-    except QoSException as err:
-        print("Error: {}".format(err), file=sys.stderr)
-        sys.exit(1)
-    except KeyboardInterrupt:
-        pass
-    except SystemExit as err:
-        raise err
-    except BaseException as err:
-        traceback.print_exc(file=sys.stderr)
-        sys.exit(1)
+# def main_wrapper():
+#     try:
+#         main()
+#     except qos_exceptions.QoSException as err:
+#         print("Error: {}".format(err), file=sys.stderr)
+#         sys.exit(1)
+#     except KeyboardInterrupt:
+#         pass
+#     except SystemExit as err:
+#         raise err
+#     except BaseException as err:
+#         traceback.print_exc(file=sys.stderr)
+#         sys.exit(1)
 
 
-### init ####
-main_wrapper()
+# ### init ####
+# main_wrapper()

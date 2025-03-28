@@ -19,8 +19,8 @@ import sys
 from sawtooth_signing import create_context
 # pip install sawtooth-signing
 
-from sawtooth_cli.exceptions import CliException
-from sawtooth_cli.admin_command.config import get_key_dir, get_key_dir_nilton
+from ..exceptions import CliException
+from ..admin_command.config import get_key_dir, get_key_dir_nilton
 
 
 def add_keygen_parser(subparsers, parent_parser):

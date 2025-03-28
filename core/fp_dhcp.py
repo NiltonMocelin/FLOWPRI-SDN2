@@ -9,7 +9,6 @@ from ryu.lib.packet import icmpv6
 from ryu.lib.packet import in_proto
 from ryu.lib.packet import vlan
 from ryu.lib import addrconv
-from fp_constants import IPCc, MACC
 import ipaddress
 
 
@@ -28,15 +27,12 @@ _LIST_IPS = ['192.168.255.1', '192.168.255.2', '192.168.255.3', '192.168.255.4',
 # isso tem que ter o controle de qual switch conecta o host - mac-ip
 mac_to_client_ip = {}
 
-CONTROLLER_IP = IPCc
-CONTROLLER_MAC = MACC
-
 #Isso cada switch/grupo de switches deve ter o seu
 IP_NETWORK = '192.168.255.0'
 IP_NETWORK_MASK = '255.255.255.0'
 IP_DNS = '0.0.0.0'
-dhcp_addr = CONTROLLER_IP
-gw_addr = CONTROLLER_IP
+# dhcp_addr = CONTROLLER_IP
+# gw_addr = CONTROLLER_IP
 
 def handle_dhcp(dhcpPkt, datapath, in_port):
     #verificar o tipo da mensagem
@@ -80,14 +76,14 @@ def handle_dhcp_discovery(controller_obj, datapath, in_port, dhcp_pkt):
     sname = 'VM-CONTROLLER-001\0'
 
     #gateway addr os dois 
-    dhcp_addr = CONTROLLER_IP
-    gw_addr = CONTROLLER_IP
+    dhcp_addr = controller_obj.IPCv4
+    gw_addr = controller_obj.IPCv4
     broadcast_addr = '255.255.255.255'
 
     ip_network = IP_NETWORK
 
     dns_addr = '0.0.0.0'
-    dhcp_hw_addr = CONTROLLER_MAC
+    dhcp_hw_addr = controller_obj.MACc
 
     #obter um ip para o host
     # try:
@@ -120,7 +116,7 @@ def handle_dhcp_discovery(controller_obj, datapath, in_port, dhcp_pkt):
                         xid=dhcp_pkt.xid,
                         options=options)
         
-    _send_dhcp_packet(datapath, dhcp_pkt, CONTROLLER_MAC, CONTROLLER_IP,  in_port)
+    _send_dhcp_packet(datapath, dhcp_pkt, controller_obj.MACc, controller_obj.IPCv4,  in_port)
 
     return
     
@@ -133,7 +129,7 @@ def handle_dhcp_request(controller_obj, dhcp_pkt, datapath, port):
     subnet_option = dhcp.option(tag=dhcp.DHCP_SUBNET_MASK_OPT,
                                 value=addrconv.ipv4.text_to_bin(IP_NETWORK_MASK))
     gw_option = dhcp.option(tag=dhcp.DHCP_GATEWAY_ADDR_OPT,
-                            value=addrconv.ipv4.text_to_bin(gw_addr))
+                            value=addrconv.ipv4.text_to_bin(controller_obj.IPCv4))
     dns_option = dhcp.option(tag=dhcp.DHCP_DNS_SERVER_ADDR_OPT,
                              value=addrconv.ipv4.text_to_bin(IP_DNS))
     time_option = dhcp.option(tag=dhcp.DHCP_IP_ADDR_LEASE_TIME_OPT,
@@ -141,7 +137,7 @@ def handle_dhcp_request(controller_obj, dhcp_pkt, datapath, port):
     msg_option = dhcp.option(tag=dhcp.DHCP_MESSAGE_TYPE_OPT,
                              value=dhcp_ack_msg_type)
     id_option = dhcp.option(tag=dhcp.DHCP_SERVER_IDENTIFIER_OPT,
-                            value=addrconv.ipv4.text_to_bin(dhcp_addr))
+                            value=addrconv.ipv4.text_to_bin(controller_obj.IPCv4))
 
     options = dhcp.options(option_list=[msg_option, id_option,
                            time_option, subnet_option,
@@ -168,7 +164,7 @@ def handle_dhcp_request(controller_obj, dhcp_pkt, datapath, port):
                          xid=dhcp_pkt.xid,
                          options=options)
 
-    _send_dhcp_packet(datapath, dhcp_pkt, CONTROLLER_MAC, CONTROLLER_IP, port)
+    _send_dhcp_packet(datapath, dhcp_pkt, controller_obj.MACc, controller_obj.IPCv4, port)
 
 
 def _send_dhcp_packet(controller_obj, datapath, dhcp_pkt, mac_src, ip_src, in_port):

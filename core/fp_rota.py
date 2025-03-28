@@ -8,7 +8,7 @@ class Rota_Node:
 
 class Rota:
     def __init__(self, ip_ver:int, src_prefix:str, dst_prefix:str, src_port:int,
-                dst_port:int, proto:int, rota_nodes:list[Rota_Node]):
+                dst_port:int, proto:int, rota_nodes:list):
 
         self.src_prefix:int = src_prefix
         self.dst_prefix:int = dst_prefix
@@ -23,13 +23,13 @@ class RotaManager:
         self.rotas = {}
         self.lock = threading.lock()
 
-    def get_rota(self,ip_src: str, ip_dst:str) -> list[Rota_Node]:
+    def get_rota(self,ip_src: str, ip_dst:str) -> list:
         
         lista_switches = self.rotas.get(ip_src+ip_dst, None)
     
         return lista_switches
     
-    def add_rota(self,ip_src: str, ip_dst:str, lista_rota_nodes:list[Rota_Node]):
+    def add_rota(self,ip_src: str, ip_dst:str, lista_rota_nodes:list):
         with self.lock:
             self.rotas[ip_src+ip_dst] = lista_rota_nodes
         return
@@ -42,7 +42,7 @@ class RotaManager:
         print("Rota removida")
         return
 
-def tratador_addRotas(novasrotas_json):
+def tratador_addRotas(novasrotas_json, rotamanager:RotaManager):
 
     print("Adicionando novas rotas:")
     for rota in novasrotas_json:
@@ -60,11 +60,11 @@ def tratador_addRotas(novasrotas_json):
             
             lista_rota_nodes.append(Rota_Node(switch_name=switch['nome_switch'],in_port=switch['porta_entrada'],out_port=switch['porta_saida']))
         
-        add_rota(src_prefix, dst_prefix, lista_rota_nodes)
+        rotamanager.add_rota(src_prefix, dst_prefix, lista_rota_nodes)
         
     print('rotas adicionadas')
 
-def tratador_delRotas(novasrotas_json):
+def tratador_delRotas(novasrotas_json, rotamanager:RotaManager):
 
     for rota in novasrotas_json:
         #poderia obter uma lista de switches e ir em cada um adicinoando a rota
@@ -75,6 +75,6 @@ def tratador_delRotas(novasrotas_json):
         dst_port = rota['dst_port']
         proto = rota['proto']
 
-        del_rota(src_prefix, dst_prefix)
+        rotamanager.del_rota(src_prefix, dst_prefix)
         
     return 
