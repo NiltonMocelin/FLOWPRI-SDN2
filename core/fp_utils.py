@@ -181,6 +181,13 @@ def tratador_delSwitches(controller, switch_cfg):
     print('Switch removido: %s' % (nome_switch))
 
 
+def tratador_setConfig(controller, switch_cfg):
+    """{"setConfig":{"nome_config":"ManagementSwitch","ip":"ipswitch"}}"""
+    if switch_cfg['nome_config'] == 'ManagementSwitch':
+        ip_switch = switch_cfg['ip']
+        controller.ip_management_host = ip_switch
+
+
 def get_eth_header(eth_pkt):
     if eth_pkt:
         return eth_pkt.dst,eth_pkt.src,eth_pkt.ethertype

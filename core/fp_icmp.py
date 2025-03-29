@@ -3,7 +3,7 @@ from ryu.lib.packet import ethernet
 from ryu.ofproto import inet, ether
 from ryu.lib.packet import ipv4, icmp, ipv6, icmpv6
 
-from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPV4_CODE, IPV6_CODE, IP_MANAGEMENT_HOST
+from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPV4_CODE, IPV6_CODE
 
 from fp_fred import Fred, fromJsonToFred
 
@@ -125,7 +125,7 @@ def tratador_icmp_flow_monitoring(controller, flow_monitoring:FlowMonitoring):
     tratar_flow_monitoring(flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager)
 
     # dar sequencia no icmp - na verdade aqui envia o flowmonitoring via socket para o host management
-    enviar_msg(flow_monitoring.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
+    enviar_msg(flow_monitoring.toString(), controller.ip_management_host, PORTA_MANAGEMENT_HOST_SERVER)
     return
 
 def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
@@ -160,11 +160,11 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
                 if fred.ip_ver == IPV4_CODE:
                     fred.addPeer(controller.IPCv4, minha_chave_publica, controller.IPCv4+':'+str(porta_blockchain))
                     # send_icmpv4(datapath=controller.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
-                    enviar_msg(fred.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
+                    enviar_msg(fred.toString(), controller.ip_management_host, PORTA_MANAGEMENT_HOST_SERVER)
                 else:
                     fred.addPeer(controller.IPCv6, minha_chave_publica, controller.IPCv6+':'+str(porta_blockchain))
                     # send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
-                    enviar_msg(fred.toString(), IP_MANAGEMENT_HOST, PORTA_MANAGEMENT_HOST_SERVER)
+                    enviar_msg(fred.toString(), controller.ip_management_host, PORTA_MANAGEMENT_HOST_SERVER)
     else:# so para deixar organizado
         controller.create_be_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    
         # enviar fred rejeitando fluxo, apenas para trás <-, nao precisa enviar para frente tbm

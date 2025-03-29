@@ -13,7 +13,7 @@ from fp_constants import PORTAC_C, PORTAC_H, PORTAC_X, CRIAR
     
 import json, struct, time, datetime
 
-from fp_utils import tratador_addSwitches, tratador_delSwitches
+from fp_utils import tratador_addSwitches, tratador_delSwitches, tratador_setConfig
 
 from fp_rota import tratador_addRotas, tratador_delRotas
 
@@ -75,6 +75,8 @@ def servidor_configuracoes(controller, ip_server):
         if "delRegras" in cfg:
             tratador_delRegras(controller, cfg['delRegras'])
         
+        if "setConfig" in cfg:
+            tratador_setConfig(controller, cfg['setConfig'])
         print('Configuração realizada')
 
     return

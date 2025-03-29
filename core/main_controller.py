@@ -57,7 +57,7 @@ import logging
 import sys, os
 
 #codigos das acoes
-from fp_constants import IPV4_CODE, IPV6_CODE, TCP, UDP, IP_MANAGEMENT_HOST, class_prio_to_monitoring_mark
+from fp_constants import IPV4_CODE, IPV6_CODE, TCP, UDP, class_prio_to_monitoring_mark
 
 from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm, BlockchainManager
 
@@ -130,7 +130,9 @@ class FLOWPRI2(app_manager.RyuApp):
 
         FLOWPRI2.controller_singleton = self
 
-        self.CONTROLLER_INTERFACE = "eth2"
+        self.ip_management_host = '192.168.0.1'
+
+        self.CONTROLLER_INTERFACE = "eth0"
         #  self.CONTROLLER_INTERFACE = "enp7s0"
         try:
             self.IPCv4 = str(ifaddresses(self.CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
@@ -138,13 +140,13 @@ class FLOWPRI2(app_manager.RyuApp):
             self.IPCc = self.IPCv4
             self.MACC = str(ifaddresses(self.CONTROLLER_INTERFACE)[17][0]['addr'])
             self.CONTROLADOR_ID = self.IPCc
+
+            print("Controlador ID - {}"  .format(self.CONTROLADOR_ID))
+            print("Controlador IPv4 - {}".format(self.IPCv4))
+            print("Controlador IPv6 - {}".format(self.IPCv6))
+            print("Controlador MAC - {}" .format(self.MACC))
         except:
             print("Verifique o nome da interface e modifique na main")
-
-        print("Controlador ID - {}"  .format(self.CONTROLADOR_ID))
-        print("Controlador IPv4 - {}".format(self.IPCv4))
-        print("Controlador IPv6 - {}".format(self.IPCv6))
-        print("Controlador MAC - {}" .format(self.MACC))
 
         # setup()
 
@@ -455,7 +457,7 @@ class FLOWPRI2(app_manager.RyuApp):
             fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
                          mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=get_ips_meu_dominio(), 
                          as_src_ip_range=[],label=flow_classificacao.application_label,
-                         ip_genesis=IP_MANAGEMENT_HOST, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
+                         ip_genesis=self.ip_management_host, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
                          prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
 
             minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
@@ -565,7 +567,7 @@ class FLOWPRI2(app_manager.RyuApp):
         else:
             return
 
-        print("[%s] pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (datetime.datetime.now().time(), ip_src, ip_dst, src_port, dst_port, proto))
+        print("[%s] switch_name: %d, pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (datetime.datetime.now().time(), dpid, ip_src, ip_dst, src_port, dst_port, proto))
 
         # aprendizagem
         este_switch = self.getSwitchByName(str(dpid))

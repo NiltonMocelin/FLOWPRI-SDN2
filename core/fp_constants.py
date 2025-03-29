@@ -3,7 +3,7 @@ from netifaces import AF_INET, ifaddresses, interfaces
 
 # algumas variaveis para o controlador
 
-IP_MANAGEMENT_HOST = "192.168.0.1" # alterar isso
+# IP_MANAGEMENT_HOST = "192.168.0.1" # alterar isso
 PORTA_MANAGEMENT_HOST_SERVER = 9090
 
 #Listar interfaces disponiveis
