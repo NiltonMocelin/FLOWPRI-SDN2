@@ -17,30 +17,30 @@ class Porta:
         self.bandaTotalClasseReal = bandaTotalClasseReal #banda total para esta classe
         self.bandaUtilizadaClasseReal = 0 #banda utilizada para esta classe
         #fila alta prioridade 1, classe 1 (tempo real)
-        self.regrasPrioAltaClasseReal:list[Regra] = []
+        self.regrasPrioAltaClasseReal:list = []
         # self.p1c1rules = []
         #fila media prioridade 2, classe 1 (tempo real)
-        self.regrasPrioMediaClasseReal:list[Regra] = []
+        self.regrasPrioMediaClasseReal:list = []
         #fila baixa prioridade 3, classe 1 (tempo real)
-        self.regrasPrioBaixaClasseReal:list[Regra] = []
+        self.regrasPrioBaixaClasseReal:list = []
         # self.prio3c1rules = []
 
         #criar os vetores fila da classe 2
         self.bandaTotalClasseNaoReal:int = bandaTotalClasseNaoReal
         self.bandaUtilizadaClasseNaoReal = 0
         #fila alta prioridade 1, classe 2 (dados)
-        self.regrasPrioAltaClasseNaoReal:list[Regra] = []
+        self.regrasPrioAltaClasseNaoReal:list = []
         # self.p1c2rules = []
         #fila media prioridade 2, classe 2 (dados)
         # self.p2c2rules = []
-        self.regrasPrioMediaClasseNaoReal:list[Regra] = []
+        self.regrasPrioMediaClasseNaoReal:list = []
         #fila baixa prioridade 3, classe 2 (dados)
         # self.p3c2rules = []
-        self.regrasPrioBaixaClasseNaoReal:list[Regra] = []
+        self.regrasPrioBaixaClasseNaoReal:list = []
 
-        self.berules:list[Regra] = []
+        self.berules:list = []
 
-        self.controlrules:list[Regra] = []
+        self.controlrules:list = []
 
         #id do proximo switch (conectado ao link)
         self.next:int = proximoSwitch

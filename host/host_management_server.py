@@ -28,14 +28,14 @@ def enviar_fred(fred_json, server_ip, server_port):
     tcp.close()
     return 
 
-def meu_dominio(ip_addrs:str):
+def meu_dominio(ip_addrs:str, meu_ip:str):
     ### SOMENTE PARA IPv4 por enqunato, pq nao sei fazer isso para ipv6...
-    if calculate_network_prefix_ipv4(get_meu_ip()) == calculate_network_prefix_ipv4(ip_addrs):
+    if calculate_network_prefix_ipv4(meu_ip) == calculate_network_prefix_ipv4(ip_addrs):
         return True
     return False
 
 
-def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
+def tratar_blockchain_setup(meu_ip, serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
     nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
@@ -44,7 +44,7 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
  
     is_genesis = False
     genesis_node_ip = fred.ip_genesis
-    meu_ip = get_meu_ip()
+    
     if meu_ip == genesis_node_ip:
         is_genesis = True
 
@@ -61,14 +61,12 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
         enviar_fred(fred_json=fred.toString(), server_ip=genesis_node_ip, server_port=FRED_SERVER_PORT)
 
 
-def tratar_flow_monitoring(flow_monitoring_json, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
+def tratar_flow_monitoring(meu_ip, flow_monitoring_json, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
     flow_monitoring_recebido = loadFlowMonitoringFromJson(flow_monitoring_json)
 
     nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
     fred_flow = fredmanager.get_fred(nome_fred)
-
-    meu_ip = get_meu_ip()
 
     #calcular as medias para atraso, banda e perda
     flow_monitoring_local = monitoringmanager.getMonitoring(nome_fred)

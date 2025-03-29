@@ -21,7 +21,7 @@ class Rota:
 class RotaManager:
     def __init__(self):
         self.rotas = {}
-        self.lock = threading.lock()
+        self.lock = threading.Lock()
 
     def get_rota(self,ip_src: str, ip_dst:str) -> list:
         
@@ -42,18 +42,14 @@ class RotaManager:
         print("Rota removida")
         return
 
-def tratador_addRotas(novasrotas_json, rotamanager:RotaManager):
-
+def tratador_addRotas(rotamanager:RotaManager, novasrotas_json):
+    """{'src_prefix':'ip', 'dst_prefix':'ip', 'switches_rota':[{'nome_switch':1, 'porta_entrada':1, 'porta_saida':2}]}"""
     print("Adicionando novas rotas:")
     for rota in novasrotas_json:
         #poderia obter uma lista de switches e ir em cada um adicinoando a rota
-        ip_ver = rota['ip_ver']
         src_prefix = rota['src_prefix']
         dst_prefix = rota['dst_prefix']
-        src_port = rota['src_port']
-        dst_port = rota['dst_port']
-        proto = rota['proto']
-    
+
         lista_rota_nodes = []
         
         for switch in rota['switches_rota']:
@@ -64,17 +60,12 @@ def tratador_addRotas(novasrotas_json, rotamanager:RotaManager):
         
     print('rotas adicionadas')
 
-def tratador_delRotas(novasrotas_json, rotamanager:RotaManager):
-
+def tratador_delRotas(rotamanager:RotaManager, novasrotas_json):
+    """{'src_prefix':'ip', 'dst_prefix':'ip'}"""
     for rota in novasrotas_json:
         #poderia obter uma lista de switches e ir em cada um adicinoando a rota
-        ip_ver = rota['ip_ver']
         src_prefix = rota['src_prefix']
         dst_prefix = rota['dst_prefix']
-        src_port = rota['src_port']
-        dst_port = rota['dst_port']
-        proto = rota['proto']
-
         rotamanager.del_rota(src_prefix, dst_prefix)
         
     return 

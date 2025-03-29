@@ -1,7 +1,7 @@
 from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
-from ryu.ofproto import ofproto_v1_3, inet, ether
-from ryu.lib.packet import ipv4, arp, icmp, udp, tcp, lldp, ipv6, dhcp, icmpv6
+from ryu.ofproto import inet, ether
+from ryu.lib.packet import ipv4, icmp, ipv6, icmpv6
 
 from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPV4_CODE, IPV6_CODE, IP_MANAGEMENT_HOST
 
@@ -15,14 +15,19 @@ from fp_utils import current_milli_time, getQoSMark, enviar_msg
 
 from fp_utils import souDominioBorda, check_domain_hosts
 
-from traffic_monitoring.monitoring_utils import MonitoringManager, FlowMonitoring, loadFlowMonitoringFromJson
+from traffic_monitoring.monitoring_utils import FlowMonitoring, loadFlowMonitoringFromJson
 
 from traffic_monitoring.monitoring_utils import tratar_flow_monitoring
 
 from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm
 # from main_controller import FLOWPRI2
 
-from fp_switch import Switch
+# from fp_switch import Switch
+
+# TIPOS DE SWITCH
+SWITCH_FIRST_HOP=1
+SWITCH_LAST_HOP=2
+SWITCH_OUTRO=3 # backbone
 
 ############# send_icmp TORNADO GLOBAL EM 06/10 - para ser aproveitado em server socket ###################
 #https://ryu-devel.narkive.com/1CxrzoTs/create-icmp-pkt-in-the-controller
@@ -94,12 +99,12 @@ def tratar_icmp_rejeicao(controller, fred_icmp:Fred, ip_ver, eth_src, ip_src, et
         primeiro_switch+=1
         ultimo_switch-=1
         switchh_first_hop = controller.getSwitchByName(nohs_rota[primeiro_switch].switch_name)
-        switchh_first_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[primeiro_switch].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=Switch.SWITCH_FIRST_HOP)
+        switchh_first_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[primeiro_switch].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=SWITCH_FIRST_HOP)
         switchh_last_hop = controller.getSwitchByName(nohs_rota[ultimo_switch].switch_name)
-        switchh_last_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[-1].in_port, porta_saida=nohs_rota[-1].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=Switch.SWITCH_LAST_HOP)
+        switchh_last_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[-1].in_port, porta_saida=nohs_rota[-1].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=SWITCH_LAST_HOP)
     for i in range(primeiro_switch, ultimo_switch):
         switchh = controller.getSwitchByName(nohs_rota[i].switch_name)
-        switchh.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[i].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=Switch.SWITCH_OUTRO)
+        switchh.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[i].out_port, qos_mark=getQoSMark(fred_icmp.classe,fred_icmp.prioridade), tipo_switch=SWITCH_OUTRO)
         # remove_qos_rules(ip_ver=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
 
     # criar a regra best-effort

@@ -1,16 +1,14 @@
 from fp_constants import FORWARD_TABLE,CLASSIFICATION_TABLE,FILA_CONTROLE, ALL_TABLES, IPV4_CODE, IPV6_CODE, TCP, UDP, BE_IDLE_TIMEOUT, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, MONITORING_TIMEOUT, NO_METER,NO_QOS_MARK, OFP_NO_BUFFER, MARCACAO_MONITORAMENTO, CONJUNCTION_ID, TCP_SRC, TCP_DST, UDP_SRC, UDP_DST, MONITORING_PRIO, CONJUNCTION_PRIO, METER_PRIO
+from fp_constants import NO_METER, PORTA_ENTRADA, PORTA_SAIDA
 # from fp_switch import Switch
 
-from ryu.lib.packet import ether_types, in_proto
-from ryu.ofproto.ofproto_v1_3_parser import OFPFlowMod, OFPMatch
-from ryu.ofproto import ofproto_parser
+from ryu.lib.packet import in_proto #, ether_types
+from ryu.ofproto.ofproto_v1_3_parser import OFPMatch #, OFPFlowMod
+# from ryu.ofproto import ofproto_parser
 from fp_utils import getEquivalentMonitoringMark, getQOSMark, getQueueId
 
-
-# mudar os matches para:
-# match.set_in_port(in_port)
-# match.set_dl_type(eth_IP)
-
+from fp_regra import Regra
+from fp_acao import Acao
 
 # os melhores exemplos estao em: ryu/ryu/tests
 
@@ -484,6 +482,91 @@ def delRegraMeter(switch, meter_id):
     req = parser.OFPMeterMod(datapath=datapath, command=ofproto.OFPMC_DELETE, meter_id=meter_id,  out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY)
     datapath.send_msg(req)
     return
+
+
+def tratador_delRegras(controller, regras_json):
+
+    for regra in regras_json:
+
+        nome_switch = regras_json['nome_switch']
+        switch_obj = None
+    
+        #encontrar o switch
+        switch_obj= controller.getSwitchByName(nome_switch)
+        
+        if switch_obj == None:
+            print("[serv_del_regra] Verifique o nome do switch (nao encontrado)!!")
+            #tentar a proxima regra
+            continue
+
+        ip_ver = regra['ip_ver']
+        ip_src = regra['ip_src']
+        ip_dst = regra['ip_dst']
+        src_port = regra['src_port']
+        dst_port = regra['dst_port']
+        proto = regra['proto']
+        porta_saida = regra['porta_saida']
+        porta_entrada = regra['porta_entrada']
+        qos_mark = regra['qos_mark']
+        meter_id = regra['meter_id']
+        switch_borda = regra['switch_borda'] #bool
+
+        if meter_id != NO_METER: # qos 
+            delRegraMeter(meter_id)
+            delMeter(controller, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        switch_obj.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        switch_obj.getPorta(porta_entrada).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        if switch_borda:
+            delRegraForwarding(controller, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        else:
+            delRegraForwarding_com_Conjunction(switch_obj, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qos_mark, porta_saida)
+    return
+
+
+
+def tratador_addRegras(controller, novasregras_json):
+    """[{'nome_switch':1, },{}]"""
+    for regra in novasregras_json:
+
+        print(regra)
+
+        nome_switch = regra['nome_switch']
+        switch_obj = None
+        
+        #encontrar o switch
+        switch_obj = controller.getSwitchByName(nome_switch)
+
+        if switch_obj == None:
+            print("Regra falhou!!")
+            #tentar a proxima regra
+            continue
+
+        ip_ver = regra['ip_ver']
+        ip_src = regra['ip_src']
+        ip_dst = regra['ip_dst']
+        porta_saida = regra['porta_saida']
+        porta_entrada = regra['porta_entrada']
+        src_port = regra['src_port']
+        dst_port = regra['dst_port']
+        proto = regra['proto']
+        #isso vai ser modificado outro momento
+        classe = regra['classe']
+        prioridade = regra['prioridade']
+        banda = regra['banda']
+        application_class = regra['application_class']
+        emprestando = regra['emprestando'] # true or false
+        criar_meter = regra['criar_meter'] # true or false
+        tipo_switch = regra['tipo_switch'] # ver fp_switch
+        meter_id = NO_METER
+        if criar_meter:
+            meter_id = criar_meter
+
+        # passando por cima do GBAM, nao vai rodar o GBAM
+        Acao(switch_obj, porta_saida, Regra.CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, getQueueId(classe, prioridade), application_class, getQOSMark(classe, prioridade), {}, emprestando), PORTA_ENTRADA, tipo_switch).executar()
+        Acao(switch_obj, porta_saida, Regra.CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, getQueueId(classe, prioridade), application_class, getQOSMark(classe, prioridade), {}, emprestando), PORTA_SAIDA, tipo_switch).executar()
+
+    return None
+
 
 #   #criar uma mensagem para remover uma regra de fluxo no ovsswitch
 # def delRegraT(switch:Switch, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ip_dscp, tabela=ALL_TABLES):

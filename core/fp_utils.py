@@ -1,33 +1,26 @@
+# from main_controller import FLOWPRI2
 from fp_constants import class_prio_to_queue_id
-
-# from fp_switch import Switch
 
 #para invocar scripts e comandos tc qdisc
 import subprocess
 import time
 import socket
 
-# import main_controller as FL2 
-# from main_controller import FLOWPRI2 as FL2
-
-def souDominioBorda(ip_ver:int, ip_src:str, ip_dst:str):
-    if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
-        return True
-    return False
-
-def check_domain_hosts(ip_src):
+def check_domain_hosts(ip_src, meu_ip):
 
     #checar se é ipv4 ou ipv6
     # fazer para iv6 tbm
-
-    meu_ip = get_meu_ip()
-
     meu_prefix =calculate_network_prefix_ipv4(meu_ip)
     ip_src_prefix = calculate_network_prefix_ipv4(ip_src)
 
     if meu_prefix == ip_src_prefix:
         return True
 
+    return False
+
+def souDominioBorda(ip_ver:int, ip_src:str, ip_dst:str):
+    if check_domain_hosts(ip_src) == True or check_domain_hosts(ip_dst) == True:
+        return True
     return False
 
 def enviar_msg(msg_str, server_ip, server_port):
@@ -52,9 +45,6 @@ def calculate_network_prefix_ipv4(ip_v4:str):
 
     return prefix[0]+"."+prefix[1]+"."+prefix[2]+".0"
 
-def get_meu_ip():
-    return '192.168.0.1'
-
 
 def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
     print("Enviando fred para -> %s:%s\n" % (ip_host_dst,PORTA_HOST_FRED_SERVER))
@@ -75,12 +65,8 @@ def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
 def get_ips_meu_dominio()->list:
     return ["192.168.0.0"] # sei la aqui
 
-def ip_meu_dominio(ip_src):
-    """verificar se um host eh meu client"""
-    return False
 
-
-def tratador_addSwitches(addswitch_json,controller):
+def tratador_addSwitches(controller, addswitch_json):
     """[arrumar] nome dos switches e o id, se comparar como string vai dar ruim, tem que armazenar como inteiro e comparar com inteiro -> pois eles se anunciam como 0000000000000001, as vezes"""
 
     print("Adicionando configuracao de switch")
@@ -178,11 +164,11 @@ def tratador_addSwitches(addswitch_json,controller):
             else:
                 print("[new_switch_handler] FALHA - Erro em novas configuracoes de filas porta {}\n{}".format(interface,script_qos))
  
-def tratador_delSwitches(switch_cfg, controller):
+def tratador_delSwitches(controller, switch_cfg):
 
     nome_switch = switch_cfg['nome_switch']
     #encontrar o switch
-    switch_obj = controller.getSwitchByName(nome_switch)
+    switch_obj= controller.getSwitchByName(nome_switch)
 
     if switch_obj == None:
         return
@@ -194,79 +180,6 @@ def tratador_delSwitches(switch_cfg, controller):
 
     print('Switch removido: %s' % (nome_switch))
 
-
-def tratador_addRegras(novasregras_json, controller):
-    #   *Nao implementado*
-    # -> encontrar o switch onde as regras devem ser instaladas
-    # tipos de regras possiveis
-    # - delete e add
-    # - regras marcacao
-    # - regras meter (classes com qos -> gbam)
-    # - regra de encaminhamento (best-effort)
-
-    for regra in novasregras_json:
-
-        print(regra)
-
-        nome_switch = regra['nome_switch']
-        switch_obj = None
-        
-        #encontrar o switch
-        switch_obj = controller.getSwitchByName(nome_switch)
-        
-        if switch_obj == None:
-            print("Regra falhou!!")
-            #tentar a proxima regra
-            continue
-
-        ip_ver = regra['ip_ver']
-        ip_src = regra['ip_src']
-        ip_dst = regra['ip_dst']
-        porta_saida = regra['porta_saida']
-        src_port = regra['src_port']
-        dst_port = regra['dst_port']
-        proto = regra['proto']
-        #isso vai ser modificado outro momento
-        classe = regra['classe']
-        prioridade = regra['prioridade']
-        banda = regra['banda']
-
-        switch_obj.alocarGBAM(ip_ver=ip_ver, ip_src = ip_src, ip_dst = ip_dst, proto=proto, dst_port = dst_port, src_port= src_port, porta_saida = porta_saida, banda=banda, prioridade=prioridade, classe=classe)
-
-    return None
-
-def tratador_delRegras(regras_json, controller):
-
-    for regra in regras_json:
-
-        nome_switch = regras_json['nome_switch']
-        switch_obj = None
-    
-        #encontrar o switch
-        switch_obj = controller.getSwitchByName(nome_switch)
-        
-        if switch_obj == None:
-            print("Regra falhou!!")
-            #tentar a proxima regra
-            continue
-
-        ip_ver = regra['ip_ver']
-        ip_src = regra['ip_src']
-        ip_dst = regra['ip_dst']
-        src_port = regra['src_port']
-        dst_port = regra['dst_port']
-        proto = regra['proto']
-        #isso vai ser modificado outro momento
-        classe = regra['classe']
-        prioridade = regra['prioridade']
-        banda = regra['banda']
-        porta_saida = regra['porta_saida']
-
-        if not switch_obj.delRegraGBAM(ip_ver=ip_ver, ip_src = ip_src, ip_dst = ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_saida = porta_saida, banda=banda, prioridade=prioridade, classe=classe):
-                #se for uma regra best-effort remover aqui
-                switch_obj.delRegraT(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,src_port=src_port, dst_port=dst_port, proto=proto,ip_dscp=None)
-
-    return
 
 def get_eth_header(eth_pkt):
     if eth_pkt:
@@ -294,7 +207,7 @@ def get_udp_header(udp_pkt):
     return None,None,None,None
 
 
-def addControladorConhecido(ipnovo:str, controller):
+def addControladorConhecido(controller, ipnovo:str):
     #print]("Verificando se ja conhece o controlador: %s \n" %(ipnovo))
     if checkControladorConhecido(ipnovo) == 1:
         #print]("controlador ja conhecido\n")
@@ -303,7 +216,7 @@ def addControladorConhecido(ipnovo:str, controller):
     controller.controladores_conhecidos.append(ipnovo)
     #print]("novo controlador conhecido\n")
 
-def checkControladorConhecido(ip:str, controller):
+def checkControladorConhecido(controller, ip:str):
     for i in controller.controladores_conhecidos:
         if i == ip:
             #conhecido

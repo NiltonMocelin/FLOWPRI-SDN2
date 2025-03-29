@@ -93,7 +93,7 @@ pip install docker
 
 * pip install psutil
 
-* pip install protobuf
+* pip install protobuf==3.19
 
 ## Necessário !!
 

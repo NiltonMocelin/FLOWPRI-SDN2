@@ -9,6 +9,7 @@ from ryu.lib.packet import icmpv6
 from ryu.lib.packet import in_proto
 from ryu.lib.packet import vlan
 from ryu.lib import addrconv
+
 import ipaddress
 
 
@@ -26,6 +27,9 @@ _LIST_IPS = ['192.168.255.1', '192.168.255.2', '192.168.255.3', '192.168.255.4',
 
 # isso tem que ter o controle de qual switch conecta o host - mac-ip
 mac_to_client_ip = {}
+
+# CONTROLLER_IP = IPCc
+# CONTROLLER_MAC = MACC
 
 #Isso cada switch/grupo de switches deve ter o seu
 IP_NETWORK = '192.168.255.0'
@@ -76,14 +80,14 @@ def handle_dhcp_discovery(controller_obj, datapath, in_port, dhcp_pkt):
     sname = 'VM-CONTROLLER-001\0'
 
     #gateway addr os dois 
-    dhcp_addr = controller_obj.IPCv4
-    gw_addr = controller_obj.IPCv4
+    dhcp_addr = controller_obj.IPCv4 #CONTROLLER_IP
+    gw_addr = controller_obj.IPCv4 #CONTROLLER_IP
     broadcast_addr = '255.255.255.255'
 
     ip_network = IP_NETWORK
 
     dns_addr = '0.0.0.0'
-    dhcp_hw_addr = controller_obj.MACc
+    dhcp_hw_addr = controller_obj.MACc # MAC
 
     #obter um ip para o host
     # try:

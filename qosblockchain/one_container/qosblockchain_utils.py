@@ -1,6 +1,6 @@
 import os 
-from qosblockchain.one_container.sawtooth_cli.sawadm import main as sawadm_keygen
-from qosblockchain.one_container.sawtooth_cli.sawtooth_keygen import main as sawtooth_keygen
+from .sawtooth_cli.sawadm import main as sawadm_keygen
+from .sawtooth_cli.sawtooth_keygen import main as sawtooth_keygen
 
 
 def ler_arquivo(file_name):

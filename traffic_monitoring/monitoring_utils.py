@@ -7,11 +7,10 @@
 import json
 from pylibpcap.pcap import sniff
 from scapy.all import Ether, IP
-import socket
+# import socket
 from threading import Thread
 from core.fp_fred import FredManager
-from core.fp_api_qosblockchain import BlockchainManager, enviar_transacao_blockchain
-from qosblockchain.one_container.processor.qos_state import FlowTransacao, QoSRegister
+from core.fp_api_qosblockchain import BlockchainManager, enviar_transacao_blockchain, FlowTransacao, QoSRegister
 # from core.main_controller import FLOWPRI2
 from core.fp_utils import enviar_msg
 
@@ -128,7 +127,6 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, bloc
 
     nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
     fred_flow = fredmanager.get_fred(nome_fred)
-
 
     #calcular as medias para atraso, banda e perda
     flow_monitoring_local = monitoringmanager.getMonitoring(nome_fred)

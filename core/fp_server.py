@@ -1,10 +1,10 @@
 #avoid circular import https://builtin.com/articles/python-circular-import
 
 import socket
-from fp_constants import IPCc, PORTAC_C, MACC, PORTAC_H, PORTAC_X, CRIAR, CPT
-from fp_constants import freds
+from fp_constants import PORTAC_C, PORTAC_H, PORTAC_X, CRIAR
+# from fp_constants import freds
 
-from fp_switch import Switch
+# from fp_switch import Switch
 
 # try:
 # from main_controller import delContratoERegras, tratador_regras, send_icmpv4, tratador_addSwitch, tratador_rotas
@@ -13,26 +13,25 @@ from fp_switch import Switch
     
 import json, struct, time, datetime
 
-from fp_utils import tratador_addRegras, tratador_addSwitches, tratador_delRegras, tratador_delSwitches
+from fp_utils import tratador_addSwitches, tratador_delSwitches
 
 from fp_rota import tratador_addRotas, tratador_delRotas
 
+from fp_openflow_rules import tratador_addRegras, tratador_delRegras
 
+# Criar a configuracao para definir o host de gerenciamento
 
-Criar a configuracao para definir o host de gerenciamento
+# Criar a configuracao para resetar as regras -> poder refazer os testes
 
-Criar a configuracao para resetar as regras -> poder refazer os testes
+def servidor_configuracoes(controller, ip_server):
 
-def servidor_configuracoes():
-
-    global IPCc
+    
     print("Iniciando o tratador de arquivos de config....\n")
 
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    print("ip:", IPCc)
     #um desses funfa
-    tcp.bind(('127.0.0.1', PORTAC_X))
+    tcp.bind((ip_server, PORTAC_X))
 
     tcp.listen(5)
 
@@ -59,22 +58,22 @@ def servidor_configuracoes():
         #descobrir qual o tipo de operacao da configuracao
         #realizar as operacoes modificando os switches
         if "addSwitches" in cfg:
-            tratador_addSwitches(cfg['addSwitches'])
+            tratador_addSwitches(controller, cfg['addSwitches'])
         
         if "delSwitches" in cfg:
-            tratador_delSwitches(cfg['delSwitches'])
+            tratador_delSwitches(controller, cfg['delSwitches'])
             
         if "addRotas" in cfg:
-            tratador_addRotas(cfg['addRotas'])
+            tratador_addRotas(controller.rotamanager, cfg['addRotas'])
         
         if "delRotas" in cfg:
-            tratador_delRotas(cfg['addRotas'])
+            tratador_delRotas(controller.rotamanager, cfg['delRotas'])
         
         if "addRegras" in cfg:
-            tratador_addRegras(cfg['addRegras'])
+            tratador_addRegras(controller, cfg['addRegras'])
         
         if "delRegras" in cfg:
-            tratador_delRegras(cfg['addRegras'])
+            tratador_delRegras(controller, cfg['delRegras'])
         
         print('Configuração realizada')
 

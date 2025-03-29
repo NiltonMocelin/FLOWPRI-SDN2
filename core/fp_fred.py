@@ -133,7 +133,7 @@ def fromJsonToFred(fred_json):
 class FredManager:
     def __init__(self):
         self.dicionario_freds = {}
-        self.lock = threading.lock()
+        self.lock = threading.Lock()
 
     def get_fred(self, name:str) -> Fred:
         return self.dicionario_freds.get(name, None)

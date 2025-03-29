@@ -3,11 +3,11 @@
 ## Consensus: Practical Byzantine Fault Tolerance
 #https://gitee.com/bison-fork/sawtooth-pbft/blob/main/tests/test_liveness.yaml#
 
-# try:
-import docker
-# except:
-#     print("Install docker sdk !!")
-#     exit(0)
+try:
+  import docker
+except:
+    print("Install docker sdk e docker-compose !!")
+    exit(0)
 
 import subprocess
 

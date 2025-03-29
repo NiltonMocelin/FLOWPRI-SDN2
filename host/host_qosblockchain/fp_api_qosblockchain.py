@@ -2,7 +2,7 @@ import sys
 
 from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar_blockchain
 from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show
-from qosblockchain.one_container.server_fred_exchange_pbft_docker_compose import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
+from qosblockchain.one_container.qosblockchain_utils import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
 from qosblockchain.one_container.processor.qos_state import FlowTransacao
 
 from netifaces import AF_INET, ifaddresses

@@ -59,11 +59,14 @@ import sys, os
 #codigos das acoes
 from fp_constants import IPV4_CODE, IPV6_CODE, TCP, UDP, IP_MANAGEMENT_HOST, class_prio_to_monitoring_mark
 
-import fp_api_qosblockchain as api_qosblockchain # import tratar_blockchain_setup, criar_chave_sawadm
+from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm, BlockchainManager
 
 from fp_constants import SC_BEST_EFFORT
 
+# try:
 from fp_switch import Switch
+# except ImportError:
+#     print('Erro de importacao da classe SwitchOVS')
 
 # from fp_server import servidor_configuracoes
 
@@ -74,24 +77,24 @@ from fp_openflow_rules import add_default_rule, injetarPacote, addRegraMonitorin
 from fp_utils import check_domain_hosts
 from fp_utils import current_milli_time, get_ips_meu_dominio
 
-# # print('importando fp_topo_discovery')
-# #descoberta de topologia
-# from fp_topology_discovery import handler_switch_enter, handler_switch_leave
-# # print('importando fp_dhcp')
-# #tratador DHCPv4
+# print('importando fp_topo_discovery')
+#descoberta de topologia
+from fp_topology_discovery import handler_switch_enter, handler_switch_leave
+# print('importando fp_dhcp')
+#tratador DHCPv4
 from fp_dhcp import handle_dhcp
 
 from fp_icmp import handle_icmps, send_icmpv4, send_icmpv6
 
-# # print('importando interface_web')
-# # import wsgiWebSocket.interface_web as iwb
-# from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocket_snd, dados_json
+# print('importando interface_web')
+# import wsgiWebSocket.interface_web as iwb
+from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocket_snd, dados_json
 
 from traffic_classification.classificator import classificar_pacote
 
 from traffic_monitoring.fp_monitoring import monitorar_pacote
 
-from fp_api_qosblockchain import BlockchainManager
+# from fp_api_qosblockchain import BlockchainManager
 
 from fp_fred import Fred, FredManager
 
@@ -107,35 +110,43 @@ class FLOWPRI2(app_manager.RyuApp):
 
     controller_singleton = None
 
-    CONTROLLER_INTERFACE = "enp7s0"
-    CONTROLADOR_ID = "No-id"
-    IPCv4 = None 
-    IPCv6 = None 
-    IPCc = None
-    MACC = None
-
     def __init__(self, *args, **kwargs):
         print("CONTROLADOR - \n Init Start\n" )# % (IPC))
-        # setup()
-        print("done")
-
         super(FLOWPRI2,self).__init__(*args,**kwargs)
         self.mac_to_port = {}
         self.ip_to_mac = {}
 
-        # # onde as principais coisas são armazenadas
-        # self.fredmanager = FredManager()
-        # self.qosblockchainmanager = api_qosblockchain.BlockchainManager()
-        # self.rotamanager = RotaManager()
-        # self.flowmonitoringmanager = MonitoringManager()
+        # onde as principais coisas são armazenadas
+        self.fredmanager = FredManager()
+        self.qosblockchainmanager = BlockchainManager()
+        self.rotamanager = RotaManager()
+        self.flowmonitoringmanager = MonitoringManager()
 
-        # self.arpList = {}
+        self.arpList = {}
 
-        # self.controladores_conhecidos = []
+        self.controladores_conhecidos = []
 
-        # self.switches = {}
+        self.switches = {}
 
         FLOWPRI2.controller_singleton = self
+
+        self.CONTROLLER_INTERFACE = "eth2"
+        #  self.CONTROLLER_INTERFACE = "enp7s0"
+        try:
+            self.IPCv4 = str(ifaddresses(self.CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
+            self.IPCv6 = str(ifaddresses(self.CONTROLLER_INTERFACE)[10][0]['addr'].split("%")[0])
+            self.IPCc = self.IPCv4
+            self.MACC = str(ifaddresses(self.CONTROLLER_INTERFACE)[17][0]['addr'])
+            self.CONTROLADOR_ID = self.IPCc
+        except:
+            print("Verifique o nome da interface e modifique na main")
+
+        print("Controlador ID - {}"  .format(self.CONTROLADOR_ID))
+        print("Controlador IPv4 - {}".format(self.IPCv4))
+        print("Controlador IPv6 - {}".format(self.IPCv6))
+        print("Controlador MAC - {}" .format(self.MACC))
+
+        # setup()
 
     @staticmethod
     def getControllerInstance():
@@ -162,7 +173,7 @@ class FLOWPRI2(app_manager.RyuApp):
         if switch_route == None:
             return False
 
-        lista_acoes:list[Acao] =[]
+        lista_acoes:list =[]
 
         # se o host emissor for meu dominio o primeiro switch cria as regras especiais (meter + monitoramento_encaminhamento)
         # o ultimo switch cria regras especiais tbm (meter + monitoramento_Encaminhamento + monitoramento_marcacao)
@@ -447,7 +458,7 @@ class FLOWPRI2(app_manager.RyuApp):
                          ip_genesis=IP_MANAGEMENT_HOST, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
                          prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
 
-            minha_chave_publica,minha_chave_privada = api_qosblockchain.criar_chave_sawadm()
+            minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
             # me adicionar como par no fred
             fred.addNoh(FLOWPRI2.IPCv4, minha_chave_publica, len(nohs_rota))
 
@@ -459,10 +470,10 @@ class FLOWPRI2(app_manager.RyuApp):
                 # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
                 if porta_blockchain == None:
                     if ip_ver == IPV4_CODE:
-                        porta_blockchain=api_qosblockchain.tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, self.qosblockchainmanager)
+                        porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, self.qosblockchainmanager)
                         fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
                     else: #ip_ver == IPV6_CODE
-                        porta_blockchain=api_qosblockchain.tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, self.qosblockchainmanager)
+                        porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, self.qosblockchainmanager)
                         fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
                 else:
                     if ip_ver == IPV4_CODE:
@@ -630,26 +641,13 @@ class FLOWPRI2(app_manager.RyuApp):
         print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
         return	 
 
-def setup():
-
-    FLOWPRI2.CONTROLADOR_ID = str(FLOWPRI2.CONTROLLER_INTERFACE)
-    FLOWPRI2.IPCv4 = str(ifaddresses(FLOWPRI2.CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
-    
-    FLOWPRI2.IPCv6 = str(ifaddresses(FLOWPRI2.CONTROLLER_INTERFACE)[10][0]['addr'].split("%")[0])
-    FLOWPRI2.IPCc = FLOWPRI2.IPCv4
-    
-    FLOWPRI2.MACC = str(ifaddresses(FLOWPRI2.CONTROLLER_INTERFACE)[17][0]['addr'])
-
-    print("Controlador ID - {}".format(FLOWPRI2.CONTROLADOR_ID))
-    print("Controlador IPv4 - {}".format(FLOWPRI2.IPCv4))
-    print("Controlador IPv6 - {}".format(FLOWPRI2.IPCv6))
-    print("Controlador MAC - {}".format(FLOWPRI2.MACC))
+def setup(controller):
 
     #################
     #   INICIANDO SOCKET - R0ECEBER CONTRATOS (hosts e controladores)
     ################
 
-    t3 = Thread(target=servidor_configuracoes)
+    t3 = Thread(target=servidor_configuracoes, args=[controller, controller.IPCc])
     t3.start()
 
     # # iniciar o servidor web aqui
@@ -661,28 +659,28 @@ def setup():
 
 
 
-# ### NAo utilizado 
-#     # def remove_qos_rules(self,ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
+### NAo utilizado 
+    # def remove_qos_rules(self,ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
         
-#     #     # comportamento borda = remover as regras de fluxos
-#     #     rota_nodes = self.rotamanager.get_rota(ip_src, ip_dst)
-#     #     # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
-#     #     for rota_noh in rota_nodes:
-#     #         switch = self.getSwitchByName(rota_noh.switch_name)
-#     #         # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
-#     #         porta_nome = switch.getPortaSaida(ip_dst)
+    #     # comportamento borda = remover as regras de fluxos
+    #     rota_nodes = self.rotamanager.get_rota(ip_src, ip_dst)
+    #     # para casos contrarios, remover a regra de toda a rota e realizar a classificacao novamente...
+    #     for rota_noh in rota_nodes:
+    #         switch = self.getSwitchByName(rota_noh.switch_name)
+    #         # switch.updateRegras(ip_src, ip_dst, tos) # essa funcao nao faz nada, eh de uma versao antiga --- se tiver tempo, remove-la
+    #         porta_nome = switch.getPortaSaida(ip_dst)
 
-#     #         switch.delRegra(ip_ver)
+    #         switch.delRegra(ip_ver)
 
-#     #         # comportamento backbone -> remover os freds que estão a mais tempo que o hardtimeout ! e reagrupar as regras que restaram
-#     #     IDLE_TIMEOUT = 1
-#     #     # se o fluxo foi removido por idle_timeout
-#     #     if IDLE_TIMEOUT:
-#     #         self.fredmanager.del_fred({})
-#     #     # remover_freds_expirados() -> que ja sria necessário mesmo
-#     #     self.fredmanager.remover_freds_expirados()
-#     #     # verificar quais regras precisam ser recriadas (em caso de backbone) -> 
+    #         # comportamento backbone -> remover os freds que estão a mais tempo que o hardtimeout ! e reagrupar as regras que restaram
+    #     IDLE_TIMEOUT = 1
+    #     # se o fluxo foi removido por idle_timeout
+    #     if IDLE_TIMEOUT:
+    #         self.fredmanager.del_fred({})
+    #     # remover_freds_expirados() -> que ja sria necessário mesmo
+    #     self.fredmanager.remover_freds_expirados()
+    #     # verificar quais regras precisam ser recriadas (em caso de backbone) -> 
 
-#     #     # reagrupar_regras_backbone() (em caso de backbone)
+    #     # reagrupar_regras_backbone() (em caso de backbone)
 
-#     #     return
+    #     return

@@ -1,7 +1,6 @@
 from fp_constants import CRIAR, ALL_TABLES, REMOVER
-from fp_regra import Regra
+# from fp_regra import Regra
 # from fp_switch import Switch
-from fp_utils import getQueueId
 
 #classe para modelar uma acao - remover ou criar regra
 #nome switch - (str) identificar qual switch
@@ -10,7 +9,7 @@ from fp_utils import getQueueId
 #regra - (Regra) uma regra - com as informacoes suficientes para criar ou remover a regra
 class Acao:
 
-    def __init__(self, switch_obj, porta_saida_nome:int, codigo:int, regra:Regra,tipo_porta:int, tipo_switch:int):
+    def __init__(self, switch_obj, porta_saida_nome:int, codigo:int, regra,tipo_porta:int, tipo_switch:int):
         """
         switch_obj : SwitchOVS
         porta : int

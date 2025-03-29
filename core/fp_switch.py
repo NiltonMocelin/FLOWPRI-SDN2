@@ -359,7 +359,9 @@ class Switch:
         return []
 
     def _ondeAlocarFluxoQoS(self, porta_nome:int, classe:int, prioridade:int, banda:int):
-        """Retorna se o fluxo deve ser armazenado emprestando banda ou nao, e a lista de regras que se deve remover para aloca-lo"""
+        """Retorna se o fluxo deve ser armazenado emprestando banda ou nao, e a lista de regras que se deve remover para aloca-lo
+         -> tuple[int, list[Regra]]:
+        """
 
         porta_obj = self.getPorta(porta_nome)
 

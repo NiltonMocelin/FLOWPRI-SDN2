@@ -18,10 +18,10 @@ import base64
 from base64 import b64encode
 import time
 import random
-import requests
+# import requests
 import yaml
 
-from qos_exceptions import QoSException
+from .qos_exceptions import QoSException
 
 from sawtooth_signing import create_context
 from sawtooth_signing import CryptoFactory
@@ -152,9 +152,9 @@ class QoSClient:
             print('url:',url, '; headers: ', headers, '; data: ', data)
             # data = "{\"action\":\"%s\", \"flow_name\":\"%s\", \"flow\":%s}" % ("show", flow_name,"{}")
             if data is not None:
-                result = requests.post(url, headers=headers, data=data)
+                result = None #requests.post(url, headers=headers, data=data)
             else:
-                result = requests.get(url, headers=headers)
+                result = None #requests.get(url, headers=headers)
             
             print('send_request', result.status_code)
             if result.status_code == 404:
@@ -164,7 +164,7 @@ class QoSClient:
                 raise QoSException("Error {}: {}".format(
                     result.status_code, result.reason))
 
-        except requests.ConnectionError as err:
+        except BaseException:#requests.ConnectionError as err:
             raise QoSException(
                 'Failed to connect to {}: {}'.format(url, str(err))) from err
 

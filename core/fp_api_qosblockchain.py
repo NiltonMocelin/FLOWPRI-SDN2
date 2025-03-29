@@ -1,9 +1,10 @@
 from qosblockchain.one_container.new_blockchain_pbft_docker_compose import criar_blockchain
-# from qosblockchain.client.main_qos_cli import do_reg_flowqos, do_list, do_show # problema auqi
 from qosblockchain.one_container.qosblockchain_utils import criar_par_chaves_sawadm, criar_par_chaves_sawtooth
-from qosblockchain.one_container.processor.qos_state import FlowTransacao
+from qosblockchain.one_container.processor.qos_state import FlowTransacao, QoSRegister
 # from fp_utils import calculate_network_prefix_ipv4
-# from fp_fred import Fred
+from fp_fred import Fred
+
+from qosblockchain.client.qos_client import QoSClient # do_reg_flowqos, do_list, do_show # problema auqi
 
 from netifaces import AF_INET, ifaddresses
 
@@ -12,6 +13,17 @@ from netifaces import AF_INET, ifaddresses
 import psutil
 
 FRED_SERVER_PORT = 5555
+CAMINHO_CHAVE_PRIVADA='/sawtooth_key'
+# class QoSClient:
+#     def __init__(self):
+#         pass
+
+def calculate_network_prefix_ipv4(ip_v4:str):
+    # supomos tudo /24 -> 192.168.1.10 -> 192.168.1.0
+    prefix = ip_v4.split(".")
+
+    return prefix[0]+"."+prefix[1]+"."+prefix[2]+".0"
+
 
 def get_meu_ip():
     IPCv4 = str(ifaddresses('eth0')[AF_INET][0]['addr'])
@@ -40,20 +52,22 @@ def criar_chave_sawadm():
 
 def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transacao:FlowTransacao):
 # python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
-    args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao.toString(), username='controller_key')
-    # do_reg_flowqos(args)
+    # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao.toString(), username='controller_key')
+    QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).reg_flowqos('reg_qos', flowname, transacao.toString())
     return True
 
 def show_bloco_blockchain(ip_blockchain, port_blockchain, flowname):
 # python main_qos_cli.py show '192.168.0.0-192.168.0.1-5000-5002-tcp'
-    args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, username='controller_key')
+    # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, username='controller_key')
     # flow = do_show(args)
+    flow = QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).show(flowname)
     return
 
 def listar_todos_blocos_blockchain(ip_blockchain,port_blockchain):
     # python main_qos_cli.py list
-    args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, username='controller_key')
+    # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, username='controller_key')
     # flows = do_list(args)
+    flows = QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).list()
     return
 
 class BlockchainManager:
@@ -101,8 +115,8 @@ def criar_blockchain_api(nome_blockchain, PEERS_IP:list=None, chaves_peers:list 
     criar_blockchain(nome_blockchain, get_meu_ip(), chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
     return NETWORK_PORT
 
-def tratar_blockchain_setup(serverip:str, fred, blockchainManager:BlockchainManager ):
-    nome_blockchain = ''# calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
+def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
+    nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
     lista_chaves_publicas = fred.getPeersPKeys()
