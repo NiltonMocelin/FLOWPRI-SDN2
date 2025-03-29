@@ -11,8 +11,6 @@ import os, sys
 
 import json
 
-from core.fp_constants import controller_singleton
-
 # # Add the parent directory to sys.path
 # sys.path.append( os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/flowpri_")
 # sys.path.append('../core')
