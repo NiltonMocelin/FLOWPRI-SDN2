@@ -1,4 +1,4 @@
-from fp_constants import FORWARD_TABLE,CLASSIFICATION_TABLE,FILA_CONTROLE, ALL_TABLES, IPV4_CODE, IPV6_CODE, TCP, UDP, BE_IDLE_TIMEOUT, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, MONITORING_TIMEOUT, NO_METER,NO_QOS_MARK, OFP_NO_BUFFER, MARCACAO_MONITORAMENTO, CONJUNCTION_ID, TCP_SRC, TCP_DST, UDP_SRC, UDP_DST, MONITORING_PRIO, CONJUNCTION_PRIO, METER_PRIO
+from fp_constants import FORWARD_TABLE,FILA_CONTROLE, ALL_TABLES, IPV4_CODE, IPV6_CODE, TCP, UDP, BE_IDLE_TIMEOUT, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, MONITORING_TIMEOUT, NO_METER,NO_QOS_MARK, OFP_NO_BUFFER, MARCACAO_MONITORAMENTO, CONJUNCTION_ID, TCP_SRC, TCP_DST, UDP_SRC, UDP_DST, MONITORING_PRIO, CONJUNCTION_PRIO, METER_PRIO
 from fp_constants import NO_METER, PORTA_ENTRADA, PORTA_SAIDA
 # from fp_switch import Switch
 
@@ -11,6 +11,12 @@ from fp_regra import Regra
 from fp_acao import Acao
 
 # os melhores exemplos estao em: ryu/ryu/tests
+
+
+############################@ IMPORTANTE @#################################
+# A ORDEM DA TABLE_ID IMPORTA !!! SE NAO TIVER UMA TABELA 0, APENAS 1...2, 
+# A REGRA EH DESCARTADA, NAO CHEGA NO PACKET-IN EVENT !!
+############################@ IMPORTANTE @#################################
 
 def _add_flow(dp, match, actions): ### cuidado com buffer id, já tivemos problema com isso uma vez (essa aqui é tirada do ryu)
     inst = [dp.ofproto_parser.OFPInstructionActions(
@@ -47,11 +53,11 @@ def del_flow(datapath, dicionario_parametros):
 
 ########### Testando ############
 
-def add_classification_table(datapath):
-    parser = datapath.ofproto_parser
-    inst = [parser.OFPInstructionGotoTable(FORWARD_TABLE)]
-    mod = parser.OFPFlowMod(datapath=datapath, table_id=CLASSIFICATION_TABLE, instructions=inst, priority=0) #criando a regra default
-    datapath.send_msg(mod)
+# def add_classification_table(datapath):
+#     parser = datapath.ofproto_parser
+#     inst = [parser.OFPInstructionGotoTable(FORWARD_TABLE)]
+#     mod = parser.OFPFlowMod(datapath=datapath, table_id=CLASSIFICATION_TABLE, instructions=inst, priority=0) #criando a regra default
+#     datapath.send_msg(mod)
 
 def add_default_rule(datapath):
     #[FORWARD] regra default -> enviar para o controlador
@@ -60,16 +66,16 @@ def add_default_rule(datapath):
     match = parser.OFPMatch()
     actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,
                                       ofproto.OFPCML_NO_BUFFER)]
-    add_flow(datapath, 0, match, actions, FORWARD_TABLE)
+    add_flow(datapath, 0, match, actions, 0)
 
 def add_forward_table(datapath, actions, prioridade):
     parser = datapath.ofproto_parser
-    inst = [parser.OFPInstructionGotoTable(FORWARD_TABLE)]
+    inst = [parser.OFPInstructionGotoTable(0)]
     mod = None
     if actions == None:
-        mod = parser.OFPFlowMod(datapath=datapath, table_id=FORWARD_TABLE,priority=prioridade, instructions=inst)
+        mod = parser.OFPFlowMod(datapath=datapath, table_id=0,priority=prioridade, instructions=inst)
     else:
-        mod = parser.OFPFlowMod(datapath=datapath, table_id=FORWARD_TABLE,priority=prioridade, instructions=inst, actions=actions)
+        mod = parser.OFPFlowMod(datapath=datapath, table_id=0,priority=prioridade, instructions=inst, actions=actions)
     datapath.send_msg(mod)
 
 def _send_packet(datapath, port, pkt):
@@ -334,60 +340,60 @@ def addRegraForwarding(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int,
     
 #add regra tabela CLASSIFICATION
 #se o destino for um ip de controlador, 
-def addRegraClassification(switch, ip_ver:int ,ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10):
-    """  ADD regra monitoring
-    parametros:
-    ip_ver: int
-    ip_src: str
-    ip_dst: str
-    src_port: int
-    dst_port: int
-    proto: int
-    ip_dscp: int
-    """
-    #https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html#flow-instruction-structures
-     #criar regra na tabela de marcacao - obs - utilizar idletime para que a regra suma - serve para que em switches que nao sao de borda essa regra nao exista
-                     #obs: cada switch passa por um processo de enviar um packet_in para o controlador quando um fluxo novo chega,assim, com o mecanismo de GBAM, pode ser que pacotes de determinados fluxos sejam marcados com TOS diferentes da classe original, devido ao emprestimo, assim, em cada switch o pacote pode ter uma marcacao - mas com essa regra abaixo, os switches que possuem marcacao diferentes vao manter a regra de remarcacao. Caso ela expire e cheguem novos pacotes, ocorrera novo packet in e o controlador ira executar um novo GBAM - que vai criar uma nova regra de marcacao
-    #print("[criando-regra-tabela-marcacao] ipsrc: %s, ipdst: %s, tos: %d\n" % (ip_src, ip_dst, ip_dscp))
-    datapath = switch.datapath
-    ofproto = datapath.ofproto
-    parser = datapath.ofproto_parser
+# def addRegraClassification(switch, ip_ver:int ,ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int, idle_timeout:int, hard_timeout:int, prioridade:int=10):
+#     """  ADD regra monitoring
+#     parametros:
+#     ip_ver: int
+#     ip_src: str
+#     ip_dst: str
+#     src_port: int
+#     dst_port: int
+#     proto: int
+#     ip_dscp: int
+#     """
+#     #https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html#flow-instruction-structures
+#      #criar regra na tabela de marcacao - obs - utilizar idletime para que a regra suma - serve para que em switches que nao sao de borda essa regra nao exista
+#                      #obs: cada switch passa por um processo de enviar um packet_in para o controlador quando um fluxo novo chega,assim, com o mecanismo de GBAM, pode ser que pacotes de determinados fluxos sejam marcados com TOS diferentes da classe original, devido ao emprestimo, assim, em cada switch o pacote pode ter uma marcacao - mas com essa regra abaixo, os switches que possuem marcacao diferentes vao manter a regra de remarcacao. Caso ela expire e cheguem novos pacotes, ocorrera novo packet in e o controlador ira executar um novo GBAM - que vai criar uma nova regra de marcacao
+#     #print("[criando-regra-tabela-marcacao] ipsrc: %s, ipdst: %s, tos: %d\n" % (ip_src, ip_dst, ip_dscp))
+#     datapath = switch.datapath
+#     ofproto = datapath.ofproto
+#     parser = datapath.ofproto_parser
 
-    actions = []
+#     actions = []
 
-    dicionario_parametros = {}
+#     dicionario_parametros = {}
 
-    dicionario_parametros['eth_type'] = ip_ver
-    dicionario_parametros['ip_proto'] = proto
+#     dicionario_parametros['eth_type'] = ip_ver
+#     dicionario_parametros['ip_proto'] = proto
 
-    if ip_ver == IPV4_CODE:
-        dicionario_parametros['ipv4_src'] = ip_src
-        dicionario_parametros['ipv4_dst'] = ip_dst
-        if qos_mark != NO_QOS_MARK:
-            actions.append(parser.OFPActionSetField(ip_dscp=qos_mark))
-    elif ip_ver == IPV6_CODE:
-        dicionario_parametros['ipv6_src'] = ip_src
-        dicionario_parametros['ipv6_dst'] = ip_dst
+#     if ip_ver == IPV4_CODE:
+#         dicionario_parametros['ipv4_src'] = ip_src
+#         dicionario_parametros['ipv4_dst'] = ip_dst
+#         if qos_mark != NO_QOS_MARK:
+#             actions.append(parser.OFPActionSetField(ip_dscp=qos_mark))
+#     elif ip_ver == IPV6_CODE:
+#         dicionario_parametros['ipv6_src'] = ip_src
+#         dicionario_parametros['ipv6_dst'] = ip_dst
 
-        if qos_mark != NO_QOS_MARK:
-            actions.append(parser.OFPActionSetField(ipv6_flabel=qos_mark))
+#         if qos_mark != NO_QOS_MARK:
+#             actions.append(parser.OFPActionSetField(ipv6_flabel=qos_mark))
 
-    if proto == in_proto.IPPROTO_TCP:
-        if src_port != -1:
-            dicionario_parametros['tcp_src'] = src_port
-        if dst_port != -1:
-            dicionario_parametros['tcp_dst'] = dst_port
-    elif proto == in_proto.IPPROTO_UDP:
-        if src_port != -1:
-            dicionario_parametros['udp_src'] = src_port
-        if dst_port != -1:
-            dicionario_parametros['udp_dst'] = dst_port
+#     if proto == in_proto.IPPROTO_TCP:
+#         if src_port != -1:
+#             dicionario_parametros['tcp_src'] = src_port
+#         if dst_port != -1:
+#             dicionario_parametros['tcp_dst'] = dst_port
+#     elif proto == in_proto.IPPROTO_UDP:
+#         if src_port != -1:
+#             dicionario_parametros['udp_src'] = src_port
+#         if dst_port != -1:
+#             dicionario_parametros['udp_dst'] = dst_port
 
-    match:OFPMatch = parser.OFPMatch(**dicionario_parametros)
+#     match:OFPMatch = parser.OFPMatch(**dicionario_parametros)
 
-    inst = [parser.OFPInstructionGotoTable(FORWARD_TABLE), parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-    mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout = hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=CLASSIFICATION_TABLE)
-    datapath.send_msg(mod)
+#     inst = [parser.OFPInstructionGotoTable(FORWARD_TABLE), parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+#     mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout = hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=CLASSIFICATION_TABLE)
+#     datapath.send_msg(mod)
 
 def delRegraForwarding(switch, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int):
     # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py

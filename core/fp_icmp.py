@@ -3,7 +3,7 @@ from ryu.lib.packet import ethernet
 from ryu.ofproto import inet, ether
 from ryu.lib.packet import ipv4, icmp, ipv6, icmpv6
 
-from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPV4_CODE, IPV6_CODE
+from fp_constants import FILA_CONTROLE, PORTA_MANAGEMENT_HOST_SERVER, IPV4_CODE, IPV6_CODE, FILA_CONTROLE
 
 from fp_fred import Fred, fromJsonToFred
 
@@ -13,13 +13,13 @@ from fp_utils import current_milli_time, getQoSMark, enviar_msg
 
 # from fp_api_qosblockchain import get_blockchain, criar_blockchain
 
-from fp_utils import souDominioBorda, check_domain_hosts
-
 from traffic_monitoring.monitoring_utils import FlowMonitoring, loadFlowMonitoringFromJson
 
 from traffic_monitoring.monitoring_utils import tratar_flow_monitoring
 
 from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm
+
+from fp_openflow_rules import injetarPacote
 # from main_controller import FLOWPRI2
 
 # from fp_switch import Switch
@@ -88,7 +88,7 @@ def tratar_icmp_rejeicao(controller, fred_icmp:Fred, ip_ver, eth_src, ip_src, et
 
     dominio_borda = False
     # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
-    if check_domain_hosts(ip_src):
+    if controller.souDominioBorda(ip_src):
         dominio_borda = True
 
     primeiro_switch = 0
@@ -144,7 +144,7 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
     controller.fredmanager.save_fred(fred.getName(), fred)
     if controller.create_qos_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, fred, False):
         print("Regras criadas")
-        if souDominioBorda(fred.ip_ver, fred.ip_src, fred.ip_dst):        
+        if controller.souDominioBorda(fred.ip_dst):        
             # salvar ou atualizar fred no dicionario
             controller.fredmanager.save_fred(fred.getName(),fred) # apenas os dominios participantes da blockchain salvam o fred ? (acho que sim)
             porta_blockchain = controller.qosblockchainmanager.get_blockchain(fred.ip_src, fred.ip_dst)
@@ -177,7 +177,7 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
     print("[tratador_icmp_fred] fim "+ current_milli_time())
     return 
 
-def handle_icmps(pkt_icmp, tipo_icmp, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
+def handle_icmps(controller, msg, pkt_icmp, tipo_icmp, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
     
     # verificar o conteudo do icmp
     fred_icmp = None
@@ -185,20 +185,41 @@ def handle_icmps(pkt_icmp, tipo_icmp, ip_ver, eth_src, ip_src, eth_dst, ip_dst):
     INFORMATION_REQUEST = 15
     INFORMATION_REPLY = 16
 
-    if "FRED" in pkt_icmp.data:
-        fred_icmp = fromJsonToFred(json.loads(pkt_icmp.data))
-        
-    if "Monitoring" in pkt_icmp.data:
-        flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmp.data))   
-    # verificar o tipo do icmp
     if tipo_icmp == icmpv6.ICMPV6_NI_QUERY or tipo_icmp == INFORMATION_REQUEST:
+        if "FRED" in pkt_icmp.data:
+            fred_icmp = fromJsonToFred(json.loads(pkt_icmp.data))
+
+        if "Monitoring" in pkt_icmp.data:
+            flow_monitoring = loadFlowMonitoringFromJson(json.loads(pkt_icmp.data))   
+        # verificar o tipo do icmp
+
         if fred_icmp:
             tratador_icmp_fred(fred_icmp, eth_src, ip_src, eth_dst, ip_dst)
         if flow_monitoring:
             tratador_icmp_flow_monitoring(flow_monitoring)
 
+        return True
+
     elif tipo_icmp == icmpv6.ICMPV6_NI_REPLY or tipo_icmp == INFORMATION_REPLY:
         if fred_icmp:
             tratar_icmp_rejeicao(fred_icmp, ip_ver, eth_src, ip_src, eth_dst, ip_dst)
+        
+        return True
+    else:
+        # encaminhar ao destino
+        print("Outro tipo de ICMP -> injetar no ultimo switch da rota")
+        route_nohs = controller.rotamanager.get_rota(ip_src, ip_dst)
 
-    return 
+        if route_nohs == None:
+            # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
+            # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
+            # 
+            # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+            print("[creat_be]Error: no route found for this flow: s:%s d:%s" %(ip_src, ip_dst))
+            return False
+
+        # rotina controle
+        switch = controller.getSwitchByName(route_nohs[-1].switch_name)
+        injetarPacote(switch.datapath, FILA_CONTROLE, route_nohs[-1].out_port, msg)   ### onde injetar isso ....
+    
+    return True

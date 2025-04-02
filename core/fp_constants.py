@@ -1,7 +1,7 @@
 from netifaces import AF_INET, ifaddresses, interfaces
 
 
-# algumas variaveis para o controlador
+CFG_FILE = 'cfg.json'
 
 # IP_MANAGEMENT_HOST = "192.168.0.1" # alterar isso
 PORTA_MANAGEMENT_HOST_SERVER = 9090
@@ -90,8 +90,8 @@ EMPRESTANDO=1
 NAOEMPRESTANDO=0
 SEMBANDA = -1
 
-CLASSIFICATION_TABLE = 0 #tabela para marcacao de pacotes
-FORWARD_TABLE = 1 #tabela para encaminhar a porta destino
+# CLASSIFICATION_TABLE = 0 #tabela para marcacao de pacotes
+FORWARD_TABLE = 0 #tabela para encaminhar a porta destino
 ALL_TABLES = 255 #codigo para informar que uma acao deve ser tomada em todas as tabelas
 
 # aqui é 5-tupla:list[(pacote,timestamp)]

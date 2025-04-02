@@ -2,7 +2,7 @@ from fp_regra import Regra, ordenaRegrasPorBandaMaiorMenor
 from fp_constants import SC_REAL, SC_CONTROL, SC_BEST_EFFORT, SC_NONREAL, ALTA_PRIO, MEDIA_PRIO, BAIXA_PRIO
 
 class Porta:
-    def __init__(self, name:int, bandaT:int, bandaTotalClasseReal:int, bandaTotalClasseNaoReal:int, tamanhoFilaClasseReal:int , tamanhoFilaClasseNaoReal:int, proximoSwitch:int):
+    def __init__(self, name:int, bandaT:int, bandaTotalClasseReal:int, bandaTotalClasseNaoReal:int, tamanhoFilaClasseReal:int , tamanhoFilaClasseNaoReal:int, bandaTotalClasseBE:int, bandaTotalClasseControle:int,proximoSwitch:int):
         # name :str , bandaC1T : int, bandaC2T : int, tamanhoFilaC1: int , tamanhoFilaC2: int, proximoSwitch : str):
         #criar filas e setar quantidade de banda para cada classe
 
@@ -12,6 +12,8 @@ class Porta:
         self.nome:int = name
 
         self.bandaT:int = bandaT
+        self.bandaTotalClasseBE=bandaTotalClasseBE
+        self.bandaTotalClasseControle = bandaTotalClasseControle
         #a principio o compartilhamento de largura de banda ocorre apenas entre essas duas classes
         #criar os vetores fila da classe 1
         self.bandaTotalClasseReal = bandaTotalClasseReal #banda total para esta classe

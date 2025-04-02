@@ -57,14 +57,14 @@ import logging
 import sys, os
 
 #codigos das acoes
-from fp_constants import IPV4_CODE, IPV6_CODE, TCP, UDP, class_prio_to_monitoring_mark
+from fp_constants import IPV4_CODE, IPV6_CODE, TCP, UDP, class_prio_to_monitoring_mark, FILA_BESTEFFORT, NO_QOS_MARK, FILA_CONTROLE, CFG_FILE
 
 from fp_api_qosblockchain import tratar_blockchain_setup, criar_chave_sawadm, BlockchainManager
 
 from fp_constants import SC_BEST_EFFORT
 
 # try:
-from fp_switch import Switch
+from fp_switch import Switch, tratador_addSwitches, tratador_delSwitches
 # except ImportError:
 #     print('Erro de importacao da classe SwitchOVS')
 
@@ -72,17 +72,19 @@ from fp_switch import Switch
 
 from fp_acao import Acao
 
-from fp_openflow_rules import add_default_rule, injetarPacote, addRegraMonitoring, desligar_regra_monitoramento
+from fp_openflow_rules import add_default_rule, injetarPacote, addRegraMonitoring, desligar_regra_monitoramento, add_flow
 
-from fp_utils import check_domain_hosts
-from fp_utils import current_milli_time, get_ips_meu_dominio
+from fp_utils import tratador_addDominioPrefix, tratador_ipsDHCP, prepare_htb_queues_switch
+from fp_utils import current_milli_time, calculate_network_prefix_ipv4
 
 # print('importando fp_topo_discovery')
 #descoberta de topologia
-from fp_topology_discovery import handler_switch_enter, handler_switch_leave
+# from fp_topology_discovery import handler_switch_enter, handler_switch_leave
+
 # print('importando fp_dhcp')
 #tratador DHCPv4
-from fp_dhcp import handle_dhcp
+from fp_dhcp import handle_dhcp #, SimpleDHCPServer
+# from dhcp_server import DHCPResponder
 
 from fp_icmp import handle_icmps, send_icmpv4, send_icmpv6
 
@@ -98,10 +100,11 @@ from traffic_monitoring.fp_monitoring import monitorar_pacote
 
 from fp_fred import Fred, FredManager
 
-from fp_rota import RotaManager
+from fp_rota import RotaManager, tratador_addRotas
 
 from traffic_monitoring.monitoring_utils import MonitoringManager
 
+from fp_server import servidor_configuracoes
 def get_time_monotonic():
     return round(time.monotonic()*1000)
 
@@ -123,6 +126,11 @@ class FLOWPRI2(app_manager.RyuApp):
         self.flowmonitoringmanager = MonitoringManager()
 
         self.arpList = {}
+        self.ip_to_port= {}
+
+
+        self._LIST_IPS_DHCP = []
+        self._LIST_PREFIX_DOMINIO = []
 
         self.controladores_conhecidos = []
 
@@ -130,25 +138,29 @@ class FLOWPRI2(app_manager.RyuApp):
 
         FLOWPRI2.controller_singleton = self
 
-        self.ip_management_host = '192.168.0.1'
+        # self.serverDHCP = SimpleDHCPServer()
+        # self.serverDHCP = DHCPResponder()
 
-        self.CONTROLLER_INTERFACE = "eth0"
-        #  self.CONTROLLER_INTERFACE = "enp7s0"
+        self.ip_management_host = '172.16.0.100'
+
+        # self.CONTROLLER_INTERFACE = "eth0"
+        self.CONTROLLER_INTERFACE = "enp7s0"
+
         try:
             self.IPCv4 = str(ifaddresses(self.CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
             self.IPCv6 = str(ifaddresses(self.CONTROLLER_INTERFACE)[10][0]['addr'].split("%")[0])
             self.IPCc = self.IPCv4
-            self.MACC = str(ifaddresses(self.CONTROLLER_INTERFACE)[17][0]['addr'])
+            self.MACc = str(ifaddresses(self.CONTROLLER_INTERFACE)[17][0]['addr'])
             self.CONTROLADOR_ID = self.IPCc
 
             print("Controlador ID - {}"  .format(self.CONTROLADOR_ID))
             print("Controlador IPv4 - {}".format(self.IPCv4))
             print("Controlador IPv6 - {}".format(self.IPCv6))
-            print("Controlador MAC - {}" .format(self.MACC))
+            print("Controlador MAC - {}" .format(self.MACc))
         except:
             print("Verifique o nome da interface e modifique na main")
 
-        # setup()
+        setup(self)
 
     @staticmethod
     def getControllerInstance():
@@ -269,6 +281,10 @@ class FLOWPRI2(app_manager.RyuApp):
             switch.remover_regras_expiradas()
 
         return
+    
+
+    def get_prefix_meu_dominio(self)->list:
+        return self._LIST_PREFIX_DOMINIO
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
@@ -278,29 +294,52 @@ class FLOWPRI2(app_manager.RyuApp):
         tempo_i = get_time_monotonic()
     
         datapath = ev.msg.datapath
+        parser = datapath.ofproto_parser
+        ofproto = datapath.ofproto
 
         print("[%s] switch_features - setup de S%d \n" % (datetime.datetime.now().time(), datapath.id))
 
-        switch = Switch(datapath,str(datapath.id), self)
-
-        self.saveSwitch(switch=switch, switch_name=datapath.id)
-       
         add_default_rule(datapath)
 
-        """adicionar regra para monitorar pacotes marcados com destino o meu domínio"""
+
+        switch = self.getSwitchByName(datapath.id)
+        if switch == None:
+            switch = Switch(datapath,datapath.id, self, port_to_controller)
+            self.saveSwitch(switch=switch, switch_name=datapath.id)
+        else:
+            switch.datapath = datapath
+
+        port_to_controller = switch.getPortToController()
+        print("Switch name: ", datapath.id)
+
+        # deve ter rota pre configurada, se nao, precisa configurar depois
+        if port_to_controller != -1:
+            actionss = [parser.OFPActionSetQueue(FILA_CONTROLE), parser.OFPActionOutput(port_to_controller)]
+
+            #adicionar regra para hosts alcançarem o controllador server
+            if self.IPCv4 != '':
+                matchh = parser.OFPMatch(**{'eth_type':IPV4_CODE, 'ipv4_dst':self.IPCv4})
+                add_flow(datapath=datapath, priority=100, match=matchh, actions=actionss, table_id=0)
+            if self.IPCv6 != '':
+                matchh = parser.OFPMatch(**{'eth_type':IPV6_CODE, 'ipv6_dst':self.IPCv6})
+                add_flow(datapath=datapath, priority=100, match=matchh, actions=actionss,table_id=0)
+        else:
+            print("[swfeatures] error conf switch->controller port (missing cfg)")
+
+        prepare_htb_queues_switch(self, switch)
 
         logging.info('[switch_features] fim settage - tempo_decorrido: %d\n' % (get_time_monotonic() - tempo_i))
 
-# ### Descoberta de topologia
-    #tratador eventos onde um switch se conecta
-    @set_ev_cls(event.EventSwitchEnter)
-    def _handler_switch_enter(self, ev):
-        handler_switch_enter(self, ev)
+# # ### Descoberta de topologia
+#     #tratador eventos onde um switch se conecta
+#     @set_ev_cls(event.EventSwitchEnter)
+#     def _handler_switch_enter(self, ev):
+#         handler_switch_enter(self, ev)
 
-    #tratador de eventos onde um switch se desconecta
-    @set_ev_cls(event.EventSwitchLeave)
-    def _handler_switch_leave(self, ev):
-        handler_switch_leave(self, ev)
+#     #tratador de eventos onde um switch se desconecta
+#     @set_ev_cls(event.EventSwitchLeave)
+#     def _handler_switch_leave(self, ev):
+#         handler_switch_leave(self, ev)
 
 #tratador de eventos de modificacao de portas nos switcches
     @set_ev_cls(ofp_event.EventOFPPortStatus, MAIN_DISPATCHER)
@@ -381,7 +420,7 @@ class FLOWPRI2(app_manager.RyuApp):
 
         dominio_borda = False
         # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
-        if check_domain_hosts(ip_src):
+        if self.souDominioBorda(ip_src):
             dominio_borda = True
             # se quem expirou foi a regra de monitoramento, entao, verificar se deve ligar ou desligar
             if dp.id == route_nodes[-1].switch_name:
@@ -455,14 +494,14 @@ class FLOWPRI2(app_manager.RyuApp):
 
             # construir o FRED aqui 
             fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
-                         mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=get_ips_meu_dominio(), 
+                         mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=self.get_ips_meu_dominio(), 
                          as_src_ip_range=[],label=flow_classificacao.application_label,
                          ip_genesis=self.ip_management_host, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
                          prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
 
             minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
             # me adicionar como par no fred
-            fred.addNoh(FLOWPRI2.IPCv4, minha_chave_publica, len(nohs_rota))
+            fred.addNoh(self.IPCv4, minha_chave_publica, len(nohs_rota))
 
             self.fredmanager.save_fred(fred.getName(), fred)
             if self.create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred,True):
@@ -472,17 +511,17 @@ class FLOWPRI2(app_manager.RyuApp):
                 # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
                 if porta_blockchain == None:
                     if ip_ver == IPV4_CODE:
-                        porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv4, fred, self.qosblockchainmanager)
-                        fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
+                        porta_blockchain=tratar_blockchain_setup(self.IPCv4, fred, self.qosblockchainmanager)
+                        fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
                     else: #ip_ver == IPV6_CODE
-                        porta_blockchain=tratar_blockchain_setup(FLOWPRI2.IPCv6, fred, self.qosblockchainmanager)
-                        fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
+                        porta_blockchain=tratar_blockchain_setup(self.IPCv6, fred, self.qosblockchainmanager)
+                        fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
                 else:
                     if ip_ver == IPV4_CODE:
-                        fred.addPeer(FLOWPRI2.IPCv4, minha_chave_publica, FLOWPRI2.IPCv4+':'+str(porta_blockchain))
+                        fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
                         send_icmpv4(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
                     else:
-                        fred.addPeer(FLOWPRI2.IPCv6, minha_chave_publica, FLOWPRI2.IPCv6+':'+str(porta_blockchain))
+                        fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
                         send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
             else:# so para deixar organizado
                 self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)    
@@ -490,6 +529,12 @@ class FLOWPRI2(app_manager.RyuApp):
             self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
         return True
 
+
+    def souDominioBorda(self, ip_test):
+        for prefix in self.get_prefix_meu_dominio():
+            if calculate_network_prefix_ipv4(ip_test) == prefix:
+                return True
+        return False
 
 #arrumando ate aqui
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
@@ -502,7 +547,7 @@ class FLOWPRI2(app_manager.RyuApp):
         tempo_i = get_time_monotonic()
 
         # cuidado com essa funcao, deveria ser uma thread
-        self.remover_regras_freds_expirados()
+        # self.remover_regras_freds_expirados()
 
         #####           obter todas as informacoes uteis do pacote          #######
         msg = ev.msg #representa a mensagem packet_in
@@ -516,6 +561,7 @@ class FLOWPRI2(app_manager.RyuApp):
         #identificar o switch
         dpid = dp.id
         self.mac_to_port.setdefault(dpid, {})
+        self.ip_to_port.setdefault(dpid, {})
 
         #analisar o pacote recebido usando a biblioteca packet
         pkt = packet.Packet(msg.data)
@@ -526,51 +572,129 @@ class FLOWPRI2(app_manager.RyuApp):
         pkt_udp = pkt.get_protocol(udp.udp)
         pkt_icmpv4 = pkt.get_protocol(icmp.icmp)
         pkt_icmpv6 = pkt.get_protocol(icmpv6.icmpv6)
+        pkt_arp = pkt.get_protocol(arp.arp)
 
-        if not pkt_eth:
-            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-            return
-
-        # campos ethernet
+          # campos ethernet
         eth_dst=pkt_eth.dst
         eth_src=pkt_eth.src
         ethertype = pkt_eth.ethertype
 
         # campos observados
         ip_ver = ethertype
-        ip_dst = None
-        ip_src = None
-        qos_mark = None
-        src_port = None
-        dst_port = None
-        proto = None
+        ip_dst = ''
+        ip_src = ''
+        qos_mark = NO_QOS_MARK
+        src_port = -1
+        dst_port = -1
+        proto = -1
 
+        print('pacote',pkt.__dict__)
         if pkt_ipv4:
+            print("tem header ipv4")
             # ip_ver = pkt_ipv4.version
             ip_dst = pkt_ipv4.dst 
             ip_src = pkt_ipv4.src
             qos_mark = pkt_ipv4.tos
         elif pkt_ipv6:
+            print("tem header ipv4")
             # ip_ver = pkt_ipv6.version
             ip_dst = pkt_ipv6.dst 
             ip_src = pkt_ipv6.src
             qos_mark = pkt_ipv6.flow_label
 
         if pkt_udp:
+            print("tem header udp")
             src_port = pkt_udp.src_port
             dst_port = pkt_udp.dst_port
             proto = UDP
         elif pkt_tcp:
+            print("tem header tcp")
             src_port = pkt_tcp.src_port
             dst_port = pkt_tcp.dst_port
             proto = TCP
-        else:
+        
+        if pkt_icmpv4:
+            print("tem header icmpv4")
+            print(pkt.__dict__)
+        elif pkt_icmpv6:
+            print("tem header icmpv6")
+            print(pkt.__dict__)
+        
+        #tratar pacotes arp
+        if pkt_arp:
+            ip_src= pkt_arp.src_ip
+            ip_dst= pkt_arp.dst_ip
+            eth_src = pkt_arp.src_mac
+            eth_dst = pkt_arp.dst_mac
+            proto = pkt_arp.proto
+            
+            if self.souDominioBorda(ip_dst): #arp
+                print("Tratando ARP")
+                self.mac_to_port[dpid][eth_src] = in_port
+                self.ip_to_port[dpid][ip_src] = in_port
+
+                arppList = self.ip_to_port[dpid]
+                route_nohs = self.rotamanager.get_rota(ip_src, ip_dst)
+
+                if route_nohs == None:
+                    # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
+                    # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
+                    # 
+                    # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+                    print("[creat_be]Error: no route found for this flow: s:%s d:%s" %(ip_src, ip_dst))
+                    return False
+
+                # rotina controle
+                switch = self.getSwitchByName(route_nohs[-1].switch_name)
+                injetarPacote(switch.datapath, FILA_CONTROLE, route_nohs[-1].out_port, msg)
+
             return
 
-        print("[%s] switch_name: %d, pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (datetime.datetime.now().time(), dpid, ip_src, ip_dst, src_port, dst_port, proto))
+        if not pkt_eth:
+            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
+            return
+
+        if not pkt_ipv4 and not pkt_ipv6:
+            print("sem header ip")
+            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
+            return
+
+        print("Parte 1")
+####################### LEARNING PHASE ###############################################################################
+######################## IMCP ########################################################################################
+        # ICMP nao tem "PORTAS"
+        #tratador dhcp ipv4
+        dhcpPkt = pkt.get_protocol(dhcp.dhcp)
+        if dhcpPkt:
+            print("tratando dhcp")
+            handle_dhcp(self, dhcpPkt, dp, in_port)
+            # self.serverDHCP._handle_dhcp(dp, in_port, pkt)
+            # print('Ignorando dhcp - configure manualmente !')
+            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
+            return
+
+        # tratar freds anunciados # aqui apenas icmpv6 agora
+        if pkt_icmpv4:  
+            handle_icmps(self, msg, pkt_icmpv4, pkt_icmpv4.type, ip_ver, eth_src, ip_src, eth_dst, ip_dst)
+            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
+            return
+        if pkt_icmpv6:   
+            handle_icmps(self, msg, pkt_icmpv6, pkt_icmpv6.type_, ip_ver, eth_src, ip_src, eth_dst, ip_dst)      
+            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
+            return
+        
+######################## IMCP ########################################################################################
+######################## Unmactched ########################################################################################
+
+      
+        print("[%s] switch_name: %d, eth_type: %d, pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (datetime.datetime.now().time(), dpid, ethertype, ip_src, ip_dst, src_port, dst_port, proto))
 
         # aprendizagem
-        este_switch = self.getSwitchByName(str(dpid))
+        este_switch = self.getSwitchByName(dpid)
+
+        if not este_switch:
+            print("[pktin] Switch nao encontrado! Abort")
+            return
         este_switch.listarRegras()
 
         #essa informacao nao importa ao switch, poderia ser uma variavel do controlador, essas duas info poderiam ser um dict {switch: {mac_src: ip_src}}
@@ -582,39 +706,28 @@ class FLOWPRI2(app_manager.RyuApp):
         self.mac_to_port[dpid][eth_src] = in_port
 
         #adaptar essa parte depois, aqui so se quer saber se eh conhecida a porta destino para
+        out_port= None
         if eth_dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][eth_dst]
-        else:
-            out_port = None
-
-####################### LEARNING PHASE ###############################################################################
-######################## IMCP ########################################################################################
-        #tratador dhcp ipv4
-        dhcpPkt = pkt.get_protocol(dhcp.dhcp)
-        if dhcpPkt:
-            handle_dhcp(dhcpPkt, dp, in_port)
-            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-            return
-
-        # tratar freds anunciados # aqui apenas icmpv6 agora
-        if pkt_icmpv6:  
-            handle_icmps(pkt_icmpv6, pkt_icmpv6.type_, ip_ver, ip_src, ip_dst)      
-            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-            return
         
-        if pkt_icmpv4:   
-            handle_icmps(pkt_icmpv4, pkt_icmpv4.type, ip_ver, ip_src, ip_dst)      
-            print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
-            return
-        
-######################## IMCP ########################################################################################
-######################## Unmactched ########################################################################################
+
         # fluxo novo -> classificar
         # fazer classificaçao trafego
 
-        if check_domain_hosts(ip_src): # se chegou aqui, nao é icmp
+        rota_fluxo = self.rotamanager.get_rota(ip_src, ip_dst)
+
+        if rota_fluxo == None:
+            print("[pkt-in]Não ha rota para este fluxo ! abort")
+            return
+
+        # encontrar a porta de saida para poder injetar o pacote 
+        for noh in rota_fluxo:
+            if noh.switch_name == dpid:
+                out_port = noh.out_port
+
+        if self.souDominioBorda(ip_src): # se chegou aqui, nao é icmp
             self.tratamento_pacote_meu_dominio(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, pkt, qos_mark, este_switch)
-            injetarPacote(este_switch.datapath, fila, out_port, msg)   ### onde injetar isso ....
+            injetarPacote(este_switch.datapath, FILA_BESTEFFORT, out_port, msg)   ### onde injetar isso ....
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
 
@@ -622,20 +735,20 @@ class FLOWPRI2(app_manager.RyuApp):
         # nao teve classificação ou foi best-effort
         print("criar regras best-effort")
 
-        fredd=Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
+        fredd=Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, ip_dst=ip_dst, dst_port=dst_port, proto=proto, mac_src=eth_src,
                          mac_dst=eth_dst, code=0, blockchain_name='', as_dst_ip_range=[], 
                          as_src_ip_range=[],label='be',
                          ip_genesis='', lista_peers=[], lista_rota=[], classe=SC_BEST_EFFORT, delay=0, 
-                         prioridade=0, loss=0, bandiwdth=0)
+                         prioridade=0, loss=0, bandiwdth=0, jitter= 0)
 
         self.fredmanager.save_fred(fredd.getName(), fredd)
-        self.create_be_rules(self, ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
+        self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
 
         #injetar pacote na rede --> antes injetava direto no ultimo switch, mas não é muito realista, então vou injetar no próprio (qq coisa volta ao que era)
         # switch_ultimo = None
         # out_port = switch_ultimo.getPortaSaida(ip_dst) # !!!!
-        fila = None
-        injetarPacote(este_switch.datapath, fila, out_port, msg)
+        # datapath, fila:int, out_port:int, packet, buffer_id=OFP_NO_BUFFER
+        injetarPacote(este_switch.datapath, FILA_BESTEFFORT, out_port, msg)
 
         # logging.info('[Packet_In] pacote sem match - fim - tempo: %d\n' % (round(time.monotonic()*1000) - tempo_i))
         print("[%s] pkt_in fim \n" % (datetime.datetime.now().time()))
@@ -649,6 +762,8 @@ def setup(controller):
     #   INICIANDO SOCKET - R0ECEBER CONTRATOS (hosts e controladores)
     ################
 
+    load_cfg(controller)
+
     t3 = Thread(target=servidor_configuracoes, args=[controller, controller.IPCc])
     t3.start()
 
@@ -658,9 +773,51 @@ def setup(controller):
 
     #t1.join()
 
+    # pre-carregar topo-configuration
+def load_cfg(controller):
+    #setar as configurações:
+    #   switch: ports, banda, salto para controlador (se não, não tem como configurar usando o servidor)
+    #   rotas: rotas para os hosts
+    #   managementhost: ip
+    #   usar os tratadores já implementados
 
+    print("Lading cfg...")
+    cfg_file = open('cfg.json', 'r+')
 
+    json_file = json.loads(cfg_file.read())
 
+    print(json_file)
+
+    if "ManagementHost" in json_file:
+        controller.ip_management_host = json_file["ManagementHost"]
+    
+    if "addSwitches" in json_file:
+        tratador_addSwitches(controller, json_file["addSwitches"]) # ok
+        
+    if "addRotas" in json_file:
+        tratador_addRotas(controller.rotamanager, json_file['addRotas']) # ok
+
+    if "addDominioPrefix" in json_file:
+        tratador_addDominioPrefix(controller, json_file["addDominioPrefix"])
+
+    if "ipsDHCP" in json_file:
+        tratador_ipsDHCP(controller, json_file["ipsDHCP"])
+
+   
+    # OK
+    # print('managementhost:',controller.ip_management_host)
+    
+    # for switch in controller.switches:
+    #     print("addSwitch: ", switch.toString())
+
+    # for rota in controller.rotamanager.rotas:
+    #     print("addRota: ",rota)
+    
+    # print("DHCP: ",controller._LIST_IPS_DHCP)
+
+    # print("PREFIXS: ",controller._LIST_PREFIX_DOMINIO)
+
+    print("config loaded....")
 ### NAo utilizado 
     # def remove_qos_rules(self,ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
         

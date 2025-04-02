@@ -43,7 +43,7 @@ class RotaManager:
         return
 
 def tratador_addRotas(rotamanager:RotaManager, novasrotas_json):
-    """{'src_prefix':'ip', 'dst_prefix':'ip', 'switches_rota':[{'nome_switch':1, 'porta_entrada':1, 'porta_saida':2}]}"""
+    """{'src_prefix':'ip', 'dst_prefix':'ip', 'switches_rota':[{'nome_switch':1, 'porta_entrada':1, 'porta_saida':2, 'ordem'}]}"""
     print("Adicionando novas rotas:")
     for rota in novasrotas_json:
         #poderia obter uma lista de switches e ir em cada um adicinoando a rota
@@ -52,9 +52,10 @@ def tratador_addRotas(rotamanager:RotaManager, novasrotas_json):
 
         lista_rota_nodes = []
         
+        qtd_nohs = len(rota['switches_rota'])
+
         for switch in rota['switches_rota']:
-            
-            lista_rota_nodes.append(Rota_Node(switch_name=switch['nome_switch'],in_port=switch['porta_entrada'],out_port=switch['porta_saida']))
+            lista_rota_nodes.insert(switch['ordem'],Rota_Node(switch_name=switch['nome_switch'],in_port=switch['porta_entrada'],out_port=switch['porta_saida']))
         
         rotamanager.add_rota(src_prefix, dst_prefix, lista_rota_nodes)
         

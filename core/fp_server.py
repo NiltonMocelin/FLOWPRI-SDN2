@@ -13,12 +13,13 @@ from fp_constants import PORTAC_C, PORTAC_H, PORTAC_X, CRIAR
     
 import json, struct, time, datetime
 
-from fp_utils import tratador_addSwitches, tratador_delSwitches, tratador_setConfig
+from fp_utils import tratador_setConfig
 
 from fp_rota import tratador_addRotas, tratador_delRotas
 
 from fp_openflow_rules import tratador_addRegras, tratador_delRegras
 
+from fp_switch import tratador_delSwitches, tratador_addSwitches
 # Criar a configuracao para definir o host de gerenciamento
 
 # Criar a configuracao para resetar as regras -> poder refazer os testes
@@ -36,24 +37,20 @@ def servidor_configuracoes(controller, ip_server):
     tcp.listen(5)
 
     while True:
+        print("Esperando nova conexao ...")
         conn, addr = tcp.accept()
+
+        data_qtd_bytes:int = int.from_bytes(conn.recv(4),'big')
+        data = conn.recv(data_qtd_bytes).decode()
         
-        #receber a qtd de bytes do json a ser recebido
-        data = conn.recv(4)
-
-        qtdBytes = struct.unpack('<i',data)[0]
-        print("qtdBytes {}".format(qtdBytes))
-
-        data = conn.recv(qtdBytes)
-        #fechando a conexao
         conn.close()
 
-        #formatando o cfg recebido
-        cfg = json.loads(data)
+        print('Recebido de ', addr)
+        print('qtd bytes data:',data_qtd_bytes)
+        print('json:',data)
+        # continue
 
-        print('Nova configuração recebida')
-        #printando o json recebido
-        print(cfg)
+        cfg = json.loads(data)
 
         #descobrir qual o tipo de operacao da configuracao
         #realizar as operacoes modificando os switches
@@ -77,6 +74,12 @@ def servidor_configuracoes(controller, ip_server):
         
         if "setConfig" in cfg:
             tratador_setConfig(controller, cfg['setConfig'])
+
+        if "ipsDHCP" in cfg:
+            tratador_ipsDHCP(controller, cfg["ipsDHCP"])
+
+        if "addDominioPrefix" in cfg:
+            tratador_addDominioPrefix(controller, cfg["ipsDHCP"])
         print('Configuração realizada')
 
     return

@@ -1,6 +1,6 @@
 from fp_acao import Acao
 from fp_porta import Porta
-from fp_constants import TCP_SRC,TCP_DST, UDP_SRC, UDP_DST, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, CLASSIFICATION_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
+from fp_constants import TCP_SRC,TCP_DST, UDP_SRC, UDP_DST, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
 from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID, METER_PRIO, CONJUNCTION_PRIO, MONITORING_PRIO, MONITORING_TIMEOUT
 from fp_constants import PORTA_ENTRADA, PORTA_SAIDA
 from fp_regra import Regra, getRegrasExpiradas
@@ -9,7 +9,7 @@ import sys
 from fp_utils import getQueueId, getEquivalentMonitoringMark, getQOSMark
 
 from fp_openflow_rules import addRegraForwarding, addRegraMeter, delRegraMeter, delRegraForwarding, getMeterID_from_Flow, delMeter, generateMeterId, addRegraMonitoring, addRegraForwarding_com_Conjunction, delRegraForwarding_com_Conjunction, desligar_regra_monitoramento
-
+import json
 
 class Switch:
     # TIPOS DE SWITCH
@@ -17,7 +17,10 @@ class Switch:
     SWITCH_LAST_HOP=2
     SWITCH_OUTRO=3 # backbone
 
-    def __init__(self, datapath, name:int, controller): 
+    # switch_to_controller = {switch_name:port_to_controller}
+    switch_to_controller = {}
+
+    def __init__(self, datapath, name:int, controller, port_to_controller, ovsdb_addr=''): 
         """ Existem 3 tipos de switches: 1. borda emissora primeiro salto, 2. borda emissora ultimo salto, 3.backbones 
         1. configurar marcação de qos e meter utilizando addRegraForwarding e addRegraMeter
         2. configurar regra marcacao monitoring/matching qos(Vai alternando)
@@ -31,7 +34,9 @@ class Switch:
 
         self.datapath = datapath
         self.nome = name
+        self.port_to_controller = port_to_controller
         self.portas = []
+        self.ovsdb_addr = ovsdb_addr # formato tcp:127.0.0.1:6634
 
         #Como adicionar itens a um dicionario -> dicio['idade'] = 20
         self.macs = {} #chave: mac, valor: porta
@@ -46,6 +51,15 @@ class Switch:
         self.udp_dst_conjunction = {}
         # self.conjunctions_rules={} # [tcp_src=port]=id # isso deve ser util para associar uma conjunção a uma regra e para remover uma conjunção.
 
+    def toString(self):
+        return json.dumps({"nome":self.nome, "port_to_controller": self.port_to_controller, 
+                           "ovsdb_addr":self.ovsdb_addr, "port_to_controller":self.port_to_controller, "qtd_portas": len(self.portas)})
+
+    def getPortToController(self):
+        return self.port_to_controller
+
+    def setPortToController(self, port_to_controller):
+        self.port_to_controller = port_to_controller
 
     def saveConjunction(self, port_name:int, tipo:int): # deixar isso ser chamado la nas acoes
 
@@ -135,11 +149,15 @@ class Switch:
             self.udp_dst_conjunction.pop(port_name,None)
         return True
     
+    def setOVSDB_addr(self, ovsdb_addr):
+        """ovsdb_addr format -> tcp:127.0.0.1:6633"""
+        self.ovsdb_addr = ovsdb_addr
+        return
 
     def addPorta(self, nomePorta:int, larguraBanda:int, proximoSwitch:int):
         print("[S%s] Nova porta: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
         #criar a porta no switch
-        self.portas.append(Porta(nomePorta, int(larguraBanda), int(int(larguraBanda)*.33), int(int(larguraBanda)*.35), 0, 0, int(proximoSwitch)))
+        self.portas.append(Porta(nomePorta, int(larguraBanda), int(int(larguraBanda)*.33), int(int(larguraBanda)*.35), 0, 0, int(int(larguraBanda)*.25), int(int(larguraBanda)*.07),int(proximoSwitch)))
 
     def delPorta(self, nomePorta:int):
         # print("[S%s] deletando: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
@@ -158,8 +176,11 @@ class Switch:
         for regra in porta.getRegrasC1() + porta.getRegrasC2():
             delRegraForwarding(self, regra.ip_ver, regra.ip_src, regra.ip_dst, regra.src_port, regra.dst_port, regra.proto)
 
+        
         self.portas.pop(index)
+        
         return 
+
 
     def getPorta(self, nomePorta:int) -> Porta:
 
@@ -448,7 +469,7 @@ class Switch:
     def listarRegras(self):
         for porta1 in self.getPortas():
             # return
-            print("\n[s%s-p%s] listar regras || C1T:%d, C1U:%d || C2T:%d, C2U: %d ||:\n" % (self.nome,porta1.nome, porta1.c1T, porta1.c1U, porta1.c2T, porta1.c2U))
+            print("\n[s%s-p%s] listar regras || C1T:%d, C1U:%d || C2T:%d, C2U: %d ||:\n" % (self.nome,porta1.nome, porta1.bandaTotalClasseReal, porta1.bandaUtilizadaClasseReal, porta1.bandaTotalClasseNaoReal, porta1.bandaUtilizadaClasseNaoReal))
             for rp1c1 in porta1.getRegrasAltaPrio(SC_REAL):
                 print(rp1c1.toString()+"\n")
             #print("\n -- C1P2 (qtdregras: %d):" % (este_switch.p2c1rules.length))
@@ -466,6 +487,59 @@ class Switch:
             #print("\n -- C2P3 (qtdregras: %d):" % (este_switch.p3c2rules.length))
             for rp3c2 in porta1.getRegrasBaixaPrio(SC_NONREAL):
                 print(rp3c2.toString()+"\n")
+
+def tratador_addSwitches(controller, addswitch_json):
+    """[arrumar] nome dos switches e o id, se comparar como string vai dar ruim, tem que armazenar como inteiro e comparar com inteiro -> pois eles se anunciam como 0000000000000001, as vezes"""
+
+    print("Adicionando configuracao de switch")
+    for i in addswitch_json:
+        print(i)
+
+        nome_switch = i['nome_switch']
+
+        #procurando o switch
+        switch = controller.getSwitchByName(nome_switch)
+        port_to_controller = i['port_to_controller']
+        ovsdb_addr = i['ovsdb_addr']
+        #encontrar o switch pelo nome
+        #criar as portas conforme a configuracao do json
+        if(switch == None):
+            switch = Switch(None,nome_switch, controller, port_to_controller, ovsdb_addr)
+            controller.saveSwitch(switch=switch, switch_name=nome_switch)
+        else:
+            switch.port_to_controller = port_to_controller
+            switch.ovsdb_addr = ovsdb_addr
+
+        for porta in i['portas']:
+            
+            print (porta)
+
+            nome_porta = porta['nome_porta']
+            largura_porta = porta['banda_total']
+            prox_porta = porta['proxSwitch']
+
+            # # verificar se porta já existe -> se existir, remover a porta, as regras e as regras OVS
+            # switch.delPorta(nome_porta) -> vamos suport que nunca criamos duas vezes a mesma porta...
+                
+            switch.addPorta(nome_porta, int(largura_porta), int(prox_porta))
+
+ 
+def tratador_delSwitches(controller, switch_cfg):
+
+    nome_switch = switch_cfg['nome_switch']
+    #encontrar o switch
+    switch_obj= controller.getSwitchByName(nome_switch)
+
+    if switch_obj == None:
+        return
+    
+    for porta in switch_obj.getPortas():
+        switch_obj.delPorta(porta.nome)
+
+    controller.switches.remove(switch_obj)
+
+    print('Switch removido: %s' % (nome_switch))
+
 
 # DESISTIDO/MUDADO PARA GBAM APENAS
 

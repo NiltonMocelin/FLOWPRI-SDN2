@@ -1,0 +1,26 @@
+{"ManagementHost":"172.16.2.30", 
+"addSwitches":[
+    {"nome_switch" : 2, "ovsdb_addr":"tcp:172.16.2.10:6633", "port_to_controller":9, "portas": [
+        {"nome_porta": 7 ,  "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 9 ,  "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 11 , "banda_total": 50000000,  "proxSwitch": -1},
+        {"nome_porta": 17 , "banda_total": 50000000,  "proxSwitch": -1}]
+    }
+],
+"addRotas":[
+    {"src_prefix" : "172.16.2.30", "dst_prefix": "172.16.2.10", "switches_rota":[
+        {"nome_switch":2,"porta_entrada": 7, "porta_saida":9, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.2.10", "dst_prefix": "172.16.2.30", "switches_rota":[
+        {"nome_switch":2,"porta_entrada": 9, "porta_saida":7, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.0.30", "dst_prefix": "172.16.2.30", "switches_rota":[
+        {"nome_switch":2,"porta_entrada": 11, "porta_saida":7, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.2.30", "dst_prefix": "172.16.0.30", "switches_rota":[
+        {"nome_switch":2,"porta_entrada": 7, "porta_saida":11, "ordem":0} 
+    ]}
+    ],
+"addDominioPrefix":[{"ip":"172.16.2.0"}],
+"ipsDHCP":[{"ip":"172.16.2.1"},{"ip":"172.16.2.2"},{"ip":"172.16.2.3"},{"ip":"172.16.2.4"},{"ip":"172.16.2.5"}]
+}

@@ -3,6 +3,9 @@
 
 # importar o pacote de processamento
 from sklearn.ensemble import RandomForestClassifier
+import os
+from ryu.lib import pcaplib
+from core.fp_constants import TCP, UDP
 
 flows_dict = {}
 
@@ -26,10 +29,25 @@ def startRandomForest():
     return 
 
 
-def classificar_fluxo(filename):
+def classificar_fluxo(lista_pacotes, proto, filename):
+    # salvar em .pcap --- classificadores diferentes caso seja tcp ou udp
+    file_pcap = open(filename, 'wb')
+    pwr = pcaplib.Writer(file_pcap)
 
+    for pkt in lista_pacotes:
+        pwr.write(pkt) #,timestamp (ver como vai acontecer sem o timestamp primeiro)
+    file_pcap.flush()
+    file_pcap.close()
+
+    # se for tcp -> rotina tcp
+    if proto == TCP:
+        print()
+    # se for udp -> rotina udp
+    elif proto == UDP:
+        print()
+        
     classificacao_mock = ClassificacaoPayload("real", "video", 2000, 1, 1,10,10 )
-
+    os.remove(filename)
     return classificacao_mock
 
 def pkts_to_pcap(lista_pacotes, filename):
@@ -47,7 +65,7 @@ def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt) -
 
         # pkts_to_pcap(flows_dict[flow_five_tuple], flow_five_tuple+".pcap")
 
-        classificacao = classificar_fluxo(flow_five_tuple+".pcap")
+        classificacao = classificar_fluxo(flows_dict[flow_five_tuple], proto, flow_five_tuple+".pcap")
 
         # remover_file(flow_five_tuple+".pcap")
         flows_dict[flow_five_tuple] = []
