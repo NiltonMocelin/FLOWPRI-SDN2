@@ -1,6 +1,18 @@
-apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev
+sudo apt-get update
 
-sudo apt-get install openvswitch-switch openvswitch-switch-dpdk
+sudo apt update
+sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev gcc python-dev  libxml2-dev libxslt1-dev -y
+
+# install python3.8
+wget https://www.python.org/ftp/python/3.8.0/Python-3.8.0.tgz
+tar -xf Python-3.8.0.tgz
+cd Python-3.8.0
+./configure --enable-optimizations
+make -j 8
+sudo make altinstall
+cd ..
+
+sudo apt-get install openvswitch-switch openvswitch-switch-dpdk openvswitch-common -y
 
 # dependencias
 pip install beautifulsoup4==4.13.3
@@ -58,3 +70,9 @@ pip install urllib3==2.2.3
 pip install WebOb==1.8.9
 pip install wheel==0.44.0
 pip install wrapt==1.17.2
+
+
+# wget -o- https://github.com/NiltonMocelin/FLOWPRI-SDN2/archive/refs/heads/main.zip
+# mv FLOWPRI-SDN2-main FLOWPRI-SDN2
+
+sudo cp secp256k1.py /usr/lib/python3/dist-packages/sawtooth_signing/secp256k1.py # conferir se eh aqui que foi instalado mesmo ou se é site-packages, algo assim
