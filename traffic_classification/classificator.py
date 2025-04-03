@@ -46,6 +46,8 @@ def classificar_fluxo(lista_pacotes, proto, filename):
     elif proto == UDP:
         print()
         
+    -> Fazxer isso aqui agora
+
     classificacao_mock = ClassificacaoPayload(classe_label="real", application_label="video", bandwidth=2000, delay=1, bandwidth=1,priority=10,loss=10, jitter=0 )
     os.remove(filename)
     return classificacao_mock

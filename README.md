@@ -1,8 +1,9 @@
 # obs RYU:
-para maior compatibilidade utilizar python 3.8 +-
-pip install ryu (se der erro instalar versão correta do setuptools )
-pip uninstall setuptools 
-pip install setuptools==67.6.1
+
+Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
+
+* explicar o que precisa ser configurado nesse experimento - quase tudo ja se configura com os scripts que rodam sozinhos
+
 
 # Componentes principais
 
