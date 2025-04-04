@@ -396,6 +396,9 @@
         <mxCell id="t-2EngXow6cgS7kTyIJj-1" value="Testar a rota switch-&amp;gt;controller" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-770" y="530" width="120" height="60" as="geometry" />
         </mxCell>
+        <mxCell id="ar_t743wPot_AejuGEwM-1" value="Log CloudLab:&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;- Fazendo funcionar a comunicação entre os hosts, controladores e switches de um domínio&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-830" y="700" width="540" height="500" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

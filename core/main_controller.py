@@ -366,7 +366,8 @@ class FLOWPRI2(app_manager.RyuApp):
     @set_ev_cls(ofp_event.EventOFPFlowRemoved, MAIN_DISPATCHER)
     def flow_removed_handler(self, ev):
         """verificar se é uma regra qos monitoring == quando a regra do primeiro switch (borda emissora) da rota espirar"""
-
+        initime = current_milli_time()
+        print("[flow-removed] init ", initime)
         msg = ev.msg
         dp = msg.datapath
         ofp = dp.ofproto
@@ -423,13 +424,17 @@ class FLOWPRI2(app_manager.RyuApp):
         dominio_borda = False
         # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
         if self.souDominioBorda(ip_src):
+            print('[flow-rem] sou borda')
             dominio_borda = True
             # se quem expirou foi a regra de monitoramento, entao, verificar se deve ligar ou desligar
             if dp.id == route_nodes[-1].switch_name:
                 switchh = self.getSwitchByName(dp.id)
+                print('[flow-rem] init criando regra monitoring')
                 if switchh.getPorta(route_nodes[-1].out_port).getRegra(ip_ver,proto,ip_src,ip_dst,src_port,dst_port).monitorando:
                     addRegraMonitoring(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=route_nodes[-1].out_port, src_port=src_port, dst_port=dst_port, proto=proto)
+                print('[flow-rem] fim criando regra monitoring')
                 return 
+            print('[flow-rem] end borda')
         
         # OBS backbone tem outro comportamento !!!!!!
         primeiro_switch = 0
@@ -449,6 +454,8 @@ class FLOWPRI2(app_manager.RyuApp):
             switchh.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_entrada=route_nodes[i].in_port, porta_saida=route_nodes[i].out_port, qos_mark=qos_mark, tipo_switch=Switch.SWITCH_OUTRO)
             # remove_qos_rules(ip_ver=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
 
+        endtime = current_milli_time()
+        print("[flow-removed] end:", endtime, ' duracao:', endtime-initime)
         return 0
 
     def tratamento_pacote_meu_dominio(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, eth_src:str, eth_dst:str, pkt_bytes, qos_mark:int, switchh:Switch):

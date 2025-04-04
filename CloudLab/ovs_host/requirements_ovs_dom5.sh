@@ -1,27 +1,27 @@
 # criar interface ovs
 # criar bridge da interface criada com as interfaces existentes
 # existem dois comportamentos básicos que precsa se atentar (LOCAL e NORMAL)
-sudo apt update
-sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+# sudo apt update
+# sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 
-# install python3.8
-wget https://www.python.org/ftp/python/3.8.0/Python-3.8.0.tgz
-tar -xf Python-3.8.0.tgz
-cd Python-3.8.0
-./configure --enable-optimizations
-make -j 8
-sudo make altinstall
+# # install python3.8
+# wget https://www.python.org/ftp/python/3.8.0/Python-3.8.0.tgz
+# tar -xf Python-3.8.0.tgz
+# cd Python-3.8.0
+# ./configure --enable-optimizations
+# make -j 8
+# sudo make altinstall
 
-sudo apt-get install openvswitch-switch openvswitch-switch-dpdk openvswitch-common
+# sudo apt-get install openvswitch-switch openvswitch-switch-dpdk openvswitch-common
 
 # configurando o switch
 
 sudo ovs-vsctl add-br switch \
          -- set bridge switch other-config:datapath-id=0000000000000005 \
-         -- add-port switch eth1 -- set interface eth0 ofport_request=1 \
-         -- add-port switch eth2 -- set interface eth1 ofport_request=2 \
-         -- add-port switch eth3 -- set interface eth2 ofport_request=3 \
-         -- set-controller switch tcp:172.16.4.10:6653 \
+         -- add-port switch eth1 -- set interface eth1 ofport_request=1 \
+         -- add-port switch eth2 -- set interface eth2 ofport_request=2 \
+         -- add-port switch eth3 -- set interface eth3 ofport_request=3 \
+         -- set-controller switch tcp:172.16.5.10:6653 \
          -- set controller switch connection-mode=out-of-band
 # explicando o comando sudo ovs-vsctl anterior: switch é o nome da bridge ovs que vamos utilizar.
 # set datapath-id é o nome do switch para o controlador

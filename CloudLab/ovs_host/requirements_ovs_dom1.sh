@@ -10,7 +10,7 @@ sudo ovs-vsctl add-br switch \
          -- add-port switch eth1 -- set interface eth1 ofport_request=1 \
          -- add-port switch eth2 -- set interface eth2 ofport_request=2 \
          -- add-port switch eth3 -- set interface eth3 ofport_request=3 \
-         -- set-controller switch tcp:172.16.0.10:6653 \
+         -- set-controller switch tcp:172.16.1.10:6653 \
          -- set controller switch connection-mode=out-of-band
 # explicando o comando sudo ovs-vsctl anterior: switch é o nome da bridge ovs que vamos utilizar.
 # set datapath-id é o nome do switch para o controlador
