@@ -3,15 +3,15 @@ import time
 from core.fp_constants import QTD_MONITORAMENTO
 from traffic_monitoring.monitoring_utils import FlowMonitoring, MonitoringManager
 
-def current_milli_time():
-    return round(time.time() * 1000)
+# def current_milli_time():
+#     return round(time.time() * 1000)
 
 
 def monitorar_pacote(controller_id, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt, monitoringmanager:MonitoringManager)->FlowMonitoring:
 
-    label = ip_ver +'_' + ip_src +'_' + ip_dst +'_' + src_port +'_' + dst_port +'_' + proto
+    label = "%d_%s_%s_%d_%d_%d" %(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
     
-    timestamp = current_milli_time()
+    timestamp = time.time()
 
     flow_monitoring = monitoringmanager.getMonitoring(label)
 
@@ -33,6 +33,6 @@ def monitorar_pacote(controller_id, ip_ver, ip_src, ip_dst, src_port, dst_port, 
 
 def get_flow_monitorado(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, monitoringmanager:MonitoringManager):
 
-    label = ip_ver +'_' + ip_src +'_' + ip_dst +'_' + src_port +'_' + dst_port +'_' + proto
+    label = "%d_%s_%s_%d_%d_%d" %(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
 
     return monitoringmanager.getMonitoring(label)

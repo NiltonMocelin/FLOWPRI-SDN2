@@ -360,7 +360,7 @@
         <mxCell id="X6Bg2-2nluPvubeWIL9a-29" value="Testar o monitoramento de pacotes" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-180" y="470" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="X6Bg2-2nluPvubeWIL9a-31" value="Testar a classificação de pacotes" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="X6Bg2-2nluPvubeWIL9a-31" value="Testar a classificação de pacotes [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-430" y="500" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="X6Bg2-2nluPvubeWIL9a-33" value="Testar a criação da blockchain" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">

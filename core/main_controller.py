@@ -92,7 +92,7 @@ from fp_icmp import handle_icmps, send_icmpv4, send_icmpv6
 # import wsgiWebSocket.interface_web as iwb
 from wsgiWebSocket.interface_web import lancar_wsgi #, _websocket_rcv, _websocket_snd, dados_json
 
-from traffic_classification.classificator import classificar_pacote
+from traffic_classification01.classificador import classificar_pacote
 
 from traffic_monitoring.fp_monitoring import monitorar_pacote
 
@@ -449,7 +449,7 @@ class FLOWPRI2(app_manager.RyuApp):
 
         return 0
 
-    def tratamento_pacote_meu_dominio(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, eth_src:str, eth_dst:str, pkt, qos_mark:int, switchh:Switch):
+    def tratamento_pacote_meu_dominio(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, eth_src:str, eth_dst:str, pkt_bytes, qos_mark:int, switchh:Switch):
         # Arrumar isso, EEE, tem dois comportamentos dominio de borda e dominio de destino !!! == essa mesma funcao vai tratar os dois casos ? 
         # ops, para o dominio de borda de destino, vai ocorrer o comportamento no icmp - aqui trata pacotes ip
 
@@ -471,7 +471,7 @@ class FLOWPRI2(app_manager.RyuApp):
 
         # verificar se eh uma marcacao de monitoramento
         if marcacao_pkt in class_prio_to_monitoring_mark.values(): # MARCACAO_MONITORAMENTO:
-            monitoramento_fluxo = monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt, self.flowmonitoringmanager)
+            monitoramento_fluxo = monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt = packet.Packet(pkt_bytes), monitoringmanager= self.flowmonitoringmanager)
             if monitoramento_fluxo != None: #quando o monitoramento estiver completo
                 # mudar a regra de monitoramento do primerio switch da rota para nao enviar pacotes ao controlador  -> essa regra tem um tempo hardtimeout menor 2s e uma flag, da proxima vez que expirar deve voltar a monitorar
                 desligar_regra_monitoramento(switch=switchh, ip_ver=ip_ver,ip_src=ip_src,ip_dst=ip_dst,out_port=nohs_rota[-1].out_port,src_port=src_port,dst_port=dst_port,proto=proto)
@@ -484,7 +484,7 @@ class FLOWPRI2(app_manager.RyuApp):
             # nao injetar esse pacote, pois ele ja esta sendo encaminhado, apenas copiado ao controlador tbm
             # return
 
-        flow_classificacao = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt)
+        flow_classificacao = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt_bytes)
 
         # criar regras qos, criar fred, preencher e enviar icmpv6.
         print("criar regras qos, criar fred, preencher e enviar icmpv6.")
@@ -726,7 +726,7 @@ class FLOWPRI2(app_manager.RyuApp):
                 out_port = noh.out_port
 
         if self.souDominioBorda(ip_src): # se chegou aqui, nao é icmp
-            self.tratamento_pacote_meu_dominio(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, pkt, qos_mark, este_switch)
+            self.tratamento_pacote_meu_dominio(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, msg.data, qos_mark, este_switch)
             injetarPacote(este_switch.datapath, FILA_BESTEFFORT, out_port, msg)   ### onde injetar isso ....
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
