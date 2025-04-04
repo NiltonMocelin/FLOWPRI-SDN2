@@ -1,0 +1,36 @@
+# comparar classificação para: classe-> best-effort, real-time, non-real time 
+tipo -> video, audio, game, interativo
+qualidade -> video 480p (yt), video 480p (twitch) --> aqui, testar com tráfego próprio e duas abordagens k-means vs comuns
+
+# alem disso, verificar o impacto de utilizar tráfego de ida e volta
+# o impacto de separar uma classificação para tráfego tcp e uma só para udp
+
+# e uma classificação onde engloba todos.
+
+
+################################333
+
+--> obter parametros para hyperparameter tuning
+
+passo 1: -> gerar a base para hyperparameter tuning --> bem pequena
+{
+    - contar a quantidade de labels de interesse (classes e tipos de aplicações)
+    - contar quantar a quantidade de dados por classe
+    - definir um numero em comum e baixo
+    - normalizar
+    - obter randomicamente entradas de cada base
+    - comparar os resulatados com default
+}
+
+
+
+sobre k-means aplicação de como fazer 
+https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9745437
+
+
+
+Procedimentos realizados com cada
+-> normalizado
+-> removido repetidos
+-> removidos outliers
+-> que mais..
