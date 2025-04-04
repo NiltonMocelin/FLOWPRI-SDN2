@@ -124,7 +124,7 @@ def send_flowmonitoring(flowmonitoring:FlowMonitoring, server_ip:str, server_por
 
 def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
-
+    
     nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
     fred_flow = fredmanager.get_fred(nome_fred)
 
@@ -142,7 +142,7 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, bloc
     #remover monitoramento anterior
     monitoringmanager.delMonitoring(nome_fred)
 
-    blockchain_ip_porta = blockchainManager.get_blockchain(flow_monitoring_recebido.ip_dst)
+    blockchain_ip_porta = blockchainManager.get_blockchain(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst)
     
     # criar_transacao_blockchain()
     if blockchain_ip_porta:
@@ -155,6 +155,8 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, bloc
 
         enviar_transacao_blockchain(flowname=nome_fred, ip_blockchain=blockchain_ip, port_blockchain=blockchain_porta, transacao=transacao)
         return True
+    else:
+        print("[trat-flow-monitor] Erro, blockchain não encontrada para : src:", flow_monitoring_recebido.ip_src, " - dst:", flow_monitoring_recebido.ip_dst)
     
     return False
 

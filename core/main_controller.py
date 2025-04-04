@@ -259,8 +259,10 @@ class FLOWPRI2(app_manager.RyuApp):
             switchh = self.getSwitchByName(node.switch_name)
             porta_saida = node.out_port
             # teria que agrupar as regras em conjunctions -- marcar no primeiro switch da rota
+            # OBSSS: o primeiro switch da rota do dominio de origem não agrupa !!!! -- tem que ser o addregras be convencional, para poder enviar uma copia ao controlador !!!
+
             if node == 0:
-                switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar=True)
+                switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar=True, primeiroSaltoBorda=True)
             else:
                 switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
             nodes +=1
@@ -455,6 +457,9 @@ class FLOWPRI2(app_manager.RyuApp):
 
                 # se o pacote for marcado para monitoramento, apenas armazenaR timestamp, len(pkt)
         # injetar o pacote ou contar 20 e mudar a regra -- OFPP_CONTROLLER
+        initime = current_milli_time()
+        print("[trat_meu_dom] init ", initime)
+
         marcacao_pkt = 0
         nohs_rota = self.rotamanager.get_rota(ip_src, ip_dst)
 
@@ -471,6 +476,7 @@ class FLOWPRI2(app_manager.RyuApp):
 
         # verificar se eh uma marcacao de monitoramento
         if marcacao_pkt in class_prio_to_monitoring_mark.values(): # MARCACAO_MONITORAMENTO:
+            
             monitoramento_fluxo = monitorar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt = packet.Packet(pkt_bytes), monitoringmanager= self.flowmonitoringmanager)
             if monitoramento_fluxo != None: #quando o monitoramento estiver completo
                 # mudar a regra de monitoramento do primerio switch da rota para nao enviar pacotes ao controlador  -> essa regra tem um tempo hardtimeout menor 2s e uma flag, da proxima vez que expirar deve voltar a monitorar
@@ -489,44 +495,57 @@ class FLOWPRI2(app_manager.RyuApp):
         # criar regras qos, criar fred, preencher e enviar icmpv6.
         print("criar regras qos, criar fred, preencher e enviar icmpv6.")
 
-        if flow_classificacao.classe_label != "be":
-            print('Fluxo classificado: '+ current_milli_time())
-
-            # construir o FRED aqui 
-            fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
-                         mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=self.get_ips_meu_dominio(), 
-                         as_src_ip_range=[],label=flow_classificacao.application_label,
-                         ip_genesis=self.ip_management_host, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
-                         prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
-
-            minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
-            # me adicionar como par no fred
-            fred.addNoh(self.IPCv4, minha_chave_publica, len(nohs_rota))
-
-            self.fredmanager.save_fred(fred.getName(), fred)
-            if self.create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred,True):
-                print("Regras criadas")
-                
-                porta_blockchain = self.qosblockchainmanager.get_blockchain(ip_src, ip_dst)
-                # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
-                if porta_blockchain == None:
-                    if ip_ver == IPV4_CODE:
-                        porta_blockchain=tratar_blockchain_setup(self.IPCv4, fred, self.qosblockchainmanager)
-                        fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
-                    else: #ip_ver == IPV6_CODE
-                        porta_blockchain=tratar_blockchain_setup(self.IPCv6, fred, self.qosblockchainmanager)
-                        fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
-                else:
-                    if ip_ver == IPV4_CODE:
-                        fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
-                        send_icmpv4(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
-                    else:
-                        fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
-                        send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
-            else:# so para deixar organizado
-                self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)    
+        if flow_classificacao == None: 
+            print("classificacao em curso")
+            # criar regra BE para enviar uma copia para o controlador tbm, para enviar como best-effort e continuar
+            self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, toController=True)
         else:
-            self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
+            print("classificacao finalizada, classe: ", flow_classificacao.classe_label)
+
+            if flow_classificacao.classe_label != "be":
+                print('Fluxo classificado: '+ current_milli_time())
+    
+                # construir o FRED aqui 
+                fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
+                             mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=self.get_ips_meu_dominio(), 
+                             as_src_ip_range=[],label=flow_classificacao.application_label,
+                             ip_genesis=self.ip_management_host, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
+                             prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
+    
+                minha_chave_publica,minha_chave_privada = criar_chave_sawadm()
+                # me adicionar como par no fred
+                fred.addNoh(self.IPCv4, minha_chave_publica, len(nohs_rota))
+    
+                self.fredmanager.save_fred(fred.getName(), fred)
+                if self.create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred,True):
+                    print("Regras criadas")
+                    
+                    porta_blockchain = self.qosblockchainmanager.get_blockchain(ip_src, ip_dst)
+                    # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
+                    if porta_blockchain == None:
+                        if ip_ver == IPV4_CODE:
+                            print("[trat_meu_dom] blockchain setup init")
+                            porta_blockchain=tratar_blockchain_setup(self.IPCv4, fred, self.qosblockchainmanager)
+                            fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
+                            print("[trat_meu_dom] blockchain setup end")
+                        else: #ip_ver == IPV6_CODE
+                            print("[trat_meu_dom] blockchain setup init: ", current_milli_time())
+                            porta_blockchain=tratar_blockchain_setup(self.IPCv6, fred, self.qosblockchainmanager)
+                            fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
+                            print("[trat_meu_dom] blockchain setup end", current_milli_time())
+                    else:
+                        if ip_ver == IPV4_CODE:
+                            fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
+                            send_icmpv4(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src,dstMac=eth_dst, srcIp=ip_src, dstIp=ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString())
+                        else:
+                            fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
+                            send_icmpv6(datapath=self.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=eth_src, srcIp=ip_src,dstMac=eth_dst,dstIp=ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString())
+                else:# so para deixar organizado
+                    self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)    
+            else:
+                self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
+        endtime = current_milli_time()
+        print("[trat_meu_dom] end ", endtime, '  duracao: ', endtime - initime)
         return True
 
 
@@ -629,7 +648,7 @@ class FLOWPRI2(app_manager.RyuApp):
             proto = pkt_arp.proto
             
             if self.souDominioBorda(ip_dst): #arp
-                print("Tratando ARP")
+                print("[packet-in]Tratando ARP")
                 self.mac_to_port[dpid][eth_src] = in_port
                 self.ip_to_port[dpid][ip_src] = in_port
 
@@ -659,14 +678,14 @@ class FLOWPRI2(app_manager.RyuApp):
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
 
-        print("Parte 1")
+        print("[pkt-in] Parte 1")
 ####################### LEARNING PHASE ###############################################################################
 ######################## IMCP ########################################################################################
         # ICMP nao tem "PORTAS"
         #tratador dhcp ipv4
         dhcpPkt = pkt.get_protocol(dhcp.dhcp)
         if dhcpPkt:
-            print("tratando dhcp")
+            print("[packet-in]tratando dhcp")
             handle_dhcp(self, dhcpPkt, dp, in_port)
             # self.serverDHCP._handle_dhcp(dp, in_port, pkt)
             # print('Ignorando dhcp - configure manualmente !')
@@ -675,10 +694,12 @@ class FLOWPRI2(app_manager.RyuApp):
 
         # tratar freds anunciados # aqui apenas icmpv6 agora
         if pkt_icmpv4:  
+            print("[packet-in]tratando imcpv4")
             handle_icmps(self, msg, pkt_icmpv4, pkt_icmpv4.type, ip_ver, eth_src, ip_src, eth_dst, ip_dst)
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
         if pkt_icmpv6:   
+            print("[packet-in]tratando imcpv6")
             handle_icmps(self, msg, pkt_icmpv6, pkt_icmpv6.type_, ip_ver, eth_src, ip_src, eth_dst, ip_dst)      
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
@@ -687,7 +708,7 @@ class FLOWPRI2(app_manager.RyuApp):
 ######################## Unmactched ########################################################################################
 
       
-        print("[%s] switch_name: %d, eth_type: %d, pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (datetime.datetime.now().time(), dpid, ethertype, ip_src, ip_dst, src_port, dst_port, proto))
+        print("[packet-in] switch_name: %d, eth_type: %d, pkt_in ip_src: %s; ip_dst: %s; src_port: %d; dst_port: %d; proto: %d\n" % (dpid, ethertype, ip_src, ip_dst, src_port, dst_port, proto))
 
         # aprendizagem
         este_switch = self.getSwitchByName(dpid)
@@ -725,16 +746,17 @@ class FLOWPRI2(app_manager.RyuApp):
             if noh.switch_name == dpid:
                 out_port = noh.out_port
 
+        print("[pkt-in] Parte 2")
         if self.souDominioBorda(ip_src): # se chegou aqui, nao é icmp
+            print("[packet-in] sou borda")
             self.tratamento_pacote_meu_dominio(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, msg.data, qos_mark, este_switch)
             injetarPacote(este_switch.datapath, FILA_BESTEFFORT, out_port, msg)   ### onde injetar isso ....
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
 
+        print("[packet-in] nao sou borda")
         # se não for meu dominio ou sou backbone e não recebi fred, então fluxo BE
         # nao teve classificação ou foi best-effort
-        print("criar regras best-effort")
-
         fredd=Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, ip_dst=ip_dst, dst_port=dst_port, proto=proto, mac_src=eth_src,
                          mac_dst=eth_dst, code=0, blockchain_name='', as_dst_ip_range=[], 
                          as_src_ip_range=[],label='be',
@@ -749,10 +771,6 @@ class FLOWPRI2(app_manager.RyuApp):
         # out_port = switch_ultimo.getPortaSaida(ip_dst) # !!!!
         # datapath, fila:int, out_port:int, packet, buffer_id=OFP_NO_BUFFER
         injetarPacote(este_switch.datapath, FILA_BESTEFFORT, out_port, msg)
-
-        # logging.info('[Packet_In] pacote sem match - fim - tempo: %d\n' % (round(time.monotonic()*1000) - tempo_i))
-        print("[%s] pkt_in fim \n" % (datetime.datetime.now().time()))
-
         print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
         return	 
 

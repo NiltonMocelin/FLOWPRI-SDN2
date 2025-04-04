@@ -206,12 +206,15 @@ class Switch:
         desligar_regra_monitoramento(switch=self, ip_ver=ip_ver,ip_src=ip_src,ip_dst=ip_dst,src_port=src_port,dst_port=dst_port,proto=proto)
         return
 
-    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar:bool=False):
+    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar:bool=False, primeiroSaltoBorda:bool=False):
         qos_mark = NO_QOS_MARK
         if marcar:
             qos_mark = getQOSMark(SC_BEST_EFFORT, 1)
         porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":NO_METER}, False))
-        addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, qos_mark, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
+        if primeiroSaltoBorda:
+            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida,src_port,dst_port,proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT, qos_mark_action=qos_mark, prioridade=20, flow_removed=True, toController=True)
+        else:
+            addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, qos_mark, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
         return True
 
     def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False):
