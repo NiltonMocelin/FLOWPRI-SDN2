@@ -9,7 +9,7 @@ from fp_fred import Fred, fromJsonToFred
 
 import json
 
-from fp_utils import current_milli_time, getQoSMark, enviar_msg
+from fp_utils import current_milli_time, getQoSMark, enviar_msg, calculate_network_prefix_ipv4
 
 # from fp_api_qosblockchain import get_blockchain, criar_blockchain
 
@@ -161,7 +161,7 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
             print("[tratador_icmp_fred]FRED aceito + gbam + souBorda + controller_blockchain_setup + management_host_blockchain_setup")    
             # salvar ou atualizar fred no dicionario
             controller.fredmanager.save_fred(fred.getName(),fred) # apenas os dominios participantes da blockchain salvam o fred ? (acho que sim)
-            porta_blockchain = controller.qosblockchainmanager.get_blockchain(fred.ip_src, fred.ip_dst)
+            porta_blockchain = controller.qosblockchainmanager.get_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst))
             # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
             if porta_blockchain == None:
                 if fred.ip_ver == IPV4_CODE:

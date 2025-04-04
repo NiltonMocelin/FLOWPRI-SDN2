@@ -520,7 +520,7 @@ class FLOWPRI2(app_manager.RyuApp):
                 if self.create_qos_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, fred,True):
                     print("Regras criadas")
                     
-                    porta_blockchain = self.qosblockchainmanager.get_blockchain(ip_src, ip_dst)
+                    porta_blockchain = self.qosblockchainmanager.get_blockchain(calculate_network_prefix_ipv4(ip_src), calculate_network_prefix_ipv4(ip_dst))
                     # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
                     if porta_blockchain == None:
                         if ip_ver == IPV4_CODE:

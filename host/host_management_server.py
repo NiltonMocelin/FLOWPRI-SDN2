@@ -4,6 +4,7 @@ from host_qosblockchain.fp_api_qosblockchain import criar_blockchain_api, Blockc
 from core.fp_fred import Fred, fromJsonToFred, FredManager
 from host_qosblockchain.processor.qos_state import FlowTransacao, QoSRegister
 from traffic_monitoring.monitoring_utils import loadFlowMonitoringFromJson, MonitoringManager, calcular_qos
+import time
 
 FRED_SERVER_PORT = 5555
 
@@ -63,6 +64,8 @@ def tratar_blockchain_setup(meu_ip, serverip:str, fred:Fred, blockchainManager:B
 
 def tratar_flow_monitoring(meu_ip, flow_monitoring_json, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
+    initime = time.time()
+    print('[trat-flow-monitoring] init:', initime)
     flow_monitoring_recebido = loadFlowMonitoringFromJson(flow_monitoring_json)
 
     nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
@@ -93,9 +96,13 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_json, blockchainManager:Block
         # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
         transacao = FlowTransacao(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst, flow_monitoring_recebido.ip_ver, flow_monitoring_recebido.src_port, flow_monitoring_recebido.dst_port, flow_monitoring_recebido.proto, qosregister)
 
+        print("[trat-flow-monitoring] enviando transacao ", time.time())
         enviar_transacao_blockchain(flowname=nome_fred, ip_blockchain=blockchain_ip, port_blockchain=blockchain_porta, transacao=transacao)
+        print("[trat-flow-monitoring] transacao enviada ", time.time())
         return True
     
+    endtime = time.time()
+    print('[trat-flow-monitoring] end:', initime, ' duracao:', endtime - initime)
     return False
 
 def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
@@ -117,6 +124,7 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
         
         conn.close()
 
+        print("[management-server] init ", initime)
         print('Recebido de ', addr)
         print('qtd bytes data:',data_qtd_bytes)
         print('json:',data)
@@ -124,8 +132,10 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
 
         data_json = json.loads(data)
         if "FRED" in data_json:
+            print('[management-server] fred recebido')
             fred = fromJsonToFred(data_json)
-            print("fred_announcing")
+            initime = time.time()
+            
             # verificar se ja existe uma blockcahin para este fluxo
             # se ja existe, fazer nada -> era para dizer que o fluxo esta ativo, mas nao precisa...
             nome_fred = fred.ip_ver +"_"+ fred.proto+"_"+fred.ip_src+"_"+fred.ip_dst+"_"+fred.src_port+"_"+fred.dst_port
@@ -137,11 +147,16 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
             else:
                 tratar_blockchain_setup(serverip, fred, blockchainManager)
             
+            print('[management-server] fred terminado')
+            
         elif "Monitoring" in data_json:
-            print("flow monitoring")
+            print("[management-server] flow monitoring recebido")
             flow_monitoring = loadFlowMonitoringFromJson(data_json)
             # receber o flow monitoring -> armazenar em flowmonitorings, mas caso ja exista um armazenado, fazer o calculo do qos e retornar um dicionario de qos -> caso contrario retornar null
             tratar_flow_monitoring(flow_monitoring, blockchainManager, fredmanager, monitoringmanager)
+            print("[management-server] flow monitoring end")
+        endtime= time.time()
+        print("[management-server]  end:", endtime, ' duracao:',endtime - initime)
 
     
 if __name__ == "__main__":
