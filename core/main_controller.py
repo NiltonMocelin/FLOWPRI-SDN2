@@ -144,7 +144,7 @@ class FLOWPRI2(app_manager.RyuApp):
         self.ip_management_host = '172.16.0.100'
 
         # self.CONTROLLER_INTERFACE = "eth0"
-        self.CONTROLLER_INTERFACE = "enp7s0"
+        self.CONTROLLER_INTERFACE = "eth1"
 
         try:
             self.IPCv4 = str(ifaddresses(self.CONTROLLER_INTERFACE)[AF_INET][0]['addr'])

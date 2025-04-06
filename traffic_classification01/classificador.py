@@ -11,7 +11,7 @@ from ryu.lib import pcaplib
 TCP = 6
 UDP = 17
 
-from feature_extractor.features_extractor_flowpri2 import extrair_features
+from .feature_extractor.features_extractor_flowpri2 import extrair_features
 
 flows_dict = {}
 
