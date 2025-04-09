@@ -19,9 +19,9 @@ sudo ifconfig $INTSMA 0
 sudo ifconfig $INTSME 0
 
 sudo ovs-vsctl add-br switch
-sudo ovs-vsctl set Bridge switch fail-mode=secure
 sudo ovs-vsctl set bridge switch other-config:datapath-id=0000000000000001
 sudo ovs-vsctl set-controller switch tcp:172.16.1.10:6653 
+sudo ovs-vsctl set Bridge switch fail-mode=secure
 
 sudo ovs-vsctl add-port switch eth1 
 sudo ovs-vsctl add-port switch eth2 

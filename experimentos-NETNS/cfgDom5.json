@@ -1,0 +1,43 @@
+{"ManagementHost":"172.16.5.30", 
+"addSwitches":[
+    {"nome_switch" : 5, "ovsdb_addr":"tcp:172.16.5.10:6633", "port_to_controller":2, "portas": [
+        {"nome_porta": 1 ,  "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 2 ,  "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 3 , "banda_total": 50000000,  "proxSwitch": -1}]
+    }
+],
+"addRotas":[
+    {"src_prefix" : "172.16.5.30", "dst_prefix": "172.16.5.10", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 1, "porta_saida":2, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.30", "dst_prefix": "172.16.2.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 1, "porta_saida":3, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.30", "dst_prefix": "172.16.3.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 1, "porta_saida":3, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.30", "dst_prefix": "172.16.4.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 1, "porta_saida":3, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.30", "dst_prefix": "172.16.1.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 1, "porta_saida":3, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.10", "dst_prefix": "172.16.5.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 2, "porta_saida":1, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.2.30", "dst_prefix": "172.16.5.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 3, "porta_saida":1, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.3.30", "dst_prefix": "172.16.5.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 3, "porta_saida":1, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.4.30", "dst_prefix": "172.16.5.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 3, "porta_saida":1, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.1.30", "dst_prefix": "172.16.5.30", "switches_rota":[
+        {"nome_switch":5,"porta_entrada": 3, "porta_saida":1, "ordem":0} 
+    ]}
+    ],
+"addDominioPrefix":[{"ip":"172.16.5.0"}],
+"ipsDHCP":[{"ip":"172.16.5.1"},{"ip":"172.16.5.2"},{"ip":"172.16.5.3"},{"ip":"172.16.5.4"},{"ip":"172.16.5.5"}]
+}

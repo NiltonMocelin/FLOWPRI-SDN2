@@ -186,7 +186,8 @@ def prepare_htb_queues_switch(controller, switch):
         #                 '--id=@q7 create queue other-config:min-rate=%d other-config:max-rate=%d other-config:priority=2'     %(port.bandaTotalClasseControle, port.bandaTotalClasseControle+100)))
         # sendConfigOVS(ovsdb_addr=switch_ovsdb_addr, config=config)
 
-        interface = "s%d-eth%d" % (switch.nome,port.nome)
+        # interface = "s%d-eth%d" % (switch.nome,port.nome)
+        interface = "veth%d" % (port.nome)
 
         largura_porta= port.bandaT # 500 000 == 500kb
 
