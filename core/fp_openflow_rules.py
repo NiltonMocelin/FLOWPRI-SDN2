@@ -135,7 +135,7 @@ def add_conjunction(switch, ip_ver:int, port_name:int, tipo:int, clause_number:i
     actions = [parser.NXActionConjunction(clause=clause_number, n_clauses=n_clauses,id_=idd)]
     matchh = parser.OFPMatch(**match_dict)
     # matchh.set_tcp_src()
-    add_flow(datapath=datapath,priority=0,match=matchh,actions=actions)
+    add_flow(datapath=datapath,priority=0,match=matchh,actions=actions, table_id=FORWARD_TABLE)
     return
 
 def del_conjunction(switch, ip_ver:int, port_name:int, tipo:int)->bool:

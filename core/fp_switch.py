@@ -53,7 +53,7 @@ class Switch:
 
     def toString(self):
         return json.dumps({"nome":self.nome, "port_to_controller": self.port_to_controller, 
-                           "ovsdb_addr":self.ovsdb_addr, "port_to_controller":self.port_to_controller, "qtd_portas": len(self.portas)})
+                           "ovsdb_addr":self.ovsdb_addr, "port_to_controller":self.port_to_controller, "qtd_portas": len(self.portas), "datapath": True if self.datapath else False})
 
     def getPortToController(self):
         return self.port_to_controller
@@ -64,13 +64,13 @@ class Switch:
     def saveConjunction(self, port_name:int, tipo:int): # deixar isso ser chamado la nas acoes
 
         if tipo == TCP_SRC:
-            self.tcp_src_conjunction[port_name] = self.tcp_src_conjunction(port_name, 0) + 1
+            self.tcp_src_conjunction[port_name] = self.tcp_src_conjunction.get(port_name, 0) + 1
         elif tipo == TCP_DST:
-            self.tcp_dst_conjunction[port_name] = self.tcp_dst_conjunction(port_name, 0) + 1
+            self.tcp_dst_conjunction[port_name] = self.tcp_dst_conjunction.get(port_name, 0) + 1
         elif tipo == UDP_SRC:
-            self.udp_src_conjunction[port_name] = self.udp_src_conjunction(port_name, 0) + 1
+            self.udp_src_conjunction[port_name] = self.udp_src_conjunction.get(port_name, 0) + 1
         else: #tipo == UDP_DST:
-            self.udp_dst_conjunction[port_name] = self.udp_dst_conjunction(port_name, 0) + 1
+            self.udp_dst_conjunction[port_name] = self.udp_dst_conjunction.get(port_name, 0) + 1
 
         return True
 
@@ -154,10 +154,10 @@ class Switch:
         self.ovsdb_addr = ovsdb_addr
         return
 
-    def addPorta(self, nomePorta:int, larguraBanda:int, proximoSwitch:int):
+    def addPorta(self, nomePorta:int, nome_interface:str, larguraBanda:int, proximoSwitch:int):
         print("[S%s] Nova porta: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
         #criar a porta no switch
-        self.portas.append(Porta(nomePorta, int(larguraBanda), int(int(larguraBanda)*.33), int(int(larguraBanda)*.35), 0, 0, int(int(larguraBanda)*.25), int(int(larguraBanda)*.07),int(proximoSwitch)))
+        self.portas.append(Porta(nomePorta, nome_interface, int(larguraBanda), int(int(larguraBanda)*.33), int(int(larguraBanda)*.35), 0, 0, int(int(larguraBanda)*.25), int(int(larguraBanda)*.07),int(proximoSwitch)))
 
     def delPorta(self, nomePorta:int):
         # print("[S%s] deletando: porta=%s, banda=%s, proximoSalto=%s\n" % (str(self.nome), str(nomePorta), str(larguraBanda), str(proximoSwitch)))
@@ -210,11 +210,13 @@ class Switch:
         qos_mark = NO_QOS_MARK
         if marcar:
             qos_mark = getQOSMark(SC_BEST_EFFORT, 1)
-        porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, ANY_PORT, porta_saida, NO_METER, 0, 0, 0, FILA_BESTEFFORT, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":NO_METER}, False))
+        porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_entrada=ANY_PORT, porta_saida= porta_saida,meter_id= NO_METER,banda= 0, prioridade=0,classe= 0,fila= FILA_BESTEFFORT, application_class="be", qos_mark=qos_mark, actions={"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":NO_METER}, emprestando=False))
         if primeiroSaltoBorda:
-            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida,src_port,dst_port,proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT, qos_mark_action=qos_mark, prioridade=20, flow_removed=True, toController=True)
+            print("addBE primeiro salto")
+            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida,src_port,dst_port,proto, FILA_BESTEFFORT, NO_QOS_MARK, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT, qos_mark_action=qos_mark, prioridade=20, flow_removed=True, toController=True)
         else:
-            addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, FILA_BESTEFFORT, NO_METER, qos_mark, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
+            print("addBE backbone")
+            addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=NO_QOS_MARK, qos_mark_action=qos_mark, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
         return True
 
     def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False):
@@ -237,7 +239,7 @@ class Switch:
                 addRegraForwarding(switch=self,ip_ver=ip_ver,ip_src=ip_src,meter_id=meter_id)
 
             # porta de entrada, apenas cria regra na instancia
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
             #criar meter + encaminhamento com marcacao
             
         elif tipo_switch == Switch.SWITCH_LAST_HOP:
@@ -247,7 +249,7 @@ class Switch:
                 addRegraForwarding_com_Conjunction(switch=self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, porta_entrada=porta_entrada, porta_saida=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_maching=qos_mark,qos_mark_action=NO_QOS_MARK, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT)
 
             # rotina monitoring
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
             # forwarding matching qos_mark - timeout de monitoring
 
         else: #tipo_switch == Switch.SWITCH_OUTRO:
@@ -256,7 +258,7 @@ class Switch:
                 # regra matching qos_mark e regra matching monitoring_mark
                 addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
 
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark,{"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
 
         return True
     
@@ -518,13 +520,14 @@ def tratador_addSwitches(controller, addswitch_json):
             print (porta)
 
             nome_porta = porta['nome_porta']
+            nome_interface = porta['nome_interface']
             largura_porta = porta['banda_total']
             prox_porta = porta['proxSwitch']
 
             # # verificar se porta já existe -> se existir, remover a porta, as regras e as regras OVS
             # switch.delPorta(nome_porta) -> vamos suport que nunca criamos duas vezes a mesma porta...
                 
-            switch.addPorta(nome_porta, int(largura_porta), int(prox_porta))
+            switch.addPorta(nome_porta, nome_interface, int(largura_porta), int(prox_porta))
 
  
 def tratador_delSwitches(controller, switch_cfg):

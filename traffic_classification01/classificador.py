@@ -73,6 +73,10 @@ def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt_by
     flow_five_tuple = "%d_%s_%s_%d_%d_%d" %(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
     #salvar em arqivo os pacotes,
 
+    
+    if not os.path.exists('classificacoes'):
+        os.makedirs('classificacoes')
+
     if flow_five_tuple in flows_dict:
         flows_dict[flow_five_tuple].append(pkt_bytes)
     else:

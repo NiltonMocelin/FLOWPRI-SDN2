@@ -5,10 +5,7 @@
 # fechar os hosts servers
 # tem que ver como fazer isso
 
-echo "Removendo configuracoes de filas"
-sudo ovs-vsctl --all destroy qos
-
-echo "Removendo switch1"
+echo "Removendo switches"
 sudo ovs-vsctl del-port switch1 veth2
 sudo ovs-vsctl del-port switch1 veth4
 sudo ovs-vsctl del-port switch1 veth6 
@@ -38,11 +35,15 @@ sudo ovs-vsctl del-br switch3
 sudo ovs-vsctl del-br switch4
 sudo ovs-vsctl del-br switch5
 
+echo "Removendo configuracoes de filas"
+sudo ovs-vsctl --all destroy qos
+
 # echo "Removendo vInterfaces das namespaces"
 # sudo ip netns exec VRF1 ip link del veth1
 # sudo ip netns exec VRF2 ip link del veth3 # remove o par
 
 # remover rota para controlador-switch
+echo "removendo rotas"
 sudo ip route del 172.16.1.0/24 dev veth5
 sudo ip route del 172.16.2.0/24 dev veth13
 sudo ip route del 172.16.3.0/24 dev veth21 
@@ -51,6 +52,7 @@ sudo ip route del 172.16.5.0/24 dev veth37
 
 
 #remover interfaces - remove os pares
+echo "Removendo interfaces"
 sudo ip link del veth2
 sudo ip link del veth4
 sudo ip link del veth6 

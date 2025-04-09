@@ -69,6 +69,9 @@ sudo ovs-vsctl set Bridge switch1 fail-mode=secure
 echo "configurando as rotas"
 sudo ip netns exec VRF1 ip route add 172.16.1.0/24 dev veth1
 sudo ip netns exec VRF2 ip route add 172.16.1.0/24 dev veth3
+sudo ip netns exec VRF1 ip route add 172.16.0.0/16 dev veth1
+sudo ip netns exec VRF2 ip route add 172.16.0.0/16 dev veth3
+
 
 sudo ip route add 172.16.1.0/24 dev veth5 #c#configurando interface do parent namespace para acessar o controlador-switchonfigurando interface do parent namespace para acessar o controlador-switch
 
@@ -81,6 +84,13 @@ sudo ip route add 172.16.1.0/24 dev veth5 #c#configurando interface do parent na
 echo "Removendo regra default (actions:=NORMAL) "
 sudo ovs-ofctl del-flows switch1
 
+echo "adicionando regra para switch alcançar controlador"
+sudo ovs-ofctl add-flow switch1 arp,nw_dst=172.16.1.10,actions:outport=2 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch1 ip,nw_dst=172.16.1.10,actions:outport=2 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch1 icmp,nw_dst=172.16.1.10,actions:outport=2 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch1 arp,nw_dst=172.16.1.50,actions:outport=3
+sudo ovs-ofctl add-flow switch1 icmp,nw_dst=172.16.1.50,actions:outport=3
+sudo ovs-ofctl add-flow switch1 ip,nw_dst=172.16.1.50,actions:outport=3
 
 # fazer o teste que tem que ser feito ( iperf ou seja la o que for )
 
@@ -142,7 +152,7 @@ sudo ovs-vsctl add-br switch2
 
 sudo ovs-vsctl add-port switch2 veth8 -- set interface veth8 ofport_request=5 #interface do switch1-switch2
 sudo ovs-vsctl add-port switch2 veth10 -- set interface veth10 ofport_request=6
-sudo ovs-vsctl add-port switch2 veth12 -- set interface veth11 ofport_request=7
+sudo ovs-vsctl add-port switch2 veth12 -- set interface veth12 ofport_request=7
 sudo ovs-vsctl add-port switch2 veth14 -- set interface veth14 ofport_request=8 #interface do switch
 sudo ovs-vsctl add-port switch2 veth15 -- set interface veth15 ofport_request=9 #interface do switch
 
@@ -153,6 +163,8 @@ sudo ovs-vsctl set Bridge switch2 fail-mode=secure
 echo "configurando as rotas"
 sudo ip netns exec VRF3 ip route add 172.16.2.0/24 dev veth9
 sudo ip netns exec VRF4 ip route add 172.16.2.0/24 dev veth11
+sudo ip netns exec VRF3 ip route add 172.16.0.0/16 dev veth9
+sudo ip netns exec VRF4 ip route add 172.16.0.0/16 dev veth11
 
 sudo ip route add 172.16.2.0/24 dev veth13 #c#configurando interface do parent namespace para acessar o controlador-switchonfigurando interface do parent namespace para acessar o controlador-switch
 
@@ -163,7 +175,15 @@ sudo ip route add 172.16.2.0/24 dev veth13 #c#configurando interface do parent n
 # sudo ip netns exec VRF4 ping -c 3 172.16.2.50 # funcionando
 
 echo "Removendo regra default (actions:=NORMAL) "
-sudo ovs-ofctl del-flows swith2
+sudo ovs-ofctl del-flows switch2
+
+echo "adicionando regra para switch alcançar controlador"
+sudo ovs-ofctl add-flow switch2 arp,nw_dst=172.16.2.10,actions:outport=7 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch2 ip,nw_dst=172.16.2.10,actions:outport=7 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch2 icmp,nw_dst=172.16.2.10,actions:outport=7 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch2 arp,nw_dst=172.16.2.50,actions:outport=8
+sudo ovs-ofctl add-flow switch2 icmp,nw_dst=172.16.2.50,actions:outport=8
+sudo ovs-ofctl add-flow switch2 ip,nw_dst=172.16.2.50,actions:outport=8
 
 echo "Dominio 2 configurado !"
 
@@ -235,6 +255,8 @@ sudo ovs-vsctl set Bridge switch3 fail-mode=secure
 echo "configurando as rotas"
 sudo ip netns exec VRF5 ip route add 172.16.3.0/24 dev veth17
 sudo ip netns exec VRF6 ip route add 172.16.3.0/24 dev veth19
+sudo ip netns exec VRF5 ip route add 172.16.0.0/16 dev veth17
+sudo ip netns exec VRF6 ip route add 172.16.0.0/16 dev veth19
 
 sudo ip route add 172.16.3.0/24 dev veth21 #c#configurando interface do parent namespace para acessar o controlador-switchonfigurando interface do parent namespace para acessar o controlador-switch
 
@@ -247,7 +269,13 @@ sudo ip route add 172.16.3.0/24 dev veth21 #c#configurando interface do parent n
 echo "Removendo regra default (actions:=NORMAL) "
 sudo ovs-ofctl del-flows switch3
 
-
+echo "adicionando regra para switch alcançar controlador"
+sudo ovs-ofctl add-flow switch3 arp,nw_dst=172.16.3.10,actions:outport=12 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch3 ip,nw_dst=172.16.3.10,actions:outport=12 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch3 icmp,nw_dst=172.16.3.10,actions:outport=12 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch3 arp,nw_dst=172.16.3.50,actions:outport=13
+sudo ovs-ofctl add-flow switch3 icmp,nw_dst=172.16.3.50,actions:outport=13
+sudo ovs-ofctl add-flow switch3 ip,nw_dst=172.16.3.50,actions:outport=13
 # fazer o teste que tem que ser feito ( iperf ou seja la o que for )
 
 echo "Dominio 3 configurado !"
@@ -321,6 +349,8 @@ sudo ovs-vsctl set Bridge switch4 fail-mode=secure
 echo "configurando as rotas"
 sudo ip netns exec VRF7 ip route add 172.16.4.0/24 dev veth25
 sudo ip netns exec VRF8 ip route add 172.16.4.0/24 dev veth27
+sudo ip netns exec VRF7 ip route add 172.16.0.0/16 dev veth25
+sudo ip netns exec VRF8 ip route add 172.16.0.0/16 dev veth27
 
 sudo ip route add 172.16.4.0/24 dev veth29 #c#configurando interface do parent namespace para acessar o controlador-switchonfigurando interface do parent namespace para acessar o controlador-switch
 
@@ -333,6 +363,13 @@ sudo ip route add 172.16.4.0/24 dev veth29 #c#configurando interface do parent n
 echo "Removendo regra default (actions:=NORMAL) "
 sudo ovs-ofctl del-flows switch4
 
+echo "adicionando regra para switch alcançar controlador"
+sudo ovs-ofctl add-flow switch4 arp,nw_dst=172.16.4.10,actions:outport=17 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch4 ip,nw_dst=172.16.4.10,actions:outport=17 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch4 icmp,nw_dst=172.16.4.10,actions:outport=17 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch4 arp,nw_dst=172.16.4.50,actions:outport=18
+sudo ovs-ofctl add-flow switch4 icmp,nw_dst=172.16.4.50,actions:outport=18
+sudo ovs-ofctl add-flow switch4 ip,nw_dst=172.16.4.50,actions:outport=18
 
 # fazer o teste que tem que ser feito ( iperf ou seja la o que for )
 
@@ -402,6 +439,8 @@ sudo ovs-vsctl set Bridge switch5 fail-mode=secure
 echo "configurando as rotas"
 sudo ip netns exec VRF9 ip route add 172.16.5.0/24 dev veth33
 sudo ip netns exec VRF10 ip route add 172.16.5.0/24 dev veth35
+sudo ip netns exec VRF9 ip route add 172.16.0.0/16 dev veth33
+sudo ip netns exec VRF10 ip route add 172.16.0.0/16 dev veth35
 
 sudo ip route add 172.16.5.0/24 dev veth37 #c#configurando interface do parent namespace para acessar o controlador-switchonfigurando interface do parent namespace para acessar o controlador-switch
 
@@ -413,6 +452,14 @@ sudo ip route add 172.16.5.0/24 dev veth37 #c#configurando interface do parent n
 
 echo "Removendo regra default (actions:=NORMAL) "
 sudo ovs-ofctl del-flows switch5
+
+echo "adicionando regra para switch alcançar controlador"
+sudo ovs-ofctl add-flow switch5 arp,nw_dst=172.16.5.10,actions:outport=22 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch5 ip,nw_dst=172.16.5.10,actions:outport=22 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch5 icmp,nw_dst=172.16.5.10,actions:outport=22 # alcancar controlador(flowpri)
+sudo ovs-ofctl add-flow switch5 arp,nw_dst=172.16.5.50,actions:outport=23
+sudo ovs-ofctl add-flow switch5 icmp,nw_dst=172.16.5.50,actions:outport=23
+sudo ovs-ofctl add-flow switch5 ip,nw_dst=172.16.5.50,actions:outport=23
 
 
 # fazer o teste que tem que ser feito ( iperf ou seja la o que for )
@@ -452,19 +499,26 @@ cp -r ../../FLOWPRI-SDN2 ../../host5/ # criar uma pasta para cada host
 ###
 
 # sudo ip netns exec VRF1 xterm -e sh run_management_host.sh &
-sudo ip netns exec VRF1 xterm -e cd ../../host1 & # subir o controlador
-sudo ip netns exec VRF3 xterm -e cd ../../host2 & # subir o controlador
-sudo ip netns exec VRF5 xterm -e cd ../../host3 & # subir o controlador
-sudo ip netns exec VRF7 xterm -e cd ../../host4 & # subir o controlador
-sudo ip netns exec VRF9 xterm -e cd ../../host5 & # subir o controlador
+sudo ip netns exec VRF1 xterm -e "cd ../../host1 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF3 xterm -e "cd ../../host2 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF5 xterm -e "cd ../../host3 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF7 xterm -e "cd ../../host4 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF9 xterm -e "cd ../../host5 && /bin/bash" & # subir os hosts
 
 
 # sudo ip netns exec VRF2 xterm -e sh run_flowpri2.sh &
-sudo ip netns exec VRF2 xterm -e cd ../../controlador1 & # subir os hosts servers
-sudo ip netns exec VRF4 xterm -e cd ../../controlador2 & # subir os hosts servers
-sudo ip netns exec VRF6 xterm -e cd ../../controlador3 & # subir os hosts servers
-sudo ip netns exec VRF8 xterm -e cd ../../controlador4 & # subir os hosts servers
-sudo ip netns exec VRF10 xterm -e cd ../../controlador5 & # subir os hosts servers
+sudo ip netns exec VRF2 xterm -e "cd ../../controlador1  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF4 xterm -e "cd ../../controlador2  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+# sudo ip netns exec VRF6 xterm -e "cd ../../controlador3  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+# sudo ip netns exec VRF8 xterm -e "cd ../../controlador4  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+# sudo ip netns exec VRF10 xterm -e "cd ../../controlador5 && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+
+# forcar re-sync
+#sudo ovs-vsctl set-controller switch1 tcp:172.16.1.10:6653 
+#sudo ovs-vsctl set-controller switch2 tcp:172.16.2.10:6653 
+#sudo ovs-vsctl set-controller switch3 tcp:172.16.3.10:6653 
+#sudo ovs-vsctl set-controller switch4 tcp:172.16.4.10:6653 
+#sudo ovs-vsctl set-controller switch5 tcp:172.16.5.10:6653 
 
 
 echo "Pronto para iniciar!"

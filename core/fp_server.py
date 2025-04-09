@@ -13,7 +13,7 @@ from fp_constants import PORTAC_C, PORTAC_H, PORTAC_X, CRIAR
     
 import json, struct, time, datetime
 
-from fp_utils import tratador_setConfig
+from fp_utils import tratador_setConfig, tratador_ipsDHCP, tratador_addDominioPrefix
 
 from fp_rota import tratador_addRotas, tratador_delRotas
 

@@ -144,7 +144,9 @@ class FLOWPRI2(app_manager.RyuApp):
         self.ip_management_host = '172.16.0.100'
 
         # self.CONTROLLER_INTERFACE = "eth0"
-        self.CONTROLLER_INTERFACE = "eth1"
+        interfs=interfaces()
+        interfs.remove('lo')
+        self.CONTROLLER_INTERFACE = interfs[0]
 
         try:
             self.IPCv4 = str(ifaddresses(self.CONTROLLER_INTERFACE)[AF_INET][0]['addr'])
@@ -262,8 +264,10 @@ class FLOWPRI2(app_manager.RyuApp):
             # OBSSS: o primeiro switch da rota do dominio de origem não agrupa !!!! -- tem que ser o addregras be convencional, para poder enviar uma copia ao controlador !!!
 
             if node == 0:
+                print("Criando [BE] origem")
                 switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar=True, primeiroSaltoBorda=True)
             else:
+                print("Criando [BE] backbone")
                 switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
             nodes +=1
 
@@ -288,6 +292,9 @@ class FLOWPRI2(app_manager.RyuApp):
     def get_prefix_meu_dominio(self)->list:
         return self._LIST_PREFIX_DOMINIO
 
+    def list_switches(self):
+        return self.switches.values()
+
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
         print("Novo switch anunciado....\n")
@@ -310,6 +317,7 @@ class FLOWPRI2(app_manager.RyuApp):
             self.saveSwitch(switch=switch, switch_name=datapath.id)
         else:
             switch.datapath = datapath
+            self.saveSwitch(switch=switch, switch_name=datapath.id)
 
         port_to_controller = switch.getPortToController()
         print("Switch name: ", datapath.id)
@@ -330,7 +338,11 @@ class FLOWPRI2(app_manager.RyuApp):
 
         prepare_htb_queues_switch(self, switch)
 
-        logging.info('[switch_features] fim settage - tempo_decorrido: %d\n' % (get_time_monotonic() - tempo_i))
+        print("Switch table:")
+        for sw in self.switches.values():
+            print(sw.toString())
+
+        print('[switch_features] fim settage - tempo_decorrido: %d\n' % (get_time_monotonic() - tempo_i))
 
 # # ### Descoberta de topologia
 #     #tratador eventos onde um switch se conecta
@@ -505,12 +517,12 @@ class FLOWPRI2(app_manager.RyuApp):
         if flow_classificacao == None: 
             print("classificacao em curso")
             # criar regra BE para enviar uma copia para o controlador tbm, para enviar como best-effort e continuar
-            self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto, toController=True)
+            self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
         else:
             print("classificacao finalizada, classe: ", flow_classificacao.classe_label)
 
             if flow_classificacao.classe_label != "be":
-                print('Fluxo classificado: '+ current_milli_time())
+                print('Fluxo classificado: ', current_milli_time())
     
                 # construir o FRED aqui 
                 fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
@@ -654,25 +666,25 @@ class FLOWPRI2(app_manager.RyuApp):
             eth_dst = pkt_arp.dst_mac
             proto = pkt_arp.proto
             
-            if self.souDominioBorda(ip_dst): #arp
-                print("[packet-in]Tratando ARP")
-                self.mac_to_port[dpid][eth_src] = in_port
-                self.ip_to_port[dpid][ip_src] = in_port
+            # if self.souDominioBorda(ip_dst): #arp
+            print("[packet-in]Tratando ARP %s->%s" %(ip_src, ip_dst))
+            self.mac_to_port[dpid][eth_src] = in_port
+            self.ip_to_port[dpid][ip_src] = in_port
+            arppList = self.ip_to_port[dpid]
+            route_nohs = self.rotamanager.get_rota(ip_src, ip_dst)
+            if route_nohs == None or route_nohs == []:
+                # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
+                # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
+                # 
+                # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+                print("[creat_be]Error: no route found for this flow: s:%s d:%s" %(ip_src, ip_dst))
+                return False
 
-                arppList = self.ip_to_port[dpid]
-                route_nohs = self.rotamanager.get_rota(ip_src, ip_dst)
+            # rotina controle
+            print("getting switch %d"%(route_nohs[-1].switch_name))
+            switch = self.getSwitchByName(route_nohs[-1].switch_name)
 
-                if route_nohs == None:
-                    # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
-                    # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
-                    # 
-                    # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
-                    print("[creat_be]Error: no route found for this flow: s:%s d:%s" %(ip_src, ip_dst))
-                    return False
-
-                # rotina controle
-                switch = self.getSwitchByName(route_nohs[-1].switch_name)
-                injetarPacote(switch.datapath, FILA_CONTROLE, route_nohs[-1].out_port, msg)
+            injetarPacote(switch.datapath, FILA_CONTROLE, route_nohs[-1].out_port, msg)
 
             return
 
@@ -700,7 +712,7 @@ class FLOWPRI2(app_manager.RyuApp):
             return
 
         # tratar freds anunciados # aqui apenas icmpv6 agora
-        if pkt_icmpv4:  
+        if pkt_icmpv4: # envio icmp precisa ser origem frep.src, destino, fred.dst
             print("[packet-in]tratando imcpv4")
             handle_icmps(self, msg, pkt_icmpv4, pkt_icmpv4.type, ip_ver, eth_src, ip_src, eth_dst, ip_dst)
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)

@@ -2,7 +2,7 @@ from fp_regra import Regra, ordenaRegrasPorBandaMaiorMenor
 from fp_constants import SC_REAL, SC_CONTROL, SC_BEST_EFFORT, SC_NONREAL, ALTA_PRIO, MEDIA_PRIO, BAIXA_PRIO
 
 class Porta:
-    def __init__(self, name:int, bandaT:int, bandaTotalClasseReal:int, bandaTotalClasseNaoReal:int, tamanhoFilaClasseReal:int , tamanhoFilaClasseNaoReal:int, bandaTotalClasseBE:int, bandaTotalClasseControle:int,proximoSwitch:int):
+    def __init__(self, name:int, interface_name:str, bandaT:int, bandaTotalClasseReal:int, bandaTotalClasseNaoReal:int, tamanhoFilaClasseReal:int , tamanhoFilaClasseNaoReal:int, bandaTotalClasseBE:int, bandaTotalClasseControle:int,proximoSwitch:int):
         # name :str , bandaC1T : int, bandaC2T : int, tamanhoFilaC1: int , tamanhoFilaC2: int, proximoSwitch : str):
         #criar filas e setar quantidade de banda para cada classe
 
@@ -10,6 +10,8 @@ class Porta:
 
         #cada fila deve ter uma variavel de controle de largura de banda utilizada e uma variavel de largura de banda total
         self.nome:int = name
+
+        self.interface_name:str = interface_name
 
         self.bandaT:int = bandaT
         self.bandaTotalClasseBE=bandaTotalClasseBE

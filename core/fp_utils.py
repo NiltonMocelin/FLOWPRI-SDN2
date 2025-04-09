@@ -163,7 +163,7 @@ def prepare_htb_queues_switch(controller, switch):
     # ovsb = OVSBridge(controller.CONF, switch.datapath.id, switch_ovsdb_addr)
 
     for port in switch.getPortas():
-        print("porta: s%d-eth%d" % (switch.nome,port.nome))
+        print("nome-switch: %d porta: %d  interface: %s" % (switch.nome,port.nome, port.interface_name))
 
         # params = {"port_name": "s%d-eth%d"%(switch.nome, port.nome), "type": "linux-htb", "max_rate": "1000000", "queues": [{"max_rate": "500000"}, {"min_rate": "800000"}]}
 
@@ -187,7 +187,7 @@ def prepare_htb_queues_switch(controller, switch):
         # sendConfigOVS(ovsdb_addr=switch_ovsdb_addr, config=config)
 
         # interface = "s%d-eth%d" % (switch.nome,port.nome)
-        interface = "veth%d" % (port.nome)
+        interface = port.interface_name
 
         largura_porta= port.bandaT # 500 000 == 500kb
 
