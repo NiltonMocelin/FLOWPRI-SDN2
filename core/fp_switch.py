@@ -213,7 +213,7 @@ class Switch:
         porta_saida = self.getPorta(porta_saida).addRegra(Regra(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_entrada=ANY_PORT, porta_saida= porta_saida,meter_id= NO_METER,banda= 0, prioridade=0,classe= 0,fila= FILA_BESTEFFORT, application_class="be", qos_mark=qos_mark, actions={"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":NO_METER}, emprestando=False))
         if primeiroSaltoBorda:
             print("addBE primeiro salto")
-            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida,src_port,dst_port,proto, FILA_BESTEFFORT, NO_QOS_MARK, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT, qos_mark_action=qos_mark, prioridade=20, flow_removed=True, toController=True)
+            addRegraForwarding(self, ip_ver, ip_src, ip_dst, porta_saida,src_port,dst_port,proto, FILA_BESTEFFORT, NO_METER, NO_QOS_MARK, BE_IDLE_TIMEOUT, BE_HARD_TIMEOUT, qos_mark_action=qos_mark, prioridade=20, flow_removed=True, toController=True)
         else:
             print("addBE backbone")
             addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=NO_QOS_MARK, qos_mark_action=qos_mark, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
