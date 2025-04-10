@@ -47,11 +47,13 @@ UDP = 17
 EGP = 8
 IGP = 9
 
-QOS_HARD_TIMEOUT  = 5
-QOS_IDLE_TIMEOUT  = 2
-MONITORING_TIMEOUT= 2
-BE_HARD_TIMEOUT  = 5
-BE_IDLE_TIMEOUT   = 2
+
+# O controlador leva 2s para configurar as regras
+QOS_HARD_TIMEOUT   = 15   # 5 antigo
+QOS_IDLE_TIMEOUT   = 10   # 2 antigo
+MONITORING_TIMEOUT = 7  # 2 antigo
+BE_HARD_TIMEOUT    = 15   # 5 antigo
+BE_IDLE_TIMEOUT    = 10   # 2 antigo
 
 #service classes
 SC_REAL        = 1

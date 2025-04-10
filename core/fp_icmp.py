@@ -111,7 +111,7 @@ def tratar_icmp_rejeicao(controller, fred_icmp:Fred, ip_ver, eth_src, ip_src, et
         # remove_qos_rules(ip_ver=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
 
     # criar a regra best-effort
-    controller.create_be_rules(fred_icmp.ip_src, fred_icmp.ip_dst, fred_icmp.ip_ver, fred_icmp.src_port, fred_icmp.dst_port, fred_icmp.proto)    
+    controller.create_be_rules(nohs_rota, fred_icmp.ip_src, fred_icmp.ip_dst, fred_icmp.ip_ver, fred_icmp.src_port, fred_icmp.dst_port, fred_icmp.proto)    
     # dar sequencia no icmp
     
     INFORMATION_REPLY = 16
@@ -182,7 +182,7 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
         print("[tratador_icmp_fred]FRED aceito + gbam")
     else:# so para deixar organizado
         print("[tratador_icmp_fred]FRED rejeitado + send icmp reject")
-        controller.create_be_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    
+        controller.create_be_rules(nohs_rota, fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    
         # enviar fred rejeitando fluxo, apenas para trás <-, nao precisa enviar para frente tbm
         # Fazer a rejeicao de fred
         if fred.ip_ver == IPV4_CODE:# ips trocados para devolver o icmp

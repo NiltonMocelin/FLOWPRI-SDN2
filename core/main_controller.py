@@ -75,7 +75,7 @@ from fp_acao import Acao
 from fp_openflow_rules import add_default_rule, injetarPacote, addRegraMonitoring, desligar_regra_monitoramento, add_flow
 
 from fp_utils import tratador_addDominioPrefix, tratador_ipsDHCP, prepare_htb_queues_switch
-from fp_utils import current_milli_time, calculate_network_prefix_ipv4
+from fp_utils import current_milli_time, calculate_network_prefix_ipv4, getQOSMark
 
 # print('importando fp_topo_discovery')
 #descoberta de topologia
@@ -242,34 +242,33 @@ class FLOWPRI2(app_manager.RyuApp):
         
         return True # aceito
 
-    def create_be_rules(self, ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int):
+    def create_be_rules(self, route_nohs, ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int):
         """Cria a regra BE (com marcacao) no switch ovs e na instancia"""
-        # criar regras agrupadas ...
-        # rota com os datapaths dos switches em ordem
-        route_nohs = self.rotamanager.get_rota(ip_src, ip_dst)
 
-        if route_nohs == None:
-            # nao tem rota, verificar se conhece o endereco mac, criar regra pelo endereço mac -- ou encontrar a rota pelo endereco mac ?
-            # porta_saida_in_switch = controller.mac_to_port[in_switch_id]
-            # 
-            # getSwitchByName(in_switch_id).criarRegraBE_ip(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
-            print("[creat_be]Error: no route found for this flow: s:%s d:%s" %(ip_src, ip_dst))
-            return False
-
-        nodes = 0
         for node in route_nohs:
             switchh = self.getSwitchByName(node.switch_name)
             porta_saida = node.out_port
-            # teria que agrupar as regras em conjunctions -- marcar no primeiro switch da rota
-            # OBSSS: o primeiro switch da rota do dominio de origem não agrupa !!!! -- tem que ser o addregras be convencional, para poder enviar uma copia ao controlador !!!
 
-            if node == 0:
+            print("Criando [BE] backbone")
+            switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
+            
+        return True
+
+    def create_be_rules_meu_dominio(self, route_nohs, ip_src:str, ip_dst:str, ip_ver:int, src_port:int, dst_port:int, proto:int):
+        """Cria a regra BE (com marcacao) no switch ovs e na instancia"""
+
+        idxnodes = 0
+        for node in route_nohs:
+            switchh = self.getSwitchByName(node.switch_name)
+            porta_saida = node.out_port
+
+            if idxnodes == 0:
                 print("Criando [BE] origem")
                 switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar=True, primeiroSaltoBorda=True)
             else:
                 print("Criando [BE] backbone")
                 switchh.addRegraBE(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida)
-            nodes +=1
+            idxnodes +=1
 
         return True
 
@@ -470,33 +469,36 @@ class FLOWPRI2(app_manager.RyuApp):
         print("[flow-removed] end:", endtime, ' duracao:', endtime-initime)
         return 0
 
-    def tratamento_pktin_sem_marcacao_meu_dominio(self, este_switch_obj:Switch, nome_switch_primeiro_salto:int, ip_ver, ip_src,ip_dst,src_port,dst_port, proto, out_port, msg):
+    def tratamento_pktin_sem_marcacao_meu_dominio(self, rota_fluxo, este_switch_obj:Switch, nome_switch_primeiro_salto:int, ip_ver, ip_src,ip_dst,src_port,dst_port, proto, out_port, msg):
         if nome_switch_primeiro_salto == este_switch_obj.nome: # quem disparou foi o primeiro switch da rota == iniciar classificacao fluxo + criar regra de classificacao
             print("[pkt-in]: iniciando classificacao de fluxo %d" % (este_switch_obj.nome))
             classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, msg.data, reiniciar=True) # classificar do zero
             print("criar regras BE sem conjunction + marcacao BE + copia para controlador")
-            self.create_be_rules({})
+            self.create_be_rules_meu_dominio(route_nohs=rota_fluxo, ip_src=ip_src, ip_dst=ip_dst, ip_ver=ip_ver, src_port=src_port,dst_port=dst_port,proto=proto)
             injetarPacote(este_switch_obj.datapath, FILA_BESTEFFORT, out_port, msg)  
         else: # nao foi primeiro switch da rota,== ERRO, mas ... vamos entao == repetir o reinicio da classificacao 
             print("[pkt-in]: comportamento inesperado - este pacote deveria ter regra BE no switch %d" % (este_switch_obj.nome))
             classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, msg.data, reiniciar=True) # classificar do zero
             print("criar regras BE conjunction (sem marcacao e sem controlador)")
+            self.create_be_rules_meu_dominio(route_nohs=rota_fluxo, ip_src=ip_src, ip_dst=ip_dst, ip_ver=ip_ver, src_port=src_port,dst_port=dst_port,proto=proto)
             injetarPacote(este_switch_obj.datapath, FILA_BESTEFFORT, out_port, msg)  
         return
     
-    def tratamento_pktin_com_marcacao_meu_dominio(self, este_switch_obj:Switch, out_port, rota_fluxo, ip_ver, ip_src , ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, msg, pkt):
+    def tratamento_pktin_com_marcacao_meu_dominio(self, rota_fluxo, este_switch_obj:Switch, out_port, ip_ver, ip_src , ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, msg, pkt):
         ultimo_switch_obj= self.getSwitchByName(rota_fluxo[-1].switch_name)
         nome_switch_primeiro_salto = rota_fluxo[0].switch_name
 
-        if qos_mark == NO_QOS_MARK: #BE == fazer classificacao se for o primeiro switch da rota que gerou, se nao, apenas recriar a regra BE
+        be_mark = getQOSMark(SC_BEST_EFFORT, 1)
+
+        if qos_mark == be_mark: #BE == fazer classificacao se for o primeiro switch da rota que gerou, se nao, apenas recriar a regra BE
 
             if nome_switch_primeiro_salto == este_switch_obj.nome:
                 print("[trat_meu-domin] Tem Marcacao BE -> Fazer classificacao de trafego, sem injetar o pacote")
                 flow_classificacao = classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, msg.data)
                 print("criar regras qos, criar fred, preencher e enviar icmp fred announcement.")
                 if flow_classificacao == None:
-                    print("[trat_meu-domin]Classificacao em andamento")
-                    # return 
+                    print("[trat_meu-domin]Classificacao em andamento -- nao fazer nada")
+                    return 
                 print("Classificacao Finalizada")
                 if flow_classificacao.classe_label == "be":
                     print("Fluxo BE ip_src:%s src_port:%d ip_dst:%s dst_port:%d" %(ip_src, src_port, ip_dst,dst_port))
@@ -516,7 +518,7 @@ class FLOWPRI2(app_manager.RyuApp):
             # return # nao reinjetar, pois eh uma copia
         return
     
-    def tratamento_pktin_backbone(self, este_switch_obj, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, out_port, msg):
+    def tratamento_pktin_backbone(self, rota_fluxo, este_switch_obj, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, out_port, msg):
         print("[packet-in] nao sou borda")
         BE_MARK = 6 # olhar fp_constants classe 3
 
@@ -524,6 +526,7 @@ class FLOWPRI2(app_manager.RyuApp):
         # se não for meu dominio ou sou backbone e não recebi fred, então fluxo BE
         # nao teve classificação ou foi best-effort
 
+        
         fredd=Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, ip_dst=ip_dst, dst_port=dst_port, proto=proto, mac_src=eth_src,
                          mac_dst=eth_dst, code=0, blockchain_name='', as_dst_ip_range=[], 
                          as_src_ip_range=[],label='be',
@@ -535,8 +538,7 @@ class FLOWPRI2(app_manager.RyuApp):
         elif qos_mark != BE_MARK: # == um fluxo qos sem regras nesse dominio backbone ? algo errado aconteceu == nao recebi icmp anuncio !!!
             print('[pkt-in] comportamento não esperado no backbone: pacote marcado com QoS + pktin + nao borda == icmp rejeito + BE')
 
-            rota_fluxo = self.rotamanager.get_rota(ip_src, ip_dst)
-            switch_primeiro = self.getSwitchByName(rota_fluxo[0])
+            switch_primeiro = self.getSwitchByName(rota_fluxo[0].switch_name)
             INFORMATION_REPLY = 16
             if ip_ver == IPV4_CODE: # enviando em direcao a origem do fluxo, para informar que nao foi aceito
                 send_icmpv4(datapath=switch_primeiro.datapath, srcMac=eth_dst, srcIp=ip_dst, dstMac=eth_src, dstIp=ip_src, outPort=rota_fluxo[0].in_port, seq=0, data=fredd.toString(),type=INFORMATION_REPLY)
@@ -544,7 +546,7 @@ class FLOWPRI2(app_manager.RyuApp):
                 send_icmpv6(datapath=switch_primeiro.datapath,srcMac=eth_dst, srcIp=ip_dst, dstMac=eth_src, dstIp=ip_src, outPort=rota_fluxo[0].in_port, data=fredd.toString(),type=icmpv6.ICMPV6_NI_REPLY)
 
         self.fredmanager.save_fred(fredd.getName(), fredd)
-        self.create_be_rules(ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
+        self.create_be_rules(rota_fluxo, ip_src, ip_dst, ip_ver, src_port, dst_port, proto)
 
         injetarPacote(este_switch_obj.datapath, FILA_BESTEFFORT, out_port, msg) # podia injetar no ultimo da rota tbm, mas como todos ja tem a regra nesse ponto, pode ser em qualquer um
         print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- tempo_i_mili)
@@ -577,7 +579,7 @@ class FLOWPRI2(app_manager.RyuApp):
             
             # construir o FRED aqui 
             fred = Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, dst_port=dst_port, proto=proto, mac_src=eth_src,
-                         mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=self.get_ips_meu_dominio(), 
+                         mac_dst=eth_dst, code=0, blockchain_name='blockchain_name', as_dst_ip_range=self._LIST_PREFIX_DOMINIO, 
                          as_src_ip_range=[],label=flow_classificacao.application_label,
                          ip_genesis=self.ip_management_host, lista_peers=[], lista_rota=[], classe=flow_classificacao.classe_label, delay=flow_classificacao.delay, 
                          prioridade=flow_classificacao.priority, loss=flow_classificacao.loss, bandiwdth=flow_classificacao.bandwidth)
@@ -820,15 +822,16 @@ class FLOWPRI2(app_manager.RyuApp):
             print("[packet-in] sou dominio de borda para esse fluxo")
             if qos_mark == 0: # sem marcacao
                 print("[trat_meu-domin]Pacote sem marcacao: %d" % (qos_mark))
-                self.tratamento_pktin_sem_marcacao_meu_dominio(este_switch, rota_fluxo[0].switch_name,ip_ver, ip_src, ip_dst, src_port, dst_port, proto, out_port, msg)
+                self.tratamento_pktin_sem_marcacao_meu_dominio(rota_fluxo, este_switch, rota_fluxo[0].switch_name,ip_ver, ip_src, ip_dst, src_port, dst_port, proto, out_port, msg)
             else: # pacote marcado
                 print("[trat_meu-domin]Pacote com marcacao: %d" % (qos_mark))
-                self.tratamento_pktin_com_marcacao_meu_dominio(este_switch, out_port, rota_fluxo, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst,qos_mark, msg, pkt)
+                self.tratamento_pktin_com_marcacao_meu_dominio(rota_fluxo, este_switch, out_port, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst,qos_mark, msg, pkt)
 
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
 
         self.tratamento_pktin_backbone(este_switch, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, out_port, msg)
+        print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
         return	 
 
 def setup(controller):

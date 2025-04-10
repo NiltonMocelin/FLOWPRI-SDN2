@@ -343,7 +343,7 @@ sudo ovs-vsctl add-port switch4 veth30 -- set interface veth30 ofport_request=18
 sudo ovs-vsctl add-port switch4 veth31 -- set interface veth31 ofport_request=19 #interface switch1-switch2
 
 sudo ovs-vsctl set bridge switch4 other-config:datapath-id=0000000000000004
-sudo ovs-vsctl set-controller switch1 tcp:172.16.4.10:6653 
+sudo ovs-vsctl set-controller switch4 tcp:172.16.4.10:6653 
 sudo ovs-vsctl set Bridge switch4 fail-mode=secure
 
 echo "configurando as rotas"

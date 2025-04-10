@@ -180,6 +180,33 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
     dictiona = {'conj_id':10, 'eth_type':0x0800}
     Pode passar dicionarios para parser.OFPMatch(**dictiona)
 
+    Pode criar na mao:
+    sudo ovs-ofctl add-flow switch1 ip,ip_proto=6,tcp_dst=80,actions:=conjunction\(1234,2/2\)
+
+ ### OBS sobre as conjunctions:
+    As primeiras vezes que rodei, funcionou normal
+        match = parser.OFPMatch(eth_type=0x0800, ipv4_src='172.16.1.1')
+        actions = [parser.NXActionConjunction(clause=1,n_clauses=2, id_=222)]
+        self.add_flow2(datapath, 0, match, actions)
+
+        match = parser.OFPMatch(eth_type=0x0800, ipv4_dst='172.16.1.1')
+        actions = [parser.NXActionConjunction(clause=2,n_clauses=2, id_=222)]
+        self.add_flow2(datapath, 0, match, actions)
+
+
+        POREM, QUANDO FUI TESTAR EM UM OUTRO MOMENTO, O NUMERO DA CLAUSE=1 ERA INCREMENTADO +1 NO MOMENTO DE SUBIR AS CONJUNCTIONS, LOGO A PRIMEIRA ERA CRIADA COMO CLAUSE=2 N_CLAUSES=2 E A SEGUNDA TBM (N SEI PQ, MAS DEVE LIMITAR NO N_CLAUSES). ENTAO A SEGUNDA SUBSTITUIA A PRIMEIRA E FICAVA APENAS UMA... DEMOREI HORAS PARA IDENTIFICAR :D
+
+        Essa é a maneira correta :
+        match = parser.OFPMatch(eth_type=0x0800, ipv4_src='172.16.1.1')
+        actions = [parser.NXActionConjunction(clause=0,n_clauses=2, id_=1111)]
+        self.add_flow2(datapath, 0, match, actions)
+        # self.del_flow(datapath, match)     
+
+        match = parser.OFPMatch(eth_type=0x0800, ip_proto=6,tcp_dst=2300)
+        actions = [parser.NXActionConjunction(clause=1,n_clauses=2,id_=1111)]
+        # self.del_flow(datapath, match)        
+        self.add_flow2(datapath, 0, match, actions)
+
 #### Se estiver tendo problemas para remover regras com o RYU
     
     ## o OFPFlowMod(ofproto.OFPFC_DELETE..) não deleta
