@@ -219,6 +219,7 @@ class Switch:
         else:
             print("addBE backbone")
             addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=qos_mark, qos_mark_action=NO_QOS_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT,prioridade=CONJUNCTION_PRIO,flow_removed=False)
+
         return True
 
     def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False):
@@ -248,7 +249,7 @@ class Switch:
             
             if tipo_porta == PORTA_SAIDA:
                 # nao é aqui que liga ou desliga a regra de monitoramento, é no flow removed
-                addRegraForwarding_com_Conjunction(switch=self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, porta_entrada=porta_entrada, porta_saida=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_maching=qos_mark,qos_mark_action=NO_QOS_MARK, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT)
+                addRegraForwarding_com_Conjunction(switch=self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_maching=qos_mark,qos_mark_action=NO_QOS_MARK, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT)
 
             # rotina monitoring
             self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
@@ -258,7 +259,7 @@ class Switch:
 
             if tipo_porta == PORTA_SAIDA:
                 # regra matching qos_mark e regra matching monitoring_mark
-                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, meter_id, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
+                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark, NO_QOS_MARK, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT)
 
             self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark,{"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
 

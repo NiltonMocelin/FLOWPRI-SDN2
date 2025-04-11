@@ -218,48 +218,43 @@ def addRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:st
 
     add_conjunction(switch=switch, ip_ver=ip_ver, port_name=src_port, tipo=TCP_SRC if proto == TCP else UDP_SRC, clause_number=1,n_clauses=2,idd=CONJUNCTION_ID)
     add_conjunction(switch=switch, ip_ver=ip_ver, port_name=dst_port, tipo=TCP_DST if proto == TCP else UDP_DST, clause_number=2,n_clauses=2,idd=CONJUNCTION_ID)
-
-    dicionario_parametros['conj_id']=CONJUNCTION_ID
+ # dicionario_parametros = {'conj_id':10, 'eth_type':2048}
+    dicionario_parametros = {}
+    dicionario_parametros['conj_id'] = CONJUNCTION_ID
     dicionario_parametros['eth_type'] = ip_ver
     dicionario_parametros['ip_proto'] = proto
-    
     if ip_ver == IPV4_CODE:
         dicionario_parametros['ipv4_src'] = ip_src
         dicionario_parametros['ipv4_dst'] = ip_dst
     elif ip_ver == IPV6_CODE:
         dicionario_parametros['ipv6_src'] = ip_src
         dicionario_parametros['ipv6_dst'] = ip_dst
-    
     if qos_mark_maching != NO_QOS_MARK:
         if ip_ver == IPV4_CODE:
             dicionario_parametros['ip_dscp'] = qos_mark_maching
         elif ip_ver == IPV6_CODE:
             dicionario_parametros['ipv6_flabel'] = qos_mark_maching
-      
-    #tratamento especial para este tipo de trafego
-    match:OFPMatch = parser.OFPMatch(**dicionario_parametros)
+    # match = parser.OFPMatch(conj_id=10, eth_type=2048) # esse funciona
+    match = parser.OFPMatch(**dicionario_parametros)
 
+    print('params:', match)
     actions = []
     if qos_mark_action != NO_QOS_MARK:
         if ip_ver == IPV4_CODE:
             actions.append(parser.OFPActionSetField(ip_dscp=qos_mark_action))
         elif ip_ver == IPV6_CODE:
             actions.append(parser.OFPActionSetField(ipv6_flabel=qos_mark_action))
-
     actions.append(parser.OFPActionSetQueue(fila))
     actions.append(parser.OFPActionOutput(out_port))
-    
     if toController:
         actions.append(parser.OFPActionOutput(ofproto.OFPP_CONTROLLER))
-
     inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-
-    #marcar para gerar o evento FlowRemoved
-    if flow_removed:
-        mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=FORWARD_TABLE, flags=ofproto.OFPFF_SEND_FLOW_REM)
-        datapath.send_msg(mod)
-        return
-    mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=FORWARD_TABLE)
+    # #marcar para gerar o evento FlowRemoved
+    # if flow_removed:
+    #     mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=0, flags=ofproto.OFPFF_SEND_FLOW_REM)
+    #     datapath.send_msg(mod)
+    #     return
+    mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=0)
     datapath.send_msg(mod)
 
 # 

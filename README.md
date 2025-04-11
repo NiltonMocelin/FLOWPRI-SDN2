@@ -63,6 +63,9 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
 
 ## Ordem de desenvolvimento{
 
+-> conjunctions [ok]
+
+
 * --- Algumas coisas já são existentes só colocar para ficar mais funcional
 
 *  #Resolver a parte de configuracao manual
@@ -182,6 +185,8 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
 
     Pode criar na mao:
     sudo ovs-ofctl add-flow switch1 ip,ip_proto=6,tcp_dst=80,actions:=conjunction\(1234,2/2\)
+
+    sudo ovs-ofctl add-flow switch1 conj_id=10,ip,ip_proto=6,tcp_dst=80,actions:outport=2
 
  ### OBS sobre as conjunctions:
     As primeiras vezes que rodei, funcionou normal

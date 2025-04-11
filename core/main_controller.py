@@ -524,9 +524,7 @@ class FLOWPRI2(app_manager.RyuApp):
 
         tempo_i_mili = current_milli_time()
         # se não for meu dominio ou sou backbone e não recebi fred, então fluxo BE
-        # nao teve classificação ou foi best-effort
-
-        
+        # nao teve classificação ou foi best-effort        
         fredd=Fred(ip_ver=ip_ver, ip_src=ip_src, src_port=src_port, ip_dst=ip_dst, dst_port=dst_port, proto=proto, mac_src=eth_src,
                          mac_dst=eth_dst, code=0, blockchain_name='', as_dst_ip_range=[], 
                          as_src_ip_range=[],label='be',
@@ -830,7 +828,7 @@ class FLOWPRI2(app_manager.RyuApp):
             print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
             return
 
-        self.tratamento_pktin_backbone(este_switch, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, out_port, msg)
+        self.tratamento_pktin_backbone(rota_fluxo, este_switch, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, eth_src, eth_dst, qos_mark, out_port, msg)
         print("[packet_in] finish ", current_milli_time(), " - decorrido:",  current_milli_time()- timpo_i_mili)
         return	 
 

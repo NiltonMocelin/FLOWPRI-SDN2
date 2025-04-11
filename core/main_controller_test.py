@@ -69,6 +69,62 @@ class Dinamico(app_manager.RyuApp):
         global controller_singleton
         controller_singleton = self
     
+    def addRegraForwarding_com_Conjunction(self, switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, qos_mark_maching:int, qos_mark_action:int, idle_timeout:int, hard_timeout:int, prioridade:int=10,  flow_removed:bool=True, toController:bool=False):
+        # switches backbone ou que nao sao o primeiro da rota de borda devem usar essa regra, para agrupar os fluxos e encaminhar os fluxos marcados com qos ou com monitoramento (sim sao 2 regras por fluxo de qos)
+        # ou o ultimo switch da rota de borda precisa ter a regra para remarcar os fluxos com qos para monitoring... ( continua sendo duas regras)
+
+        # se precisar recuperar o buffer_id = msg.buffer_id
+
+        # como setar corretamente os campos de match (linha 1352): https://github.com/faucetsdn/ryu/blob/master/ryu/ofproto/ofproto_v1_3_parser.py
+        datapath = switch.datapath
+        ofproto = datapath.ofproto
+        parser = datapath.ofproto_parser
+
+        # dicionario_parametros = {'conj_id':10, 'eth_type':2048}
+        dicionario_parametros = {}
+        dicionario_parametros['conj_id'] = 32
+        dicionario_parametros['eth_type'] = ip_ver
+        dicionario_parametros['ip_proto'] = proto
+
+        if ip_ver == IPV4_CODE:
+            dicionario_parametros['ipv4_src'] = ip_src
+            dicionario_parametros['ipv4_dst'] = ip_dst
+        elif ip_ver == IPV6_CODE:
+            dicionario_parametros['ipv6_src'] = ip_src
+            dicionario_parametros['ipv6_dst'] = ip_dst
+
+        if qos_mark_maching != NO_QOS_MARK:
+            if ip_ver == IPV4_CODE:
+                dicionario_parametros['ip_dscp'] = qos_mark_maching
+            elif ip_ver == IPV6_CODE:
+                dicionario_parametros['ipv6_flabel'] = qos_mark_maching
+
+
+        # match = parser.OFPMatch(conj_id=10, eth_type=2048) # esse funciona
+        match = parser.OFPMatch(**dicionario_parametros)
+        actions = []
+        if qos_mark_action != NO_QOS_MARK:
+            if ip_ver == IPV4_CODE:
+                actions.append(parser.OFPActionSetField(ip_dscp=qos_mark_action))
+            elif ip_ver == IPV6_CODE:
+                actions.append(parser.OFPActionSetField(ipv6_flabel=qos_mark_action))
+
+        actions.append(parser.OFPActionSetQueue(fila))
+        actions.append(parser.OFPActionOutput(out_port))
+
+        if toController:
+            actions.append(parser.OFPActionOutput(ofproto.OFPP_CONTROLLER))
+
+        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+
+        # #marcar para gerar o evento FlowRemoved
+        # if flow_removed:
+        #     mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=0, flags=ofproto.OFPFF_SEND_FLOW_REM)
+        #     datapath.send_msg(mod)
+        #     return
+        mod = parser.OFPFlowMod(datapath=datapath, idle_timeout = idle_timeout, hard_timeout= hard_timeout, priority=prioridade, match=match, instructions=inst, table_id=0)
+        datapath.send_msg(mod)
+
     def _add_flow(self, dp, match, actions): ### cuidado com buffer id, já tivemos problema com isso uma vez (essa aqui é tirada do ryu)
         inst = [dp.ofproto_parser.OFPInstructionActions(
             dp.ofproto.OFPIT_APPLY_ACTIONS, actions)]
@@ -295,6 +351,9 @@ class Dinamico(app_manager.RyuApp):
         actions = [parser.NXActionConjunction(clause=1,n_clauses=2,id_=1111)]
         # self.del_flow(datapath, match)        
         self.add_flow2(datapath, 0, match, actions)
+
+
+        self.addRegraForwarding_com_Conjunction(switch=switch, ip_ver=2048, ip_src='172.16.1.20', ip_dst='172.16.2.20', out_port=2, src_port=100, dst_port=300, proto=6, fila=4, qos_mark_maching=31, qos_mark_action=25, idle_timeout=25, hard_timeout=25)
 
         # # match = parser.OFPMatch(conj_id=10,eth_type=0x0800, ipv4_src="192.168.0.1")
         # dicta = {"eth_type":0x0800, "ipv4_src":"192.100.1.1", "ipv4_dst":"192.100.1.2", "ip_dscp":10, "conj_id":10}        
