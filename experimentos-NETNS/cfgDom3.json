@@ -2,10 +2,10 @@
 "addSwitches":[
     {"nome_switch" : 3, "ovsdb_addr":"tcp:172.16.3.10:6633", "port_to_controller":12, "portas": [
         {"nome_porta": 10 , "nome_interface":"veth16", "banda_total":  50000000, "proxSwitch": -1},
-        {"nome_porta": 11 , "nome_interface":"18", "banda_total":  50000000, "proxSwitch": -1},
-        {"nome_porta": 12 , "nome_interface":"20", "banda_total": 50000000,  "proxSwitch": -1},
-        {"nome_porta": 13 , "nome_interface":"22", "banda_total": 50000000,  "proxSwitch": -1},
-        {"nome_porta": 14 , "nome_interface":"23", "banda_total": 50000000,  "proxSwitch": -1}]
+        {"nome_porta": 11 , "nome_interface":"veth18", "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 12 , "nome_interface":"veth20", "banda_total": 50000000,  "proxSwitch": -1},
+        {"nome_porta": 13 , "nome_interface":"veth22", "banda_total": 50000000,  "proxSwitch": -1},
+        {"nome_porta": 14 , "nome_interface":"veth23", "banda_total": 50000000,  "proxSwitch": -1}]
     }
 ],
 "addRotas":[
@@ -50,6 +50,30 @@
     ]},
     {"src_prefix" : "172.16.3.50", "dst_prefix": "172.16.3.30", "switches_rota":[
         {"nome_switch":3,"porta_entrada": 13, "porta_saida":11, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.1.0", "dst_prefix": "172.16.4.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 10, "porta_saida":14, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.4.0", "dst_prefix": "172.16.1.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 14, "porta_saida":10, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.1.0", "dst_prefix": "172.16.5.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 10, "porta_saida":14, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.0", "dst_prefix": "172.16.1.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 14, "porta_saida":10, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.2.0", "dst_prefix": "172.16.4.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 10, "porta_saida":11, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.4.0", "dst_prefix": "172.16.2.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 14, "porta_saida":10, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.2.0", "dst_prefix": "172.16.5.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 10, "porta_saida":14, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.0", "dst_prefix": "172.16.2.0", "switches_rota":[
+        {"nome_switch":3,"porta_entrada": 14, "porta_saida":10, "ordem":0} 
     ]}
     ],
 "addDominioPrefix":[{"ip":"172.16.3.0"}],

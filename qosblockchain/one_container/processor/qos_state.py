@@ -32,7 +32,7 @@ def _make_qos_address(name):
 
 class QoSRegister:
     #medida de QoS
-    def __init__(self, nodename:str, route_nodes:list, blockchain_nodes:list, state:int, service_label:int, application_label:int, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):  
+    def __init__(self, nodename:str, route_nodes:list, blockchain_nodes:list, state:int, service_label:int, application_label:str, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):  
         #fred data
         self.nodename:str = nodename #nó que calculou
         self.route_nodes:list = route_nodes

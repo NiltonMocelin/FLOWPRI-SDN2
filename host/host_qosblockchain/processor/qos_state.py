@@ -32,11 +32,11 @@ def _make_qos_address(name):
 
 class QoSRegister:
     #medida de QoS
-    def __init__(self, nodename:str, route_nodes:list[str], blockchain_nodes:list[str], state:int, service_label:int, application_label:int, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):  
+    def __init__(self, nodename:str, route_nodes:list, blockchain_nodes:list, state:int, service_label:int, application_label:str, req_bandwidth:int, req_delay:int, req_loss:int, req_jitter:int, bandwidth:int, delay:int, loss:int, jitter:int):  
         #fred data
         self.nodename:str = nodename #nó que calculou
-        self.route_nodes:list[str] = route_nodes
-        self.blockchain_nodes:list[str] = blockchain_nodes
+        self.route_nodes:list = route_nodes
+        self.blockchain_nodes:list = blockchain_nodes
         self.state:int = state
         self.service_label:str = service_label
         self.application_label:str = application_label
@@ -70,9 +70,9 @@ class QoSRegister:
 
 class FlowTransacao:
     # dissecar o FRED aqui
-    def __init__(self, ip_src, ip_dst, ip_ver, src_port:str, dst_port:str, proto:str, qosregisters:list[QoSRegister]):
+    def __init__(self, ip_src, ip_dst, ip_ver, src_port:str, dst_port:str, proto:str, qosregisters:list):
         self.name:str = str(ip_ver) +'_'+ str(proto)+ '_'+  ip_src+'_'+ip_dst +'_'+ str(src_port) +'_'+str(dst_port)
-        self.qosregisters:list[QoSRegister] = qosregisters # class QoS # lista de registros de qos para um fluxo
+        self.qosregisters:list = qosregisters # class QoS # lista de registros de qos para um fluxo
 
     def toString(self):
         flow_json = {"name": self.name, "qosregisters":[qosreg.toString() for qosreg in self.qosregisters]}

@@ -60,10 +60,10 @@ def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada,
 
   # escrever o arquivo docker-compose.yaml
 
-  file_compose = "nao_genesis_blockchain.yaml"
+  file_compose = "qosblockchain/one_container/nao_genesis_blockchain.yaml"
 
   if is_genesis:
-     file_compose = "genesis_blockchain.yaml"
+     file_compose = "qosblockchain/one_container/genesis_blockchain.yaml"
   try:
     open_file = open(file_compose, 'r+')
 

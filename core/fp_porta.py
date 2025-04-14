@@ -79,52 +79,62 @@ class Porta:
 
         return True
 
+    def setRegra_monitorando(self,ip_ver,proto,ip_src,ip_dst,src_port,dst_port):
+        regra = self.getRegra(ip_ver, ip_dst, ip_src, ip_dst, src_port, dst_port)
+        anterior = regra.monitorando
+        
+        regra.monitorando = True 
+
+        print("set monitorando: anterior:",anterior, " agora:",regra.monitorando)
+        return 
     
     def delRegra(self, ip_ver: int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int) -> Regra:
+
+        nome_regra = str(ip_ver) + ip_src +ip_dst+str(src_port)+str(dst_port)+str(proto)
         for i in self.regrasPrioAltaClasseReal:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto: 
+            if i.id == nome_regra: 
                 self.bandaUtilizadaClasseReal -= i.banda
                 self.regrasPrioAltaClasseReal.remove(i)
                 return i
 
         for i in self.regrasPrioAltaClasseNaoReal:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.bandaUtilizadaClasseNaoReal -= i.banda
                 self.regrasPrioAltaClasseNaoReal.remove(i)
                 return i
 
         
         for i in self.regrasPrioMediaClasseReal:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.bandaUtilizadaClasseReal -= i.banda
                 self.regrasPrioMediaClasseReal.remove(i)
                 return i
 
         for i in self.regrasPrioMediaClasseNaoReal:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.bandaUtilizadaClasseNaoReal -= i.banda
                 self.regrasPrioMediaClasseNaoReal.remove(i)
                 return i
 
         for i in self.regrasPrioBaixaClasseReal:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.bandaUtilizadaClasseReal -= i.banda
                 self.regrasPrioBaixaClasseReal.remove(i)
                 return i
 
         for i in self.regrasPrioBaixaClasseNaoReal:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.bandaUtilizadaClasseNaoReal -= i.banda
                 self.regrasPrioBaixaClasseNaoReal.remove(i)
                 return i
 
         for i in self.berules:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.berules.remove(i)
                 return i
             
         for i in self.controlrules:
-            if i.ip_src == ip_src and i.ip_dst == ip_dst and i.src_port == src_port and i.dst_port == dst_port and i.proto == proto:
+            if i.id == nome_regra: 
                 self.controlrules.remove(i)
                 return i
             
@@ -311,33 +321,37 @@ class Porta:
         return []
     
     def getRegra(self, ip_ver:int, proto:int, ip_src:str, ip_dst:str, src_port:int,dst_port:int) -> Regra:
-
-        # correr todas até encontrar ......... pq fiz lista.....
-
-        for r in self.getRegrasC1():
-            return r
         
-        for r in self.getRegrasC2():
-            return r
-        
-        for r in self.getRegrasBE():
-            return r
-
-        return None
-    
-    def getRegra_com_QoSMark(self, ip_ver:int, ip_src:str, ip_dst:str, qos_mark:int):
         """retorna a primeira regra que possuir os mesmos enderecoes ip_src e dst, e qos_mark"""
-
+        nome_regra = str(ip_ver) + ip_src +ip_dst+str(src_port)+str(dst_port)+str(proto)
         for r in self.getRegrasC1():
-            if r.ip_ver == ip_ver and r.ip_src == ip_src and r.ip_dst == ip_dst and r.qos_mark == qos_mark:
+            if r.id == nome_regra: 
                 return r
         
         for r in self.getRegrasC2():
-            if r.ip_ver == ip_ver and r.ip_src == ip_src and r.ip_dst == ip_dst and r.qos_mark == qos_mark:
+            if r.id == nome_regra: 
                 return r
         
         for r in self.getRegrasBE():
-            if r.ip_ver == ip_ver and r.ip_src == ip_src and r.ip_dst == ip_dst and r.qos_mark == qos_mark:
+            if r.id == nome_regra: 
+                return r
+        
+        return None
+
+    
+    def getRegra_com_QoSMark(self, ip_ver:int, proto:int, ip_src:str, ip_dst:str, src_port:int,dst_port:int, qos_mark:int):
+        """retorna a primeira regra que possuir os mesmos enderecoes ip_src e dst, e qos_mark"""
+        
+        for r in self.getRegrasC1():
+            if r.ip_ver == ip_ver and r.ip_src == ip_src and r.ip_dst == ip_dst and r.proto == proto and r.src_port ==src_port and r.dst_port == dst_port and r.qos_mark == qos_mark:
+                return r
+        
+        for r in self.getRegrasC2():
+            if r.ip_ver == ip_ver and r.ip_src == ip_src and r.ip_dst == ip_dst and r.proto == proto and r.src_port ==src_port and r.dst_port == dst_port and r.qos_mark == qos_mark:
+                return r
+        
+        for r in self.getRegrasBE():
+            if r.ip_ver == ip_ver and r.ip_src == ip_src and r.ip_dst == ip_dst and r.proto == proto and r.src_port ==src_port and r.dst_port == dst_port and r.qos_mark == qos_mark:
                 return r
         
         return None

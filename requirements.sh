@@ -81,5 +81,12 @@ sudo apt-get install iperf -y # para testes
 
 sudo cp secp256k1.py /usr/local/lib/python3.8/site-packages/sawtooth_signing/secp256k1.py # conferir se eh aqui que foi instalado mesmo ou se é site-packages, algo assim
 
+# install docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# criando a imagem qosblockchainv1
+cd qosblockchain/one_container/; sudo docker build --debug --tag 'qosblockchainv1' .
+cd ../../
 
 # erros com ryu --> module 'setuptools.command.easy_install' has no attribute 'get_script_args' e wsgi

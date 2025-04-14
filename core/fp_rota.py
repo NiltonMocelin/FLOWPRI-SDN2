@@ -1,4 +1,5 @@
 import threading
+from fp_utils import calculate_network_prefix_ipv4
 
 class Rota_Node:
     def __init__(self, switch_name:int, in_port:int, out_port:int):
@@ -26,6 +27,9 @@ class RotaManager:
     def get_rota(self,ip_src: str, ip_dst:str) -> list:
         
         lista_switches = self.rotas.get(ip_src+ip_dst, None)
+
+        if lista_switches == None:
+            lista_switches = self.rotas.get(calculate_network_prefix_ipv4(ip_src)+calculate_network_prefix_ipv4(ip_dst), None)
     
         return lista_switches
     

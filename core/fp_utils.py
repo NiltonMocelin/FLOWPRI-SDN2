@@ -1,5 +1,5 @@
 # from main_controller import FLOWPRI2
-from fp_constants import class_prio_to_queue_id
+from fp_constants import class_prio_to_queue_id, class_prio_to_monitoring_mark
 
 #para invocar scripts e comandos tc qdisc
 import subprocess
@@ -142,11 +142,11 @@ def getQueueId(classe, prioridade):
     return class_prio_to_queue_id[classe*10+prioridade]
 
 
-def getEquivalentMonitoringMark(qos_mark):
-    return qos_mark+2
+def getEquivalentMonitoringMark(classe, prioridade):
+    return class_prio_to_monitoring_mark[classe*10+prioridade]
 
-def getQoSMark(classe:int, prio:int):
-    return getQueueId(classe, prio) + 1
+# def getQoSMark(classe:int, prio:int):
+#     return getQueueId(classe, prio) + 1
 
 def getQOSMark(classe:int, prioridade:int):
     return classe*10+prioridade

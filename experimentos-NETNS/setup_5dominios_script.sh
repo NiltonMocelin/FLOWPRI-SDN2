@@ -500,10 +500,25 @@ cp -r ../../FLOWPRI-SDN2 ../../host5/ # criar uma pasta para cada host
 
 # sudo ip netns exec VRF1 xterm -e sh run_management_host.sh &
 sudo ip netns exec VRF1 xterm -e "cd ../../host1 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF1 xterm -e "cd ../../host1 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF1 xterm -e "cd ../../host1 && sh run_management_host.sh && /bin/bash" &
+
+
 sudo ip netns exec VRF3 xterm -e "cd ../../host2 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF3 xterm -e "cd ../../host2 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF3 xterm -e "cd ../../host2 && sh run_management_host.sh && /bin/bash" &
+
 # sudo ip netns exec VRF5 xterm -e "cd ../../host3 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+# sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
+
 # sudo ip netns exec VRF7 xterm -e "cd ../../host4 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+# sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
+
 # sudo ip netns exec VRF9 xterm -e "cd ../../host5 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+# sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
 
 
 # sudo ip netns exec VRF2 xterm -e sh run_flowpri2.sh &
@@ -520,6 +535,14 @@ sudo ip netns exec VRF4 xterm -e "cd ../../controlador2  && /bin/bash" & #&& sh 
 #sudo ovs-vsctl set-controller switch4 tcp:172.16.4.10:6653 
 #sudo ovs-vsctl set-controller switch5 tcp:172.16.5.10:6653 
 
+# criar o qosblockchainv1
+echo "Montando imagens docker"
+cd qosblockchain/pre-setup; sudo docker build --debug --tag 'qosblockchainv1' .; 
+sudo docker image pull hyperledger/sawtooth-rest-api:chime
+sudo docker image pull hyperledger/sawtooth-settings-tp:chime
+sudo docker image pull hyperledger/sawtooth-validator:chime
+sudo docker image pull hyperledger/sawtooth-pbft-engine:chime
+cd ../../;
 
 echo "Pronto para iniciar!"
 

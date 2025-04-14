@@ -1,10 +1,10 @@
 {"ManagementHost":"172.16.5.30", 
 "addSwitches":[
     {"nome_switch" : 5, "ovsdb_addr":"tcp:172.16.5.10:6633", "port_to_controller":22, "portas": [
-        {"nome_porta": 20 , "nome_interface":"32", "banda_total":  50000000, "proxSwitch": -1},
-        {"nome_porta": 21 , "nome_interface":"34", "banda_total":  50000000, "proxSwitch": -1},
-        {"nome_porta": 22 , "nome_interface":"36", "banda_total": 50000000,  "proxSwitch": -1},
-        {"nome_porta": 23 , "nome_interface":"38", "banda_total": 50000000,  "proxSwitch": -1}]
+        {"nome_porta": 20 , "nome_interface":"veth32", "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 21 , "nome_interface":"veth34", "banda_total":  50000000, "proxSwitch": -1},
+        {"nome_porta": 22 , "nome_interface":"veth36", "banda_total": 50000000,  "proxSwitch": -1},
+        {"nome_porta": 23 , "nome_interface":"veth38", "banda_total": 50000000,  "proxSwitch": -1}]
     }
 ],
 "addRotas":[
@@ -50,7 +50,7 @@
     {"src_prefix" : "172.16.5.50", "dst_prefix": "172.16.5.30", "switches_rota":[
         {"nome_switch":5,"porta_entrada": 23, "porta_saida":21, "ordem":0} 
     ]}
-    ],
+],
 "addDominioPrefix":[{"ip":"172.16.5.0"}],
 "ipsDHCP":[{"ip":"172.16.5.1"},{"ip":"172.16.5.2"},{"ip":"172.16.5.3"},{"ip":"172.16.5.4"},{"ip":"172.16.5.5"}]
 }

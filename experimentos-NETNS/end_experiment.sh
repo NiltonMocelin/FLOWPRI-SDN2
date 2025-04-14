@@ -101,6 +101,14 @@ sudo rm -r ../../host4
 sudo rm -r ../../controlador5
 sudo rm -r ../../host5
 
+echo "Removendo todos os containeres e imagens (todos os com nome 172) se der erro eh pq nao tem ativos"
+sudo docker stop $(sudo docker ps -a | grep 172 | awk '{print $1}')
+sudo docker stop $(sudo docker ps -a | grep sawtooth | awk '{print $1}')
+sudo docker rm $(sudo docker ps -a | grep 172 | awk '{print $1}')
+sudo docker rm $(sudo docker ps -a | grep sawtooth | awk '{print $1}')
+
+sudo docker image rm $(sudo docker image ls | grep sawtooth | awk '{print $3}')
+
 echo "Tudo limpo -> Experimento encerrado !"
 sudo ip link
 sudo ip netns list

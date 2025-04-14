@@ -5,7 +5,7 @@ import json
 class Regra:
     def __init__(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int,
                 dst_port:int, proto:int, porta_entrada:int, porta_saida:int, meter_id:int,
-                banda: int, prioridade: int, classe: int, fila: int, application_class:int, qos_mark:int, actions:dict, emprestando: bool):
+                banda: int, prioridade: int, classe: int, fila: int, application_class:str, qos_mark:int, actions:dict, emprestando: bool):
         """Parametros: 
         ip_ver: str
         ip_src: str
@@ -25,6 +25,9 @@ class Regra:
         actions: ""
         """
 
+        self.id = str(ip_ver) + ip_src +ip_dst+str(src_port)+str(dst_port)+str(proto)
+
+        self.classificado:bool = False
         self.ip_src:str = ip_src
         self.ip_dst:str = ip_dst
         self.ip_ver:int = ip_ver
@@ -41,7 +44,7 @@ class Regra:
         self.fila:int = fila
         self.qos_mark:int = qos_mark 
         self.actions:dict = actions
-        self.application_class:int = application_class
+        self.application_class:str = application_class
         self.monitorando:bool = False
         self.timestamp = current_milli_time()
 

@@ -11,6 +11,7 @@ from ryu.lib import pcaplib
 TCP = 6
 UDP = 17
 
+from core.fp_constants import SC_REAL, SC_NONREAL, SC_BEST_EFFORT
 from .feature_extractor.features_extractor_flowpri2 import extrair_features
 
 flows_dict = {}
@@ -18,8 +19,9 @@ flows_dict = {}
 classificador = None
 
 class ClassificacaoPayload:
-    def __init__(self, classe_label:str, application_label:str, delay:int, bandwidth:int, priority:int, loss:int, jitter:int):
+    def __init__(self, classe:int, classe_label:str, application_label:str, delay:int, bandwidth:int, priority:int, loss:int, jitter:int):
         self.classe_label = classe_label
+        self.classe = classe
         self.application_label = application_label
         self.bandwidth = bandwidth
         self.priority = priority
@@ -58,12 +60,12 @@ def classificar_fluxo(ip_ver, ip_src, proto, lista_pacotes_bytes, filename):
 
     # Normalizar os valores !!
 
-    # print("Resultados features: ")
-    # print(resultado_colunas)
-    # print(resultado_saida)
+    print("Resultados features para classificacao: ")
+    print(resultado_colunas)
+    print(resultado_saida)
 
-    classificacao_mock = ClassificacaoPayload(classe_label="real", application_label="video", bandwidth=2000, delay=1, priority=10,loss=10, jitter=0 )
-
+    # ajustar esse payload com o payload do fred e da blockchain ==> classe precisa ser int para o fred, mas no blockchain payload é str.. ==> foi ajustado, classe eh int, application_label eh string. Quando tem label eh string. O classe_label no fim nao sera utilizado na transacao
+    classificacao_mock = ClassificacaoPayload(classe = SC_REAL,classe_label="real", application_label="video", bandwidth=2000, delay=1, priority=1,loss=10, jitter=0 )
 
     os.remove(filename)
     return classificacao_mock
@@ -84,7 +86,9 @@ def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt_by
     else:
         flows_dict[flow_five_tuple] = [pkt_bytes]
 
-    if len(flows_dict[flow_five_tuple]) >=10:
+    qtd_pkts = len(flows_dict[flow_five_tuple]) 
+    print("[classificar-pkt] Obtidos %d pacotes para a classificacao" % (qtd_pkts))
+    if qtd_pkts >=10:
 
         # pkts_to_pcap(flows_dict[flow_five_tuple], flow_five_tuple+".pcap")
 
@@ -92,6 +96,9 @@ def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt_by
 
         # remover_file(flow_five_tuple+".pcap")
         flows_dict[flow_five_tuple] = []
+        print("[classificar-pkt] finalizada -> classe:%d, classe label:%s, application label:%s, bw:%d, delay:%d, priority:%d, loss:%d, jitter:%d" % 
+              (classificacao.classe, classificacao.classe_label, classificacao.application_label,classificacao.bandwidth,classificacao.delay,
+               classificacao.priority,classificacao.loss, classificacao.jitter))
 
         return classificacao
     

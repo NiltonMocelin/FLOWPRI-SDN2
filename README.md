@@ -212,6 +212,10 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
         # self.del_flow(datapath, match)        
         self.add_flow2(datapath, 0, match, actions)
 
+    * Obs 2 (IMPORTANTE):
+    Outra coisa importante sobre as conjunctions:
+    O header (que usa a conjunction no match) e as conjunctions (que usam no action) precisam ter a mesma prioridade quando sao criadas == ou nao funcionam, são tratadas como conjunções diferentes
+
 #### Se estiver tendo problemas para remover regras com o RYU
     
     ## o OFPFlowMod(ofproto.OFPFC_DELETE..) não deleta

@@ -50,8 +50,26 @@
     ]},
     {"src_prefix" : "172.16.4.50", "dst_prefix": "172.16.4.30", "switches_rota":[
         {"nome_switch":4,"porta_entrada": 18, "porta_saida":16, "ordem":0} 
+    ]},    
+    {"src_prefix" : "172.16.1.0", "dst_prefix": "172.16.5.0", "switches_rota":[
+        {"nome_switch":4,"porta_entrada": 15, "porta_saida":19, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.0", "dst_prefix": "172.16.1.0", "switches_rota":[
+        {"nome_switch":4,"porta_entrada": 19, "porta_saida":15, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.2.0", "dst_prefix": "172.16.5.0", "switches_rota":[
+        {"nome_switch":4,"porta_entrada": 15, "porta_saida":19, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.0", "dst_prefix": "172.16.2.0", "switches_rota":[
+        {"nome_switch":4,"porta_entrada": 19, "porta_saida":15, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.3.0", "dst_prefix": "172.16.5.0", "switches_rota":[
+        {"nome_switch":4,"porta_entrada": 15, "porta_saida":19, "ordem":0} 
+    ]},
+    {"src_prefix" : "172.16.5.0", "dst_prefix": "172.16.3.0", "switches_rota":[
+        {"nome_switch":4,"porta_entrada": 19, "porta_saida":15, "ordem":0} 
     ]}
-    ],
+  ],
 "addDominioPrefix":[{"ip":"172.16.4.0"}],
 "ipsDHCP":[{"ip":"172.16.4.1"},{"ip":"172.16.4.2"},{"ip":"172.16.4.3"},{"ip":"172.16.4.4"},{"ip":"172.16.4.5"}]
 }

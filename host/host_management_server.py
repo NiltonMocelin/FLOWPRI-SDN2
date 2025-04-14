@@ -1,12 +1,25 @@
+
+import os
+import sys
+current = os.path.dirname(os.path.realpath(__file__))
+
+# Getting the parent directory name
+# where the current directory is present.
+parent = os.path.dirname(current)
+
+# adding the parent directory to 
+# the sys.path.
+sys.path.append(parent)
+
 import socket
 import json
-from host_qosblockchain.fp_api_qosblockchain import criar_blockchain_api, BlockchainManager,get_meu_ip, criar_chave_sawadm, enviar_transacao_blockchain
-from core.fp_fred import Fred, fromJsonToFred, FredManager
-from host_qosblockchain.processor.qos_state import FlowTransacao, QoSRegister
-from traffic_monitoring.monitoring_utils import loadFlowMonitoringFromJson, MonitoringManager, calcular_qos
+from host.host_qosblockchain.fp_api_qosblockchain import criar_blockchain_api, BlockchainManager,get_meu_ip, criar_chave_sawadm, enviar_transacao_blockchain
+from host.fp_fred import Fred, fromJsonToFred, FredManager
+from host.host_qosblockchain.processor.qos_state import FlowTransacao, QoSRegister
+from host.host_traffic_monitoring.monitoring_utils import loadFlowMonitoringFromJson, MonitoringManager, calcular_qos
 import time
 
-FRED_SERVER_PORT = 5555
+FRED_SERVER_PORT = 9090
 
 def calculate_network_prefix_ipv4(ip_v4:str):
     # supomos tudo /24 -> 192.168.1.10 -> 192.168.1.0
@@ -36,7 +49,7 @@ def meu_dominio(ip_addrs:str, meu_ip:str):
     return False
 
 
-def tratar_blockchain_setup(meu_ip, serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
+def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
     nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
@@ -46,18 +59,18 @@ def tratar_blockchain_setup(meu_ip, serverip:str, fred:Fred, blockchainManager:B
     is_genesis = False
     genesis_node_ip = fred.ip_genesis
     
-    if meu_ip == genesis_node_ip:
+    if serverip == genesis_node_ip:
         is_genesis = True
 
-    for chave in fred.lista_peers:
-        lista_chaves_str += chave
+    # for chave in fred.lista_peers:
+    #     lista_chaves_str += chave
 
     # criar_chave.. adicionar ao fred
-    porta_blockchain = criar_blockchain_api(nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
+    porta_blockchain = criar_blockchain_api(serverip, nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
     blockchainManager.save_blockchain(fred.ip_src, fred.ip_dst, serverip,porta_blockchain)
 
     if not is_genesis:
-        fred.lista_peers.append({"nome_peer":meu_ip, "chave_publica":chave_publica, "ip_porta":meu_ip+":"+porta_blockchain})
+        fred.lista_peers.append({"nome_peer":serverip, "chave_publica":chave_publica, "ip_porta":serverip+":"+str(porta_blockchain)})
         # se sou borda destino, enviar a borda origem 
         enviar_fred(fred_json=fred.toString(), server_ip=genesis_node_ip, server_port=FRED_SERVER_PORT)
 
@@ -118,13 +131,14 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
     while True:
         print("Esperando nova conexao ...")
         conn, addr = tcp.accept()
-
+        initime = time.time()
+        print("[management-server] init ", initime)
         data_qtd_bytes:int = int.from_bytes(conn.recv(4),'big')
         data = conn.recv(data_qtd_bytes).decode()
         
         conn.close()
 
-        print("[management-server] init ", initime)
+        
         print('Recebido de ', addr)
         print('qtd bytes data:',data_qtd_bytes)
         print('json:',data)
@@ -134,11 +148,11 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
         if "FRED" in data_json:
             print('[management-server] fred recebido')
             fred = fromJsonToFred(data_json)
-            initime = time.time()
+          
             
             # verificar se ja existe uma blockcahin para este fluxo
             # se ja existe, fazer nada -> era para dizer que o fluxo esta ativo, mas nao precisa...
-            nome_fred = fred.ip_ver +"_"+ fred.proto+"_"+fred.ip_src+"_"+fred.ip_dst+"_"+fred.src_port+"_"+fred.dst_port
+            nome_fred = str(fred.ip_ver) +"_"+ str(fred.proto)+"_"+fred.ip_src+"_"+fred.ip_dst+"_"+str(fred.src_port)+"_"+str(fred.dst_port)
             fredmanager.save_fred(nome_fred, fred)
             if blockchainManager.get_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst)) != None:
                 print("blockchain existente... ignorando")
@@ -164,4 +178,6 @@ if __name__ == "__main__":
     fredmanager = FredManager()
     monitoringmanager = MonitoringManager()
     SERVER_IP = get_meu_ip()
+    # SERVER_IP = '172.16.3.50'
+    print("Management host iniciado: host %s!" %(SERVER_IP))
     host_server(SERVER_IP, FRED_SERVER_PORT, blockchainManager, fredmanager, monitoringmanager)

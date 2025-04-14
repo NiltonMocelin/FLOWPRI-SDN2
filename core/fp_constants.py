@@ -1,5 +1,7 @@
 from netifaces import AF_INET, ifaddresses, interfaces
 
+ligar_monitoring = False
+ligar_blockchain = True
 
 CFG_FILE = 'cfg.json'
 
@@ -20,10 +22,13 @@ BAIXA_PRIO=3
 MEDIA_PRIO=2
 ALTA_PRIO=1
 
+BE_PRIO = 1
+
 # usar isso na hora de criar as regras
-MONITORING_PRIO = 30
-METER_PRIO = 20
-CONJUNCTION_PRIO = 10
+MONITORING_PRIO = 100
+METER_PRIO = 100
+CONJUNCTION_PRIO = 100
+MARKING_PRIO = 100
 
 PORTAC_H = 4444 #porta para receber contratos de hosts
 PORTAC_C = 8888 #porta para receber contratos de controladores
@@ -49,11 +54,11 @@ IGP = 9
 
 
 # O controlador leva 2s para configurar as regras
-QOS_HARD_TIMEOUT   = 15   # 5 antigo
-QOS_IDLE_TIMEOUT   = 10   # 2 antigo
-MONITORING_TIMEOUT = 7  # 2 antigo
-BE_HARD_TIMEOUT    = 15   # 5 antigo
-BE_IDLE_TIMEOUT    = 10   # 2 antigo
+QOS_HARD_TIMEOUT   = 0 #10 #15   # 5 antigo
+QOS_IDLE_TIMEOUT   = 0 #5 #10   # 2 antigo
+MONITORING_TIMEOUT = 0 #7 #7  # 2 antigo
+BE_HARD_TIMEOUT    = 0 #10 #15   # 5 antigo
+BE_IDLE_TIMEOUT    = 0 #10 #10   # 2 antigo
 
 #service classes
 SC_REAL        = 1
@@ -68,11 +73,11 @@ QTD_MONITORAMENTO      = 20
 PORTA_ENTRADA = 1
 PORTA_SAIDA = 2
 ANY_PORT= -1
-NO_METER = -1
+NO_METER = None
 NO_IDLE_TIMEOUT = 0
 NO_HARD_TIMEOUT = 0
-NO_QOS_MARK = -1 # for matching
-NO_QOS_MARK_ACTION = -1
+NO_QOS_MARK = None # for matching
+NO_QOS_MARK_ACTION = None
 
 OFP_NO_BUFFER = 0xffffffff
 
@@ -152,8 +157,7 @@ class_prio_to_monitoring_mark = {
             21: 53,
             22: 54,
             23: 55,
-            3: 56,
-            4: 57
+            31: None
  }
 
 
