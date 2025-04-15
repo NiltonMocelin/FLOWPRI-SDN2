@@ -3,7 +3,6 @@
 # importar o tratador da interface web
 import sys, os
 
-
 # sys.path.append('../../FLOWPRI-SDN2')
 
 from netifaces import AF_INET, ifaddresses, interfaces
@@ -121,11 +120,6 @@ class FLOWPRI2(app_manager.RyuApp):
         self.mac_to_port = {}
         self.ip_to_mac = {}
 
-        # onde as principais coisas são armazenadas
-        self.fredmanager = FredManager()
-        self.qosblockchainmanager = BlockchainManager()
-        self.rotamanager = RotaManager()
-        self.flowmonitoringmanager = MonitoringManager()
 
         self.arpList = {}
         self.ip_to_port= {}
@@ -163,6 +157,13 @@ class FLOWPRI2(app_manager.RyuApp):
             print("Controlador MAC - {}" .format(self.MACc))
         except:
             print("Verifique o nome da interface e modifique na main")
+
+        # onde as principais coisas são armazenadas
+        self.fredmanager = FredManager()
+        self.qosblockchainmanager = BlockchainManager()
+        self.rotamanager = RotaManager()
+        self.flowmonitoringmanager = MonitoringManager()
+
 
         setup(self)
 
@@ -657,35 +658,37 @@ class FLOWPRI2(app_manager.RyuApp):
 
     def blockchain_setup(self,nohs_rota, fred, minha_chave_publica, souDestino=False):
         print("[blkc-setup]Regras QoS criadas")
+        print("print: Todas as blockchains criadas (nomes) :", self.qosblockchainmanager.blockchain_table.keys())
+
         nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src)+'-'+ calculate_network_prefix_ipv4(fred.ip_dst)
         ipporta_blockchain = self.qosblockchainmanager.get_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst))
         # criar blockchain ? -- so se ja nao existir uma blockchain para esse destino
+        temp = current_milli_time()
+        print("[blkc-setup] blockchain setup init - ", temp)
+
+        meu_ip = self.IPCv4
+        if fred.ip_ver == IPV6_CODE:  
+            meu_ip = self.IPCv6
+
+
+        print("para os experimentos com virt namespaces")
+        ip_partes = meu_ip.split('.')
+        meu_ip = '%s.%s.%s.50' % (ip_partes[0],ip_partes[1],ip_partes[2])
+
         if ipporta_blockchain == None:
-            if fred.ip_ver == IPV4_CODE:
-                print("[blkc-setup] blockchain setup init")
-                porta_blockchain=tratar_blockchain_setup(self.IPCv4, fred)
-                fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+str(porta_blockchain))
-                self.qosblockchainmanager.save_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst), self.IPCv4, porta_blockchain)
-                print("[blkc-setup] blockchain setup end")                       
-            else: #ip_ver == IPV6_CODE
-                print("[blkc-setup] blockchain setup init: ", current_milli_time())
-                porta_blockchain=tratar_blockchain_setup(self.IPCv6, fred)
-                fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+str(porta_blockchain))
-                self.qosblockchainmanager.save_blockchain(fred.ip_src, fred.ip_dst, self.IPCv6,porta_blockchain)
-                print("[blkc-setup] blockchain setup end", current_milli_time())
-            
+
+            porta_blockchain=tratar_blockchain_setup(meu_ip, fred)
+            fred.addPeer(meu_ip, minha_chave_publica, meu_ip+':'+str(porta_blockchain))
+            self.qosblockchainmanager.save_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst), meu_ip, porta_blockchain)
+          
             if porta_blockchain:
                 print("[blkc-setup]Blockchain criada: nome: %s, porta:%d" % (nome_blockchain, porta_blockchain))
             else:
-                print("[blkc-setup]Erro ao criar blockchain nome: %s" % (nome_blockchain))
-            
+                print("[blkc-setup]Erro ao criar blockchain nome: %s" % (nome_blockchain))            
         else:
             print("[blkc-setup]Blockchain existente: nome: %s, ip:%s" % (nome_blockchain, ipporta_blockchain))
-            if fred.ip_ver == IPV4_CODE:
-                fred.addPeer(self.IPCv4, minha_chave_publica, self.IPCv4+':'+ipporta_blockchain)
-            else:
-                fred.addPeer(self.IPCv6, minha_chave_publica, self.IPCv6+':'+ipporta_blockchain)
-
+            fred.addPeer(meu_ip, minha_chave_publica, ipporta_blockchain)
+            
         # fred announcement
         if not souDestino:
             INFORMATION_REQUEST = 15
@@ -696,6 +699,7 @@ class FLOWPRI2(app_manager.RyuApp):
         else:
             #enviar_msg
             enviar_msg(fred.toString(), self.ip_management_host, PORTA_MANAGEMENT_HOST_SERVER)
+        print("[blkc-setup] blockchain setup end - ", current_milli_time(), ' duracao - ', current_milli_time() - temp)
 
         return fred
 

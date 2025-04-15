@@ -104,14 +104,14 @@ services:
     stop_signal: SIGKILL
 
 # -------------=== shell ===-------------
-
-  shell:
-    image: hyperledger/sawtooth-shell:chime
-    container_name: sawtooth-shell-default
-    network_mode: "host"
-    command: |
-      bash -c "
-        sawtooth keygen
-        tail -f /dev/null
-      "
-    stop_signal: SIGKILL
+  # # Parar debug 
+  # shell:
+  #   image: hyperledger/sawtooth-shell:chime
+  #   container_name: sawtooth-shell-default
+  #   network_mode: "host"
+  #   command: |
+  #     bash -c "
+  #       sawtooth keygen
+  #       tail -f /dev/null
+  #     "
+  #   stop_signal: SIGKILL

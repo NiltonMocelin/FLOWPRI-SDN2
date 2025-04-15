@@ -38,8 +38,8 @@
     {"src_prefix" : "172.16.5.30", "dst_prefix": "172.16.1.30", "switches_rota":[
         {"nome_switch":1,"porta_entrada": 4, "porta_saida":1, "ordem":0} 
     ]},
-    {"src_prefix" : "172.16.1.10", "dst_prefix": "172.16.1.50", "switches_rota":[
-        {"nome_switch":1,"porta_entrada": 2, "porta_saida":3, "ordem":0} 
+    {"src_prefix" : "172.16.1.50", "dst_prefix": "172.16.1.30", "switches_rota":[
+        {"nome_switch":1,"porta_entrada": 3, "porta_saida":1, "ordem":0} 
     ]},
     {"src_prefix" : "172.16.1.30", "dst_prefix": "172.16.1.50", "switches_rota":[
         {"nome_switch":1,"porta_entrada": 1, "porta_saida":3, "ordem":0} 
@@ -49,7 +49,8 @@
     ]},
     {"src_prefix" : "172.16.1.50", "dst_prefix": "172.16.1.30", "switches_rota":[
         {"nome_switch":1,"porta_entrada": 3, "porta_saida":1, "ordem":0} 
-    ]}],
+    ]}
+],
 "addDominioPrefix":[{"ip":"172.16.1.0"}],
 "ipsDHCP":[{"ip":"172.16.1.1"},{"ip":"172.16.1.2"},{"ip":"172.16.1.3"},{"ip":"172.16.1.4"},{"ip":"172.16.1.5"}]
 }

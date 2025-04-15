@@ -48,10 +48,10 @@ class Fred:
         return json.dumps(freed)
 
     def getPeerIPs(self)->list:
-        return [chave['chave_publica'] for chave in self.lista_peers]
+        return [chave['ip_porta'] for chave in self.lista_peers]
     
     def getPeersPKeys(self) -> list:
-        return [ip['ip_porta'] for ip in self.lista_peers]
+        return [ip['chave_publica'] for ip in self.lista_peers]
 
     def getName(self):
         return str(self.ip_ver)+"_"+str(self.proto)+"_"+self.ip_src+"_"+self.ip_dst+"_"+str(self.src_port)+"_"+str(self.dst_port)

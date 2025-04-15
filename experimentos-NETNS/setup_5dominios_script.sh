@@ -508,25 +508,25 @@ sudo ip netns exec VRF3 xterm -e "cd ../../host2 && /bin/bash" & # subir os host
 sudo ip netns exec VRF3 xterm -e "cd ../../host2 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
 sudo ip netns exec VRF3 xterm -e "cd ../../host2 && sh run_management_host.sh && /bin/bash" &
 
-# sudo ip netns exec VRF5 xterm -e "cd ../../host3 && /bin/bash" & # subir os hosts
-# sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-# sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF5 xterm -e "cd ../../host3 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
 
-# sudo ip netns exec VRF7 xterm -e "cd ../../host4 && /bin/bash" & # subir os hosts
-# sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-# sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF7 xterm -e "cd ../../host4 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
 
-# sudo ip netns exec VRF9 xterm -e "cd ../../host5 && /bin/bash" & # subir os hosts
-# sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-# sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF9 xterm -e "cd ../../host5 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
 
 
 # sudo ip netns exec VRF2 xterm -e sh run_flowpri2.sh &
 sudo ip netns exec VRF2 xterm -e "cd ../../controlador1  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
 sudo ip netns exec VRF4 xterm -e "cd ../../controlador2  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-# sudo ip netns exec VRF6 xterm -e "cd ../../controlador3  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-# sudo ip netns exec VRF8 xterm -e "cd ../../controlador4  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-# sudo ip netns exec VRF10 xterm -e "cd ../../controlador5 && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF6 xterm -e "cd ../../controlador3  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF8 xterm -e "cd ../../controlador4  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF10 xterm -e "cd ../../controlador5 && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
 
 # forcar re-sync
 #sudo ovs-vsctl set-controller switch1 tcp:172.16.1.10:6653 

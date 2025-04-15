@@ -10,6 +10,13 @@
 #     exit(0)
 
 import subprocess
+from netifaces import interfaces
+import os
+
+def getInterfaceName():
+    interfs=interfaces()
+    interfs.remove('lo')
+    return interfs[0]
 
 def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False) -> str:
   """
@@ -39,7 +46,8 @@ def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada,
   chave_publica1 = ''
   chave_publica2 = ''
   chave_publica3 = ''
-
+  
+  interfacename = getInterfaceName()
 
   if is_genesis:
     chave_publica1 = chaves_peers[0]
@@ -69,7 +77,8 @@ def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada,
 
     linhas = open_file.read()
 
-    novas_linhas= linhas.replace("@nm@",nome_blockchain)
+    novas_linhas= linhas.replace("sth",interfacename)
+    novas_linhas= novas_linhas.replace("@nm@",nome_blockchain)
     novas_linhas = novas_linhas.replace("@ep@",str(endpoint_ip))
     novas_linhas = novas_linhas.replace("@rp@",str(REST_API_PORT))
     novas_linhas = novas_linhas.replace("@np@",str(NETWORK_PORT))
@@ -78,7 +87,7 @@ def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada,
 
     novas_linhas = novas_linhas.replace("@pub@",chave_publica)
     novas_linhas = novas_linhas.replace("@pri@",chave_privada)
-
+   
     if is_genesis:
       novas_linhas = novas_linhas.replace("@pub1@",chave_publica1)
       novas_linhas = novas_linhas.replace("@pub2@",chave_publica2)

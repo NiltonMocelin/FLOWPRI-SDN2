@@ -45,7 +45,7 @@ services:
     image: hyperledger/sawtooth-settings-tp:chime
     container_name: sth-settings-tp-@nm@
     network_mode: "host"
-    command: settings-tp -C tcp://0.0.0.0:@vp@
+    command:  settings-tp -C tcp://0.0.0.0:@vp@
     stop_signal: SIGKILL
 
 # -------------=== validators ===-------------
@@ -83,14 +83,14 @@ services:
     stop_signal: SIGKILL
 
 # -------------=== shell ===-------------
-
-  shell:
-    image: hyperledger/sawtooth-shell:chime
-    container_name: sawtooth-shell-default
-    network_mode: "host"
-    command: |
-      bash -c "
-        sawtooth keygen
-        tail -f /dev/null
-      "
-    stop_signal: SIGKILL
+  # # Para debug 
+  # shell:
+  #   image: hyperledger/sawtooth-shell:chime
+  #   container_name: sawtooth-shell-default
+  #   network_mode: "host"
+  #   command: |
+  #     bash -c "
+  #       sawtooth keygen
+  #       tail -f /dev/null
+  #     "
+  #   stop_signal: SIGKILL

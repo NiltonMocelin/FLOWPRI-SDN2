@@ -10,6 +10,30 @@ except:
     exit(0)
 
 import subprocess
+import os
+
+from netifaces import AF_INET, ifaddresses, interfaces
+
+def getInterfaceName():
+    interfs=interfaces()
+    interfs.remove('lo')
+    return interfs[0]
+
+
+def getBlockchain(src_prefix, dst_prefix, general_name):
+  client = docker.from_env()
+  lista_containers = client.containers.list(filters={'name':general_name})
+  for c in lista_containers:
+      if '' in c.name and src_prefix in c.name and dst_prefix in c.name:
+          return fromContainerGetPort(c)
+
+    
+def fromContainerGetPort(containerDict):
+    lista_args = containerDict.attrs['Args']
+    for a in lista_args:
+        if 'tcp' in a:
+            return a.split(':')[1]
+    return None
 
 def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False) -> str:
   """
@@ -40,6 +64,8 @@ def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada,
   chave_publica2 = ''
   chave_publica3 = ''
 
+  interfacename = getInterfaceName()
+
 
   if is_genesis:
     chave_publica1 = chaves_peers[0]
@@ -60,16 +86,17 @@ def criar_blockchain(nome_blockchain, endpoint_ip, chave_publica, chave_privada,
 
   # escrever o arquivo docker-compose.yaml
 
-  file_compose = "nao_genesis_blockchain.yaml"
+  file_compose = "host/host_qosblockchain/nao_genesis_blockchain.yaml"
 
   if is_genesis:
-     file_compose = "genesis_blockchain.yaml"
+     file_compose = "host/host_qosblockchain/genesis_blockchain.yaml"
   try:
     open_file = open(file_compose, 'r+')
 
     linhas = open_file.read()
 
-    novas_linhas= linhas.replace("@nm@",nome_blockchain)
+    novas_linhas = linhas.replace("sth", interfacename)
+    novas_linhas = novas_linhas.replace("@nm@",nome_blockchain)
     novas_linhas = novas_linhas.replace("@ep@",str(endpoint_ip))
     novas_linhas = novas_linhas.replace("@rp@",str(REST_API_PORT))
     novas_linhas = novas_linhas.replace("@np@",str(NETWORK_PORT))

@@ -65,6 +65,10 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
     # for chave in fred.lista_peers:
     #     lista_chaves_str += chave
 
+    print("para os experimentos com virt namespaces")
+    ip_partes = serverip.split('.')
+    serverip = '%s.%s.%s.50' % (ip_partes[0],ip_partes[1],ip_partes[2])
+
     # criar_chave.. adicionar ao fred
     porta_blockchain = criar_blockchain_api(serverip, nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
     blockchainManager.save_blockchain(fred.ip_src, fred.ip_dst, serverip,porta_blockchain)

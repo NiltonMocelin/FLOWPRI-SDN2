@@ -172,7 +172,11 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
 
             if ligar_blockchain:
                 Thread(target=controller.blockchain_setup, args=[nohs_rota, fred, minha_chave_publica, True]).start()
-                
+        else:
+            if fred.ip_ver == IPV4_CODE:
+                send_icmpv4(datapath=controller.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=fred.mac_src,dstMac=fred.mac_dst, srcIp=fred.ip_src, dstIp=fred.ip_dst, outPort=nohs_rota[-1].out_port,seq=0, data=fred.toString().encode(), type=INFORMATION_REQUEST)
+            else:
+                send_icmpv6(datapath=controller.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=fred.mac_src, srcIp=fred.ip_src,dstMac=fred.mac_dst,dstIp=fred.ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString().encode(), type=icmpv6.ICMPV6_NI_QUERY)
     else:# so para deixar organizado
         print("[tratador_icmp_fred]FRED rejeitado + send icmp reject")
         controller.create_be_rules(nohs_rota, fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    

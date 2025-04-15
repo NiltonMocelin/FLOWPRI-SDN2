@@ -81,15 +81,9 @@ def listar_todos_blocos_blockchain(ip_blockchain,port_blockchain):
 class BlockchainManager:
     def __init__(self):
         self.blockchain_table = {}
-    def get_blockchain(self,src_prefix, dst_prefix):
+    def get_blockchain(self, src_prefix, dst_prefix):
+        return self.blockchain_table.get(src_prefix+"-"+dst_prefix, self.blockchain_table.get(dst_prefix+"-"+src_prefix, None))
         
-        if src_prefix+"-"+dst_prefix in self.blockchain_table:
-            return self.blockchain_table[src_prefix+"-"+dst_prefix]
-        elif dst_prefix + "-"+src_prefix in self.blockchain_table:
-            return self.blockchain_table[dst_prefix +"-"+ src_prefix]
-        
-        return None
-
     def save_blockchain(self, src_prefix, dst_prefix, endpoint_ip, porta):
         self.blockchain_table[src_prefix + "-"+ dst_prefix]= "%s:%d"%(endpoint_ip,porta)
         return True
@@ -116,6 +110,10 @@ def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_pee
         CONSENSUS_PORT+=1
     while(VALIDATOR_PORT in portas_em_uso):
         VALIDATOR_PORT+=1
+
+    print("net:", meu_ip, ':',NETWORK_PORT)
+    print("rest:",  meu_ip, ':',REST_API_PORT)
+    print("val:", meu_ip, ':', VALIDATOR_PORT)
 
     criar_chave_sawtooth_keygen()
     chave_publica, chave_privada = criar_chave_sawadm()
