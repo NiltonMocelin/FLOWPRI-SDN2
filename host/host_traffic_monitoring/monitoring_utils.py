@@ -251,4 +251,4 @@ def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:st
         if flowmonitoring.qtd_pacotes >= QTD_PACOTES:
             del local_flowmonitorings_dict[nome_fluxo]
 
-            send_flowmonitoring(flowmonitoring, ip_management_host, port_management_host)
+            Thread(target=send_flowmonitoring, args=[flowmonitoring, ip_management_host, port_management_host])

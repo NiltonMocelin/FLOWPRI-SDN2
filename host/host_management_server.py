@@ -1,6 +1,8 @@
 
 import os
 import sys
+from threading import Thread
+
 current = os.path.dirname(os.path.realpath(__file__))
 
 # Getting the parent directory name
@@ -70,8 +72,7 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
     serverip = '%s.%s.%s.50' % (ip_partes[0],ip_partes[1],ip_partes[2])
 
     # criar_chave.. adicionar ao fred
-    porta_blockchain = criar_blockchain_api(serverip, nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
-    blockchainManager.save_blockchain(fred.ip_src, fred.ip_dst, serverip,porta_blockchain)
+    porta_blockchain = criar_blockchain_api(serverip, nome_blockchain, blockchainManager, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
 
     if not is_genesis:
         fred.lista_peers.append({"nome_peer":serverip, "chave_publica":chave_publica, "ip_porta":serverip+":"+str(porta_blockchain)})
@@ -111,10 +112,10 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_json, blockchainManager:Block
 
         qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
         # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
-        transacao = FlowTransacao(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst, flow_monitoring_recebido.ip_ver, flow_monitoring_recebido.src_port, flow_monitoring_recebido.dst_port, flow_monitoring_recebido.proto, qosregister)
+        transacao = FlowTransacao(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst, flow_monitoring_recebido.ip_ver, flow_monitoring_recebido.src_port, flow_monitoring_recebido.dst_port, flow_monitoring_recebido.proto, [qosregister])
 
         print("[trat-flow-monitoring] enviando transacao ", time.time())
-        enviar_transacao_blockchain(flowname=nome_fred, ip_blockchain=blockchain_ip, port_blockchain=blockchain_porta, transacao=transacao)
+        Thread(target=enviar_transacao_blockchain, args=[nome_fred, blockchain_ip, blockchain_porta, transacao])
         print("[trat-flow-monitoring] transacao enviada ", time.time())
         return True
     

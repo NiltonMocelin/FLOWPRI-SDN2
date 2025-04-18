@@ -2,7 +2,7 @@ from fp_acao import Acao
 from fp_porta import Porta
 from fp_constants import TCP_SRC,TCP_DST, UDP_SRC, UDP_DST, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
 from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID, METER_PRIO, CONJUNCTION_PRIO, MONITORING_PRIO, MONITORING_TIMEOUT
-from fp_constants import PORTA_ENTRADA, PORTA_SAIDA, BE_PRIO, MARKING_PRIO
+from fp_constants import PORTA_ENTRADA, PORTA_SAIDA, BE_PRIO, MARKING_PRIO, ligar_monitoring
 from fp_regra import Regra, getRegrasExpiradas
 import sys
 
@@ -13,10 +13,10 @@ import json
 
 class Switch:
     # TIPOS DE SWITCH
-    SWITCH_FIRST_HOP=1
-    SWITCH_LAST_HOP=2
-    SWITCH_FIRST_E_LAST_HOP=3
-    SWITCH_OUTRO=4 # backbone
+    SWITCH_FIRST_HOP=1 # primeiro switch dominio emissor
+    SWITCH_LAST_HOP=2 # ultimo switch dominio destino
+    SWITCH_FIRST_E_LAST_HOP=3 # errp nao deveria existir a menos que origem e destino fossem o mesmo dominio
+    SWITCH_OUTRO=4 # backbone == todos os outros switches
 
     # switch_to_controller = {switch_name:port_to_controller}
     switch_to_controller = {}
@@ -75,8 +75,12 @@ class Switch:
 
         return True
 
-    def remover_regras_expiradas(self):
-        print("[switch] remover regras expiradas [nao implementado]")
+    def remover_regras_expiradas(self, threshold:int):
+        print("[switch] remover regras expiradas por hardtimeout + 2")
+
+        for porta in self.portas:
+            porta.removerRegrasExpiradas(threshold)
+            
         return True
 
     def getConjuntion(self, port_name:int, tipo:int):
@@ -199,7 +203,7 @@ class Switch:
 
         # a regra ainda está ativa na instancia do switch, entao nao precisa mexer la, e a regra meter ainda está ativa tbm.
         #  apenas criar a regra na tabela de fluxos novamente
-        
+        print("Criando regra monitoramento  %s:%d->%s:%d porta_saida:%d meter:%d fila:%d qos_match:%d qos_mark:%d" % (ip_src, src_port, ip_dst, dst_port, porta_saida, meter_id, fila, qos_mark_matching, qos_mark_matching))
         addRegraMonitoring(switch=self, ip_ver=ip_ver, ip_src=ip_src, ip_dst= ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_matching=qos_mark_matching, qos_mark_action=qos_mark_action,flow_removed=True, meter_id=meter_id)
         return
     
@@ -208,13 +212,27 @@ class Switch:
         desligar_regra_monitoramento(switch=self, ip_ver=ip_ver,ip_src=ip_src,ip_dst=ip_dst,src_port=src_port,dst_port=dst_port,proto=proto)
         return
 
-    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar:bool=False, primeiroSaltoBorda:bool=False, toController=False):
+    def addRegraBE_soOF(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, primeiroSaltoOrigem:bool, toController):
+        """nao salva a regra, apenas cria a regra OpenFlow"""
+        BE_MARK = getQOSMark(SC_BEST_EFFORT, 1)
+        if primeiroSaltoOrigem:
+            print("addBE_soOF primeiro salto")
+            addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_action=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade = MARKING_PRIO, toController=toController)
+            
+        else:
+            print("addBE_soOF backbone") # nessa topologia nao pode aparecer isso pq so tem um salto
+            # addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=qos_mark, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True)#, toController=True) 
+            addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade=CONJUNCTION_PRIO)
+        return
+
+
+    def addRegraBE(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, marcar:bool=False, primeiroSaltoBorda:bool=False, toController=False, classificado:bool=False):
         BE_MARK = NO_QOS_MARK
         if marcar:
             BE_MARK = getQOSMark(SC_BEST_EFFORT, 1)
 
-        # self.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
-        # self.getPorta(porta_saida).addRegra(Regra(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_entrada=ANY_PORT, porta_saida= porta_saida,meter_id= NO_METER,banda= 0, prioridade=BE_PRIO,classe= SC_BEST_EFFORT,fila= FILA_BESTEFFORT, application_class="be", qos_mark=BE_MARK, actions={"qos_mark":BE_MARK, "out_port":porta_saida, "meter_id":NO_METER}, emprestando=False))
+        self.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+        self.getPorta(porta_saida).addRegra(Regra(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_entrada=ANY_PORT, porta_saida= porta_saida,meter_id= NO_METER,banda= 0, prioridade=BE_PRIO,classe= SC_BEST_EFFORT,fila= FILA_BESTEFFORT, application_class="be", qos_mark=BE_MARK, actions={"qos_mark":BE_MARK, "out_port":porta_saida, "meter_id":NO_METER}, emprestando=False, classificado=classificado))
         if primeiroSaltoBorda:
             print("addBE primeiro salto")
             addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_action=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade = MARKING_PRIO, toController=toController)
@@ -226,20 +244,19 @@ class Switch:
 
         return True
 
-    def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:str, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False):
+    def addRegraQoS(self, ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:str, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False, souDestino:bool=False):
         """Como as regras sao agrupadas, nao se pode adicionar de qualquer jeito"""
         """Tipo_porta = PORTA_ENTRADA ou PORTA_SAIDA"""
-        """[caso 1] para Switch first-hop tem regras (tipo 1) meter e regras forwarding com marcacao de qos (tipo 2) --> essas pode remover as duas sempre que preciso"""
-        """[caso 2] Para switch last-hop e outros (backbone), se  tem a regra com o par ips + matching_qos (tipo 3), se tem as regras com as portas entrada e saida (tipo 4) e se tem as regras com o par ips + matching qos_monitoring (tipo 5)"""
-        """[caso 3] Em portas de entrada, as regras de fluxo não são criadas, apenas devem ser adicionadas na instancia do switch e não no switch real"""
-
-        print("[addRQoS] s:%s:%d d:%s:%d" %(ip_src, src_port, ip_dst,dst_port))
+        """Switch first hop = ip_src meu dominio e ser primeiro salto"""
+        """Switch last hop = ip_dst meu dominio e ser ultimo salto"""
+       
+        print("[addRQoS] porta:%d s:%s:%d d:%s:%d" %(porta_nome_armazenar_regra, ip_src, src_port, ip_dst,dst_port))
         # !arrumar a regra, falta campos
         # !na porta de entrada, nao cria a regra, e desconta banda
         # !na porta de saida, cria a regra, e desconta banda
         meter_id = NO_METER
-        if tipo_switch == Switch.SWITCH_FIRST_HOP:
-
+        if tipo_switch == Switch.SWITCH_FIRST_HOP: # obs ip_src deve ser do meu dominio e este deve ser o primeiro switch
+       
             if tipo_porta == PORTA_SAIDA: # porta de saida, cria regra no switch real e na instancia
                 meter_id = addRegraMeter(self, banda)
 
@@ -247,48 +264,34 @@ class Switch:
                 saveMeterID_from_Flow(self.meter_dict, ip_ver, ip_src,ip_dst,src_port,dst_port, proto, qos_mark, meter_id)
                 # Dando erro aqui
                 # print("add-switchfirsthop") # comentado aqui
-                addRegraForwarding2(datapath=self.datapath,ip_ver=ip_ver,ip_src=ip_src, ip_dst=ip_dst, src_port=src_port,dst_port=dst_port, proto=proto, out_port=porta_saida, fila=fila, qos_mark_action=qos_mark, meter_id=meter_id, prioridade=MARKING_PRIO,flow_removed=True)
+                addRegraForwarding2(datapath=self.datapath,ip_ver=ip_ver,ip_src=ip_src, ip_dst=ip_dst, src_port=src_port,dst_port=dst_port, proto=proto, out_port=porta_saida, fila=fila, qos_mark_action=qos_mark, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT, meter_id=meter_id, prioridade=MARKING_PRIO,flow_removed=True)
                 
             # porta de entrada, apenas cria regra na instancia
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida,meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            # SE TIVER REGRA COM METER_ID = NULL -> EH PQ A REGRA EH NO BACKBONE, O SO NA BORDA SE ASSOCIA METERS
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida,meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando, classificado=True))
             #criar meter + encaminhamento com marcacao
             
-        elif tipo_switch == Switch.SWITCH_LAST_HOP:
+        elif tipo_switch == Switch.SWITCH_LAST_HOP: # obs ip_dst deve ser do meu dominio e este deve ser o ultimo switch
             
-            if tipo_porta == PORTA_SAIDA:
-                # nao é aqui que liga ou desliga a regra de monitoramento, é no flow removed
-                # print() # comentado aqui
-                addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_maching=qos_mark, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT, prioridade=MARKING_PRIO,flow_removed=True)
-                # addRegraMonitoring() # ver a diferenca entre as duas...
+            if tipo_porta == PORTA_SAIDA:              # print("add-switch backbone")
+                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO)
+
+                if ligar_monitoring:
+                   
+                    addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark_maching=getEquivalentMonitoringMark(classe, prioridade), idle_timeout=QOS_IDLE_TIMEOUT, hard_timeout=QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO, toController=True)
+                   
 
             # rotina monitoring
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando, classificado=True))
             # forwarding matching qos_mark - timeout de monitoring
-
-        elif tipo_switch == Switch.SWITCH_FIRST_E_LAST_HOP:
-            if tipo_porta == PORTA_SAIDA: # porta de saida, cria regra no switch real e na instancia
-                meter_id = addRegraMeter(self, banda) 
-
-                #armazenar meter
-                saveMeterID_from_Flow(self.meter_dict, ip_ver, ip_src,ip_dst,src_port,dst_port, proto, qos_mark, meter_id)
-            
-                # print("add-switch first e lasthp") # comentado aqui
-                addRegraForwarding2(datapath=self.datapath,ip_ver=ip_ver,ip_src=ip_src, ip_dst=ip_dst, src_port=src_port,dst_port=dst_port, proto=proto, out_port=porta_saida, fila=fila, qos_mark_action=qos_mark, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT, meter_id=meter_id, prioridade=MARKING_PRIO, flow_removed=True)
-
-            # porta de entrada, apenas cria regra na instancia
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark, {"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
-            #criar meter + encaminhamento com marcacao
 
         else: #tipo_switch == Switch.SWITCH_OUTRO:
 
             if tipo_porta == PORTA_SAIDA:
-                # regra matching qos_mark e regra matching monitoring_mark
-
-                # print("add-switch backbone")
-                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO)
+                # regra matching qos_mark e regra matching monitoring_markw
                 addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark_maching=getEquivalentMonitoringMark(classe, prioridade), idle_timeout=QOS_IDLE_TIMEOUT, hard_timeout=QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO)
 
-            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark,{"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando))
+            self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark,{"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando,classificado=True))
 
         return True
     
@@ -335,7 +338,7 @@ class Switch:
         # tem uma diferenca do GBAM de borda e do gbam backbone....
 
         # verificar se e
-        print("[alocarGBAM-S%d] porta %d, src: %s, dst: %s, banda: %d, prioridade: %d, classe: %d \n" % (self.nome, porta_saida, ip_src, ip_dst,banda, prioridade, classe))
+        print("[alocarGBAM-S%d] porta %d->%d, src: %s, dst: %s, banda: %d, prioridade: %d, classe: %d \n" % (self.nome, porta_entrada, porta_saida, ip_src, ip_dst,banda, prioridade, classe))
 
         #caso seja classe de controle ou best-effort, nao tem BAM, mas precisa criar regras da mesma forma
         #best-effort
@@ -347,15 +350,7 @@ class Switch:
         if classe == SC_CONTROL:
             addRegraForwarding2(datapath=self.datapath, qos_mark_maching=getQOSMark(classe, prioridade), prioridade=100, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE, meter_id=None)
             return []
-
-        # fazer porta entrada e depois porta de saida
-        # as duas devem alocar 
-        # if tipo_switch==Switch.SWITCH_FIRST_HOP:
-        #     return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
-
-        # if tipo_switch==Switch.SWITCH_LAST_HOP:
-        #     return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
-        
+ 
         # tipo_switch==Switch.SWITCH_OUTRO
         return self._alocarGBAM_borda(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe, application_class, tipo_switch=tipo_switch)
         #self._backboneGBAM(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, banda, prioridade, classe)
@@ -395,29 +390,25 @@ class Switch:
         # tem banda na propria classe
         if resp_saida == NAOEMPRESTANDO:
             print("criar regra na propria classe")
-            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, getQueueId(classe, prioridade), application_class,getQOSMark(classe,prioridade), {}, False), PORTA_SAIDA, tipo_switch))
-            return lista_acoes
+            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, getQueueId(classe, prioridade), application_class,getQOSMark(classe,prioridade), {}, False, classificado=True), PORTA_SAIDA, tipo_switch))
+            # return lista_acoes
+        elif resp_saida == EMPRESTANDO:         # nao tem banda na propria classe, mas pode emprestar
+            # print("criar regra na outra classe")
+            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, outraClasse, getQueueId(outraClasse, prioridade), application_class, getQOSMark(outraClasse,prioridade), {}, True, classificado=True),PORTA_SAIDA, tipo_switch))
+            # return lista_acoes
         
         # tem banda na propria classe
-        if resp_entrada == NAOEMPRESTANDO:
+        if resp_entrada == NAOEMPRESTANDO:  # nao tem banda na propria classe, mas pode emprestar
             # print("criar regra na propria classe")
-            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, getQueueId(classe, prioridade), application_class, getQOSMark(classe,prioridade), {}, False), PORTA_ENTRADA, tipo_switch))
-            return lista_acoes
-        
-        # nao tem banda na propria classe, mas pode emprestar
-        if resp_saida == EMPRESTANDO:
-            # print("criar regra na outra classe")
-            lista_acoes.append(Acao(self, porta_saida, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, outraClasse, getQueueId(outraClasse, prioridade), application_class, getQOSMark(outraClasse,prioridade), {}, True),PORTA_SAIDA, tipo_switch))
-            return lista_acoes
-        
-        # nao tem banda na propria classe, mas pode emprestar
-        if resp_entrada == EMPRESTANDO:
+            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, classe, getQueueId(classe, prioridade), application_class, getQOSMark(classe,prioridade), {}, False, classificado=True), PORTA_ENTRADA, tipo_switch))
+            # return lista_acoes
+        elif resp_entrada == EMPRESTANDO:
             print("criar regra na outra classe")
-            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, outraClasse, getQueueId(outraClasse, prioridade), application_class, getQOSMark(outraClasse,prioridade), {}, True),PORTA_ENTRADA,tipo_switch))
-            return lista_acoes
-        
+            lista_acoes.append(Acao(self, porta_entrada, CRIAR, Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, NO_METER, banda, prioridade, outraClasse, getQueueId(outraClasse, prioridade), application_class, getQOSMark(outraClasse,prioridade), {}, True, classificado=True),PORTA_ENTRADA,tipo_switch))
+            # return lista_acoes
+
         #algum erro ocorreu -> rejeitar
-        return []
+        return lista_acoes
 
     def _ondeAlocarFluxoQoS(self, porta_nome:int, classe:int, prioridade:int, banda:int):
         """Retorna se o fluxo deve ser armazenado emprestando banda ou nao, e a lista de regras que se deve remover para aloca-lo

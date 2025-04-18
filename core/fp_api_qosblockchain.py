@@ -71,6 +71,7 @@ class BlockchainManager:
     def __init__(self): # tinha que por um thread lock aqui 
         self.blockchain_table = {}
     def get_blockchain(self, src_prefix, dst_prefix):
+        print('procurando blockchain: ', src_prefix+"-"+dst_prefix, ' ou ', dst_prefix+"-"+src_prefix)
         return self.blockchain_table.get(src_prefix+"-"+dst_prefix, self.blockchain_table.get(dst_prefix+"-"+src_prefix, None))
         
 
@@ -79,7 +80,7 @@ class BlockchainManager:
         return True
 
 
-def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False):
+def criar_blockchain_api(meu_ip, nome_blockchain, blockchain_manager:BlockchainManager, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False):
 
     # adicionar blockchain na tabla de blockchains
     connections = psutil.net_connections(kind='inet')
@@ -100,6 +101,9 @@ def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_pee
         CONSENSUS_PORT+=1
     while(VALIDATOR_PORT in portas_em_uso):
         VALIDATOR_PORT+=1
+    ipss= nome_blockchain.split('-')
+    blockchain_manager.save_blockchain(ipss[0], ipss[1], meu_ip, NETWORK_PORT)
+    
     print("net:", meu_ip, ':',NETWORK_PORT)
     print("rest:",  meu_ip, ':',REST_API_PORT)
     print("val:", meu_ip, ':', VALIDATOR_PORT)
@@ -109,7 +113,7 @@ def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_pee
     criar_blockchain(nome_blockchain, meu_ip, chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
     return NETWORK_PORT
 
-def tratar_blockchain_setup(serverip:str, fred:Fred):
+def tratar_blockchain_setup(serverip:str, fred:Fred, blockchain_manager:BlockchainManager):
     nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
@@ -126,7 +130,7 @@ def tratar_blockchain_setup(serverip:str, fred:Fred):
     #     lista_chaves_str += chave
 
     # criar_chave.. adicionar ao fred
-    porta_blockchain = criar_blockchain_api(meu_ip, nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
+    porta_blockchain = criar_blockchain_api(meu_ip, nome_blockchain, blockchain_manager, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
     
     # isso deve ser feito fora dessa funcao
     # if not is_genesis:

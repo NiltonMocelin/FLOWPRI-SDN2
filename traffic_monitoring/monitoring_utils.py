@@ -12,7 +12,7 @@ from threading import Thread
 from core.fp_fred import FredManager
 from core.fp_api_qosblockchain import BlockchainManager, enviar_transacao_blockchain, FlowTransacao, QoSRegister
 # from core.main_controller import FLOWPRI2
-from core.fp_utils import enviar_msg
+from core.fp_utils import enviar_msg, calculate_network_prefix_ipv4
 
 class FlowMonitoring:
 
@@ -73,6 +73,7 @@ class MonitoringManager:
     def delMonitoring(self, nome:str):
         return self.monitorings.pop(nome,None)
     
+
 
 ## tamo aqui
 def calcular_qos(flow_monitoring_local:FlowMonitoring, flow_monitoring_recebido:FlowMonitoring):
@@ -142,23 +143,25 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, bloc
     #remover monitoramento anterior
     monitoringmanager.delMonitoring(nome_fred)
 
-    blockchain_ip_porta = blockchainManager.get_blockchain(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst)
+    blockchain_ip_porta = blockchainManager.get_blockchain(calculate_network_prefix_ipv4(fred_flow.ip_src), calculate_network_prefix_ipv4(fred_flow.ip_dst))
+
+    blockchain_ipporta = blockchain_ip_porta.split(':')
+
+    enviar_transacao_blockchain_api(meu_ip, blockchain_ipporta[0], blockchain_ipporta[1], fred_flow.getName(), qos_calculado, fred_flow)
+    return 
+
+
+def enviar_transacao_blockchain_api(meu_ip, blockchain_ip, blockchain_porta, flowname, qos_calculado, fred_flow):
     
     # criar_transacao_blockchain()
-    if blockchain_ip_porta:
-        blockchain_ip = blockchain_ip_porta.split(':')[0]
-        blockchain_porta = blockchain_ip_porta.split(':')[1]
-
-        qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
-        # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
-        transacao = FlowTransacao(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst, flow_monitoring_recebido.ip_ver, flow_monitoring_recebido.src_port, flow_monitoring_recebido.dst_port, flow_monitoring_recebido.proto, qosregister)
-
-        enviar_transacao_blockchain(flowname=nome_fred, ip_blockchain=blockchain_ip, port_blockchain=blockchain_porta, transacao=transacao)
-        return True
-    else:
-        print("[trat-flow-monitor] Erro, blockchain não encontrada para : src:", flow_monitoring_recebido.ip_src, " - dst:", flow_monitoring_recebido.ip_dst)
+    # qosregister = QoSRegister(nodename=meu_nome, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
+    # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
+    qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
     
-    return False
+    transacao = FlowTransacao(fred_flow.ip_src, fred_flow.ip_dst, fred_flow.ip_ver, fred_flow.src_port, fred_flow.dst_port, fred_flow.proto, [qosregister])
+    Thread(target=enviar_transacao_blockchain, args=[blockchain_ip, blockchain_porta, flowname, transacao])
+    return True
+
 
 
 def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:str):

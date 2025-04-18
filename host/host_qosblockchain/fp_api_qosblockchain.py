@@ -60,6 +60,12 @@ def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transa
     print("[qosblchn] Enviando transacao para: ", ip_blockchain,':',port_blockchain)
 # python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
     # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao.toString(), username='controller_key')
+
+    print("modificando ip pq a blockchain sobe no parent do domínio")
+    meuip_partes = ip_blockchain.split(".")
+    ip_blockchain == "%s.%s.%s.50" % (meuip_partes[0], meuip_partes[1], meuip_partes[2])
+
+    print("enviando transação para blockchain %s"%(ip_blockchain))
     QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).reg_flowqos('reg_qos', flowname, transacao.toString())
     print("[qosblchn] Transacao enviada")
     return True
@@ -89,7 +95,7 @@ class BlockchainManager:
         return True
 
 
-def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False):
+def criar_blockchain_api(meu_ip, nome_blockchain,blockchainmanager:BlockchainManager, PEERS_IP:list=None, chaves_peers:list = None, is_genesis=False):
 
     # adicionar blockchain na tabla de blockchains
     connections = psutil.net_connections(kind='inet')
@@ -110,6 +116,9 @@ def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_pee
         CONSENSUS_PORT+=1
     while(VALIDATOR_PORT in portas_em_uso):
         VALIDATOR_PORT+=1
+    
+    ipss= nome_blockchain.split('-')
+    blockchainmanager.save_blockchain(ipss[0], ipss[1], meu_ip, NETWORK_PORT)
 
     print("net:", meu_ip, ':',NETWORK_PORT)
     print("rest:",  meu_ip, ':',REST_API_PORT)
@@ -121,7 +130,7 @@ def criar_blockchain_api(meu_ip, nome_blockchain, PEERS_IP:list=None, chaves_pee
     criar_blockchain(nome_blockchain, meu_ip, chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
     return NETWORK_PORT
 
-def tratar_blockchain_setup(serverip:str, fred):
+def tratar_blockchain_setup(serverip:str, fred, blockchain_manager:BlockchainManager):
     nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
@@ -138,7 +147,7 @@ def tratar_blockchain_setup(serverip:str, fred):
     #     lista_chaves_str += chave
 
     # criar_chave.. adicionar ao fred
-    porta_blockchain = criar_blockchain_api(meu_ip, nome_blockchain, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
+    porta_blockchain = criar_blockchain_api(meu_ip, nome_blockchain, blockchain_manager, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
     
     # isso deve ser feito fora dessa funcao
     # if not is_genesis:

@@ -9,7 +9,7 @@ from fp_constants import CRIAR, ALL_TABLES, REMOVER
 #regra - (Regra) uma regra - com as informacoes suficientes para criar ou remover a regra
 class Acao:
 
-    def __init__(self, switch_obj, porta_saida_nome:int, codigo:int, regra,tipo_porta:int, tipo_switch:int):
+    def __init__(self, switch_obj, porta_saida_nome:int, codigo:int, regra,tipo_porta:int, tipo_switch:int, souOrigem=False, souDestino=False):
         """
         switch_obj : SwitchOVS
         porta : int
@@ -25,6 +25,8 @@ class Acao:
         self.regra=regra
         self.tipo_switch=tipo_switch
         self.tipo_porta = tipo_porta
+        self.souOrigem =souOrigem
+        self.souDestino = souDestino
     
     def getRegra(self):
         return self.regra
@@ -34,7 +36,7 @@ class Acao:
         if(self.codigo == CRIAR):
             # chamar a funcao de criação de regras do switch
                 # ip_ver:int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, porta_entrada:int, porta_saida:int, flow_label:int, banda:int, prioridade:int, classe:int, fila:int, qos_mark:int, porta_nome_armazenar_regra:int, tipo_porta:int, tipo_switch:int, emprestando:bool=False):
-            self.switch_obj.addRegraQoS(self.regra.ip_ver, self.regra.ip_src,self.regra.ip_dst,self.regra.src_port,self.regra.dst_port,self.regra.proto,self.regra.porta_entrada,self.regra.porta_saida,self.regra.application_class,self.regra.banda,self.regra.prioridade,self.regra.classe,self.regra.fila,self.regra.qos_mark,self.regra.porta_saida,self.tipo_porta,self.tipo_switch,self.regra.emprestando)
+            self.switch_obj.addRegraQoS(self.regra.ip_ver, self.regra.ip_src,self.regra.ip_dst,self.regra.src_port,self.regra.dst_port,self.regra.proto,self.regra.porta_entrada,self.regra.porta_saida,self.regra.application_class,self.regra.banda,self.regra.prioridade,self.regra.classe,self.regra.fila,self.regra.qos_mark,self.porta_saida_nome,self.tipo_porta,self.tipo_switch,self.regra.emprestando)
 
             # adicionar a regra de monitoramento tbm
             # print("acao criar - comentada")

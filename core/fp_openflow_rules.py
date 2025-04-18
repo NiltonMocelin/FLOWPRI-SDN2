@@ -32,7 +32,7 @@ def _add_flow(dp, match, actions): ### cuidado com buffer id, já tivemos proble
         flags=0, match=match, instructions=inst)
     dp.send_msg(mod)
 
-def add_flow(datapath, priority, match, actions, table_id, buffer_id=None):
+def add_flow(datapath, priority, match, actions, table_id, buffer_id=None, idle_timeout=0):
     ofproto = datapath.ofproto
     parser = datapath.ofproto_parser
     mod=None
@@ -40,7 +40,7 @@ def add_flow(datapath, priority, match, actions, table_id, buffer_id=None):
     if buffer_id:
         mod = parser.OFPFlowMod(datapath=datapath, buffer_id=buffer_id,priority=priority, match=match, instructions=inst, table_id=table_id)#, table_id = FORWARD_TABLE)
     else:
-        mod = parser.OFPFlowMod(datapath=datapath, priority=priority,match=match, instructions=inst, table_id=table_id)#, table_id = FORWARD_TABLE)
+        mod = parser.OFPFlowMod(datapath=datapath, priority=priority,match=match, instructions=inst, table_id=table_id, idle_timeout = idle_timeout)#, table_id = FORWARD_TABLE)
     datapath.send_msg(mod)
 
 def del_flow(datapath, dicionario_parametros):
@@ -135,9 +135,9 @@ def add_conjunction(switch, ip_ver:int, port_name:int, tipo:int, clause_number:i
     elif tipo == TCP_DST:
         match_dict = {"eth_type":ip_ver, "ip_proto":TCP, "tcp_dst":port_name}
     elif tipo == UDP_SRC:
-        match_dict = {"eth_type":ip_ver, "ip_proto":TCP, "udp_src":port_name}
+        match_dict = {"eth_type":ip_ver, "ip_proto":UDP, "udp_src":port_name}
     else: # tipo == UDP_DST
-        match_dict = {"eth_type":ip_ver, "ip_proto":TCP, "udp_dst":port_name}
+        match_dict = {"eth_type":ip_ver, "ip_proto":UDP, "udp_dst":port_name}
 
     print("criando conjunction: ", match_dict)
     switch.saveConjunction(port_name=port_name, tipo=tipo)
@@ -149,7 +149,7 @@ def add_conjunction(switch, ip_ver:int, port_name:int, tipo:int, clause_number:i
     actions = [parser.NXActionConjunction(clause=clause_number, n_clauses=n_clauses,id_=idd)]
     matchh = parser.OFPMatch(**match_dict)
     # matchh.set_tcp_src()
-    add_flow(datapath=datapath,priority=CONJUNCTION_PRIO,match=matchh,actions=actions, table_id=FORWARD_TABLE)
+    add_flow(datapath=datapath,priority=CONJUNCTION_PRIO,match=matchh,actions=actions, table_id=FORWARD_TABLE, idle_timeout=BE_HARD_TIMEOUT)
     return
 
 def del_conjunction(switch, ip_ver:int, port_name:int, tipo:int)->bool:
@@ -173,6 +173,7 @@ def del_conjunction(switch, ip_ver:int, port_name:int, tipo:int)->bool:
     return True
 
 def desligar_regra_monitoramento(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int):
+    print("Desligando Monitoring para %s:%d -> %s:%d"  %(ip_src, src_port, ip_dst, dst_port))
     # atualizar regra no switch, para que ela pare de enviar copias de pacotes ao controlador e sem marcacao de pacotes
     regra_salva = switch.getPorta(out_port).getRegra(ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port)
     if regra_salva == None:
@@ -180,11 +181,13 @@ def desligar_regra_monitoramento(switch, ip_ver:int, ip_src:str, ip_dst:str, out
         return False
     meter_id = regra_salva.meter_id
 
-    if meter_id == -1:
+    regra_salva.monitorando =False
+    if meter_id == -1 or meter_id == None:
+        print("erro ao recuperar regra meter para o fluxo")
         meter_id=None
 
     # addRegraForwarding_com_Conjunction(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, fila=regra_salva.fila, qos_mark_maching=getQOSMark(regra_salva.classe, regra_salva.prioridade), prioridade=CONJUNCTION_PRIO, qos_mark_action=NO_QOS_MARK, idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, toController=False)
-    addRegraForwarding2(datapath=switch.datapath,ip_ver=ip_ver, proto=proto, ip_src=ip_src, prioridade=MONITORING_PRIO, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, out_port=out_port,fila=regra_salva.fila, qos_mark_matching=regra_salva.qos_mark,meter_id=meter_id,idle_timeout=MONITORING_TIMEOUT,hard_timeout=MONITORING_TIMEOUT)
+    addRegraForwarding2(datapath=switch.datapath,ip_ver=ip_ver, proto=proto, ip_src=ip_src, prioridade=MONITORING_PRIO, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, out_port=out_port,fila=regra_salva.fila, qos_mark_matching=regra_salva.qos_mark, qos_mark_action=regra_salva.qos_mark, meter_id=meter_id,idle_timeout=MONITORING_TIMEOUT,hard_timeout=MONITORING_TIMEOUT,flow_removed=True)
     return True
 
 def addRegraMonitoring(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila, qos_mark_matching=None, qos_mark_action=None, meter_id=None, flow_removed=False): # meter_id no caso de o switch ser o primeiro e ultimo salto
@@ -193,7 +196,7 @@ def addRegraMonitoring(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int,
 
     # addRegraForwarding_com_Conjunction(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, fila=regra_salva.fila, meter_id=NO_METER, qos_mark_maching=getQOSMark(regra_salva.classe, regra_salva.prioridade), qos_mark_action=getEquivalentMonitoringMark(regra_salva.classe, regra_salva.prioridade), idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, prioridade=MONITORING_PRIO, toController=True, flow_removed=False)
     # addRegraForwarding_com_Conjunction(switch=switch, ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, out_port=out_port, fila=fila, qos_mark_maching=qos_mark_matching, qos_mark_action=qos_mark_action, idle_timeout=MONITORING_TIMEOUT, hard_timeout=MONITORING_TIMEOUT, prioridade=MONITORING_PRIO, toController=True, flow_removed=False) # essa regra nunca expira, tem que ser uma regra forwarding ...
-    addRegraForwarding2(datapath=switch.datapath,ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, out_port=out_port,fila=fila, qos_mark_matching=qos_mark_matching, qos_mark_action=qos_mark_action,idle_timeout=MONITORING_TIMEOUT, prioridade=MONITORING_PRIO, meter_id=meter_id, hard_timeout=MONITORING_TIMEOUT, flow_removed=False)
+    addRegraForwarding2(datapath=switch.datapath,ip_ver=ip_ver, proto=proto, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, out_port=out_port,fila=fila, qos_mark_matching=qos_mark_matching, qos_mark_action=qos_mark_action,idle_timeout=MONITORING_TIMEOUT, prioridade=MONITORING_PRIO, meter_id=meter_id, hard_timeout=MONITORING_TIMEOUT, flow_removed=False, toController=True)
 
     return True
 
@@ -220,7 +223,7 @@ def delRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:st
     return False
 
 # regras agrupadas, não usar meter !!
-def addRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, qos_mark_maching:int, idle_timeout:int, hard_timeout:int, flow_removed=False, prioridade:int=10):
+def addRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:str, out_port:int, src_port:int, dst_port:int, proto:int, fila:int, qos_mark_maching:int, idle_timeout:int, hard_timeout:int, flow_removed=False, prioridade:int=10, toController:bool=False):
     """ As conjuncoes (regra que tem conjunction nas acoes) e o cabeçalho da conjuncao (a que tem conjunction no match),
     precisam ter a mesma prioridade, ou não funcionam e sao tratadas como conjunções diferentes"""
     # switches backbone ou que nao sao o primeiro da rota de borda devem usar essa regra, para agrupar os fluxos e encaminhar os fluxos marcados com qos ou com monitoramento (sim sao 2 regras por fluxo de qos)
@@ -266,6 +269,9 @@ def addRegraForwarding_com_Conjunction(switch, ip_ver:int, ip_src:str, ip_dst:st
     actions.append(parser.OFPActionSetQueue(fila))
     actions.append(parser.OFPActionOutput(out_port))
 
+    if toController:
+       actions.append(parser.OFPActionOutput(ofproto.OFPP_CONTROLLER))
+
     inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
     # #marcar para gerar o evento FlowRemoved
     if flow_removed:
@@ -290,14 +296,14 @@ def addRegraForwarding2(datapath, ip_ver:int, ip_src:str, ip_dst:str, src_port:i
         mathing_dict['ipv4_dst'] = ip_dst
         if qos_mark_action:
             actionss.append(parser.OFPActionSetField(ip_dscp=qos_mark_action))
-        if qos_mark_matching:
+        if qos_mark_matching != -1 and qos_mark_matching != None:
             mathing_dict['ip_dscp'] = qos_mark_matching
     else:
         mathing_dict['ipv6_src'] = ip_src
         mathing_dict['ipv6_dst'] = ip_dst
         if qos_mark_action:
             actionss.append(parser.OFPActionSetField(ipv6_flabel=qos_mark_action))
-        if qos_mark_matching:
+        if qos_mark_matching !=-1 and qos_mark_matching !=None:
             mathing_dict['ipv6_flabel'] = qos_mark_matching
     if proto == TCP:
         mathing_dict['ip_proto'] = TCP
@@ -420,6 +426,9 @@ def addRegraMeter(switch, banda):
 
 
 def delRegraMeter(switch, meter_id):
+    if meter_id == None or meter_id == -1:
+        print("sem meter")
+        return
     print("del meter id: %d"%(meter_id))
     datapath = switch.datapath
     ofproto = datapath.ofproto

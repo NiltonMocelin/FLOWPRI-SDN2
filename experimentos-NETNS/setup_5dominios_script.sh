@@ -39,6 +39,16 @@ sudo ifconfig veth6 up # switch-eth0 3
 sudo ifconfig veth7 up # switch1-switch2 4
 sudo ifconfig veth8 up # switch2-switch1
 
+echo "configuring delay 5ms for each interface"
+sudo tc qdisc add dev veth1 root netem delay 10ms
+sudo tc qdisc add dev veth2 root netem delay 10ms
+sudo tc qdisc add dev veth3 root netem delay 10ms
+sudo tc qdisc add dev veth4 root netem delay 10ms
+sudo tc qdisc add dev veth5 root netem delay 10ms
+sudo tc qdisc add dev veth6 root netem delay 10ms
+sudo tc qdisc add dev veth7 root netem delay 10ms
+sudo tc qdisc add dev veth8 root netem delay 10ms
+
 echo "Movendo as interfaces ímpares para dentro dos namespaces"
 sudo ip link set veth1 netns VRF1
 sudo ip link set veth3 netns VRF2
@@ -132,6 +142,16 @@ sudo ifconfig veth14 up # switch-eth0 8
 sudo ifconfig veth15 up # switch2-switch3 9
 sudo ifconfig veth16 up # switch3-eth2
 
+echo "configuring delay 5ms for each interface"
+sudo tc qdisc add dev veth9 root netem delay 10ms
+sudo tc qdisc add dev veth10 root netem delay 10ms
+sudo tc qdisc add dev veth11 root netem delay 10ms
+sudo tc qdisc add dev veth12 root netem delay 10ms
+sudo tc qdisc add dev veth13 root netem delay 10ms
+sudo tc qdisc add dev veth14 root netem delay 10ms
+sudo tc qdisc add dev veth15 root netem delay 10ms
+sudo tc qdisc add dev veth16 root netem delay 10ms
+
 echo "Movendo as interfaces ímpares para dentro dos namespaces"
 sudo ip link set veth9 netns VRF3
 sudo ip link set veth11 netns VRF4
@@ -223,6 +243,16 @@ sudo ifconfig veth21 up # eth0-switch
 sudo ifconfig veth22 up # switch-eth0 13
 sudo ifconfig veth23 up # switch3-switch4 14
 sudo ifconfig veth24 up # switch4-switch3
+
+echo "configuring delay 5ms for each interface"
+sudo tc qdisc add dev veth17 root netem delay 10ms
+sudo tc qdisc add dev veth18 root netem delay 10ms
+sudo tc qdisc add dev veth19 root netem delay 10ms
+sudo tc qdisc add dev veth20 root netem delay 10ms
+sudo tc qdisc add dev veth21 root netem delay 10ms
+sudo tc qdisc add dev veth22 root netem delay 10ms
+sudo tc qdisc add dev veth23 root netem delay 10ms
+sudo tc qdisc add dev veth24 root netem delay 10ms
 
 echo "Movendo as interfaces ímpares para dentro dos namespaces"
 sudo ip link set veth17 netns VRF5
@@ -318,6 +348,16 @@ sudo ifconfig veth30 up # switch-eth0 18
 sudo ifconfig veth31 up # switch4-switch5 19
 sudo ifconfig veth32 up # switch5-switch4
 
+echo "configuring delay 5ms for each interface"
+sudo tc qdisc add dev veth25 root netem delay 10ms
+sudo tc qdisc add dev veth26 root netem delay 10ms
+sudo tc qdisc add dev veth27 root netem delay 10ms
+sudo tc qdisc add dev veth28 root netem delay 10ms
+sudo tc qdisc add dev veth29 root netem delay 10ms
+sudo tc qdisc add dev veth30 root netem delay 10ms
+sudo tc qdisc add dev veth31 root netem delay 10ms
+sudo tc qdisc add dev veth32 root netem delay 10ms
+
 echo "Movendo as interfaces ímpares para dentro dos namespaces"
 sudo ip link set veth25 netns VRF7
 sudo ip link set veth27 netns VRF8
@@ -409,6 +449,14 @@ sudo ifconfig veth36 up # switch-controller 22
 sudo ifconfig veth37 up # eth0-switch
 sudo ifconfig veth38 up # switch-eth0 23
 
+echo "configuring delay 5ms for each interface"
+sudo tc qdisc add dev veth33 root netem delay 10ms
+sudo tc qdisc add dev veth34 root netem delay 10ms
+sudo tc qdisc add dev veth35 root netem delay 10ms
+sudo tc qdisc add dev veth36 root netem delay 10ms
+sudo tc qdisc add dev veth37 root netem delay 10ms
+sudo tc qdisc add dev veth38 root netem delay 10ms
+
 echo "Movendo as interfaces ímpares para dentro dos namespaces"
 sudo ip link set veth33 netns VRF9
 sudo ip link set veth35 netns VRF10
@@ -499,34 +547,34 @@ cp -r ../../FLOWPRI-SDN2 ../../host5/ # criar uma pasta para cada host
 ###
 
 # sudo ip netns exec VRF1 xterm -e sh run_management_host.sh &
-sudo ip netns exec VRF1 xterm -e "cd ../../host1 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF1 xterm -e "cd ../../host1 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF1 xterm -e "cd ../../host1 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-main-term -e "cd ../../host1 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-qos-manag -e "cd ../../host1 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-fredEbkchain-serv -e "cd ../../host1 && sh run_management_host.sh && /bin/bash" &
 
 
-sudo ip netns exec VRF3 xterm -e "cd ../../host2 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF3 xterm -e "cd ../../host2 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF3 xterm -e "cd ../../host2 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-main-term -e "cd ../../host2 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-qos-manag -e "cd ../../host2 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-fredEbkchain-serv -e "cd ../../host2 && sh run_management_host.sh && /bin/bash" &
 
-sudo ip netns exec VRF5 xterm -e "cd ../../host3 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF5 xterm -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
+# sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-main-term -e "cd ../../host3 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-qos-manag -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+# sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-fredEbkchain-serv -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
 
-sudo ip netns exec VRF7 xterm -e "cd ../../host4 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF7 xterm -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
+# sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-main-term -e "cd ../../host4 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-qos-manag -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+# sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-fredEbkchain-serv -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
 
-sudo ip netns exec VRF9 xterm -e "cd ../../host5 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF9 xterm -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
+# sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-main-term -e "cd ../../host5 && /bin/bash" & # subir os hosts
+# sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-qos-manag -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+# sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-fredEbkchain-serv -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
 
 
 # sudo ip netns exec VRF2 xterm -e sh run_flowpri2.sh &
-sudo ip netns exec VRF2 xterm -e "cd ../../controlador1  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF4 xterm -e "cd ../../controlador2  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF6 xterm -e "cd ../../controlador3  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF8 xterm -e "cd ../../controlador4  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF10 xterm -e "cd ../../controlador5 && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF2 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller1-flowpri2 -e "cd ../../controlador1  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF4 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller2-flowpri2 -e "cd ../../controlador2  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+# sudo ip netns exec VRF6 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller3-flowpri2 -e "cd ../../controlador3  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+# sudo ip netns exec VRF8 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller4-flowpri2 -e "cd ../../controlador4  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+# sudo ip netns exec VRF10 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller5-flowpri2 -e "cd ../../controlador5 && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
 
 # forcar re-sync
 #sudo ovs-vsctl set-controller switch1 tcp:172.16.1.10:6653 

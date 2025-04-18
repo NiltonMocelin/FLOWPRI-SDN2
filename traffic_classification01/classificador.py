@@ -56,7 +56,7 @@ def classificar_fluxo(ip_ver, ip_src, proto, lista_pacotes_bytes, filename):
         proto_string = "UDP"
     
     #id=0, pq so tem um bloco == gera uma linha
-    resultado_saida, resultado_colunas = extrair_features(id_bloco=0, host_a=ip_src, proto=proto_string, service_class='classe', app_class='app', qos_class='qos', entrada_arquivo_pcap=filename, two_way=False)
+    resultado_saida, resultado_colunas = extrair_features(id_bloco=0, host_a=ip_src, proto=proto_string, service_class='classe', app_class='app', qos_class='qos', entrada_arquivo_pcap=filename, two_way=False, tcptrace=True if proto == 6 else False)
 
     # Normalizar os valores !!
 

@@ -25,7 +25,7 @@ def monitorar_pacote(controller_id, ip_ver, ip_src, ip_dst, src_port, dst_port, 
     if flow_monitoring.qtd_pacotes >= QTD_MONITORAMENTO:
         #enviar_icmp para destino com o monitoramento -- enviar fora disso no flowpri
         
-        return monitoringmanager.delMonitoring(label)
+        return flow_monitoring
 
     monitoringmanager.saveMonitoring(label, flow_monitoring)
 

@@ -1,6 +1,6 @@
 from netifaces import AF_INET, ifaddresses, interfaces
 
-ligar_monitoring = False
+ligar_monitoring = True
 ligar_blockchain = True
 
 CFG_FILE = 'cfg.json'
@@ -54,11 +54,11 @@ IGP = 9
 
 
 # O controlador leva 2s para configurar as regras
-QOS_HARD_TIMEOUT   = 0 #10 #15   # 5 antigo
-QOS_IDLE_TIMEOUT   = 0 #5 #10   # 2 antigo
-MONITORING_TIMEOUT = 0 #7 #7  # 2 antigo
-BE_HARD_TIMEOUT    = 0 #10 #15   # 5 antigo
-BE_IDLE_TIMEOUT    = 0 #10 #10   # 2 antigo
+QOS_HARD_TIMEOUT   = 10 #15   # 5 antigo
+QOS_IDLE_TIMEOUT   = 5 #10   # 2 antigo
+MONITORING_TIMEOUT = 5 #7  # 2 antigo
+BE_HARD_TIMEOUT    = 10 #15   # 5 antigo
+BE_IDLE_TIMEOUT    = 5 #10   # 2 antigo
 
 #service classes
 SC_REAL        = 1
@@ -76,8 +76,8 @@ ANY_PORT= -1
 NO_METER = None
 NO_IDLE_TIMEOUT = 0
 NO_HARD_TIMEOUT = 0
-NO_QOS_MARK = None # for matching
-NO_QOS_MARK_ACTION = None
+NO_QOS_MARK = -1 # for matching
+NO_QOS_MARK_ACTION = -1
 
 OFP_NO_BUFFER = 0xffffffff
 

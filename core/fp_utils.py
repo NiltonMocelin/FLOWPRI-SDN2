@@ -208,7 +208,7 @@ def prepare_htb_queues_switch(controller, switch):
 
         print("[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta {}".format(interface))
 
-        p = subprocess.Popen("echo 214336414 | sudo -S tc qdisc del dev {} root".format(interface), stdout=subprocess.PIPE, shell=True)
+        # p = subprocess.Popen("echo 214336414 | sudo -S tc qdisc del dev {} root".format(interface), stdout=subprocess.PIPE, shell=True)
 
         # print(p.__dict__)
         if(p.stderr == None):

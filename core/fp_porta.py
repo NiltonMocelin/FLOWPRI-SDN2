@@ -79,6 +79,35 @@ class Porta:
 
         return True
 
+    def removerRegrasExpiradas(self, threshold):
+        """A principio, apenas precisa remover as regras BE, pois regrsa de QoS se expiram sozinhas e são rmeovidas da lsta"""
+        
+        for regra in self.getRegrasBE():
+            if regra.timestamp >threshold:
+                print("Removendo:", regra.toString())
+
+        return True
+
+    def getRegras(self, ip_ver, proto, ip_src, ip_dst, src_port, dst_port):
+        """retorna uma lista de regras que possuir os mesmos enderecoes ip_src e dst, e qos_mark"""
+        nome_regra = str(ip_ver) + ip_src +ip_dst+str(src_port)+str(dst_port)+str(proto)
+        lista = []
+        for r in self.getRegrasC1():
+            if r.id == nome_regra: 
+                lista.append(r)
+        
+        for r in self.getRegrasC2():
+            if r.id == nome_regra: 
+                lista.append(r)
+        
+        for r in self.getRegrasBE():
+            if r.id == nome_regra: 
+                lista.append(r)
+        
+        return lista
+
+
+        return 
     def setRegra_monitorando(self,ip_ver,proto,ip_src,ip_dst,src_port,dst_port):
         regra = self.getRegra(ip_ver, ip_dst, ip_src, ip_dst, src_port, dst_port)
         anterior = regra.monitorando
@@ -135,6 +164,60 @@ class Porta:
             
         for i in self.controlrules:
             if i.id == nome_regra: 
+                self.controlrules.remove(i)
+                return i
+            
+        #print]("[delRegra]Regra Nao encontrada no switch-controlador\n")
+        return None #regra nao encontrada
+    
+
+    def delRegra_comQoS(self, ip_ver: int, ip_src:str, ip_dst:str, src_port:int, dst_port:int, proto:int, qos_mark:int) -> Regra:
+
+        nome_regra = str(ip_ver) + ip_src +ip_dst+str(src_port)+str(dst_port)+str(proto)
+        for i in self.regrasPrioAltaClasseReal:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.bandaUtilizadaClasseReal -= i.banda
+                self.regrasPrioAltaClasseReal.remove(i)
+                return i
+
+        for i in self.regrasPrioAltaClasseNaoReal:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.bandaUtilizadaClasseNaoReal -= i.banda
+                self.regrasPrioAltaClasseNaoReal.remove(i)
+                return i
+
+        
+        for i in self.regrasPrioMediaClasseReal:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.bandaUtilizadaClasseReal -= i.banda
+                self.regrasPrioMediaClasseReal.remove(i)
+                return i
+
+        for i in self.regrasPrioMediaClasseNaoReal:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.bandaUtilizadaClasseNaoReal -= i.banda
+                self.regrasPrioMediaClasseNaoReal.remove(i)
+                return i
+
+        for i in self.regrasPrioBaixaClasseReal:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.bandaUtilizadaClasseReal -= i.banda
+                self.regrasPrioBaixaClasseReal.remove(i)
+                return i
+
+        for i in self.regrasPrioBaixaClasseNaoReal:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.bandaUtilizadaClasseNaoReal -= i.banda
+                self.regrasPrioBaixaClasseNaoReal.remove(i)
+                return i
+
+        for i in self.berules:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
+                self.berules.remove(i)
+                return i
+            
+        for i in self.controlrules:
+            if i.id == nome_regra and i.qos_mark == qos_mark: 
                 self.controlrules.remove(i)
                 return i
             

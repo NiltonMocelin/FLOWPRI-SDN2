@@ -133,12 +133,15 @@ def tratar_icmp_rejeicao(controller, fred_icmp:Fred, ip_ver, eth_src, ip_src, et
 
 def tratador_icmp_flow_monitoring(controller, flow_monitoring:FlowMonitoring):
     inittime = current_milli_time()
-    print("[trat_icmp_monitoring] init ", inittime)
-    tratar_flow_monitoring(flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager)
 
-    # dar sequencia no icmp - na verdade aqui envia o flowmonitoring via socket para o host management
-    # print("comentar se der erro")
-    Thread(target=enviar_msg, args=[flow_monitoring.toString(), controller.ip_management_host, PORTA_MANAGEMENT_HOST_SERVER]).start()
+    print("[trat_icmp_monitoring] init ", inittime)
+    if tratar_flow_monitoring(flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager):
+        print("Feito")
+        # dar sequencia no icmp - na verdade aqui envia o flowmonitoring via socket para o host management
+        # print("comentar se der erro")
+        Thread(target=enviar_msg, args=[flow_monitoring.toString(), controller.ip_management_host, PORTA_MANAGEMENT_HOST_SERVER]).start()
+    else:
+        print("Ainda nao ... esperando mais pacotes")
     endtime = current_milli_time()
     print("[trat_icmp_monitoring] end ", endtime, ' duracao:', endtime-inittime)
     return
@@ -162,7 +165,8 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
         
     controller.fredmanager.save_fred(fred.getName(), fred)
     print("[fred-anunc]s->%s:%d, d->%s:%d , proto:%d" % (fred.ip_src, fred.src_port, fred.ip_dst,fred.dst_port, fred.proto))
-    if controller.create_qos_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, fred, False):
+    souDestino = controller.souDominioBorda(ip_dst)
+    if controller.create_qos_rules(fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto, fred, False, souDestino):
         print("[tratador_icmp_fred]FRED aceito + gbam")
         
         if controller.souDominioBorda(fred.ip_dst):    
@@ -179,7 +183,7 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
                 send_icmpv6(datapath=controller.getSwitchByName(nohs_rota[-1].switch_name).datapath, srcMac=fred.mac_src, srcIp=fred.ip_src,dstMac=fred.mac_dst,dstIp=fred.ip_dst,outPort=nohs_rota[-1].out_port,data=fred.toString().encode(), type=icmpv6.ICMPV6_NI_QUERY)
     else:# so para deixar organizado
         print("[tratador_icmp_fred]FRED rejeitado + send icmp reject")
-        controller.create_be_rules(nohs_rota, fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    
+        controller.create_be_rules_backbone_soOF(nohs_rota, fred.ip_src, fred.ip_dst, fred.ip_ver, fred.src_port, fred.dst_port, fred.proto)    
         # enviar fred rejeitando fluxo, apenas para trás <-, nao precisa enviar para frente tbm
         # Fazer a rejeicao de fred
         if fred.ip_ver == IPV4_CODE:# ips trocados para devolver o icmp
@@ -202,6 +206,7 @@ def handle_icmps(controller, msg, pkt_icmp, tipo_icmp, ip_ver, eth_src, ip_src, 
 
     if tipo_icmp == icmpv6.ICMPV6_NI_QUERY or tipo_icmp == INFORMATION_REQUEST:
         data = json.loads(pkt_icmp.data)
+        print("ICMP recebido data ->", data)
         print("[hand_icmp]eh um ICMP anuncio")
         if "FRED" in data:
             fred_icmp = fromJsonToFred(data)

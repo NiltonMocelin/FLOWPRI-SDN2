@@ -225,3 +225,18 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
     ## desse jeito: datapath.ofproto_parser.OFPFlowMod(datapath, command=ofproto.OFPFC_DELETE, table_id=ofproto.OFPTT_ALL, out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY)
 
     ## se ainda não estiver removerndo, lembre-se de que alguns campos possuem dependencias, como ipv4_src depende de eth_type=0x0800 !
+
+
+### Sobre Controladores SDN e simuladores de rede:
+
+- Em um momento, pensei em tirar o atraso dos enlaces para isolar o tempo de sobrecarga da aplicação para apenas o tempo de processamento.
+
+- Isso foi uma péssima ideia. Os bufferes do controlador recebiam muitos pacotes, pois o atraso da placa de rede era praticamente 0.5ms.
+
+- Com isso, mesmo otimizando o controlador, muitos pacotes eram perdidos.
+
+- Por isso, settei os enlaces com 10ms de atraso (5ms em cada VETH).
+
+- Desta forma, o controlador tem tempo de tratar os pacotes - não elimina a possibiliade de ter perda de pacotes caso o buffer volte a encher, no entanto, não vai ocorrer como quando o atraso era instantaneo.
+
+- para isso: `sudo tc qdisc add dev veth38 root netem delay 10ms`
