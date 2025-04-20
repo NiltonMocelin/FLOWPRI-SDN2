@@ -34,6 +34,7 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchList
 from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader
 from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
+import httpx
 
 def _sha512(data):
     return hashlib.sha512(data).hexdigest()
@@ -152,9 +153,9 @@ class QoSClient:
             print('url:',url, '; headers: ', headers, '; data: ', data)
             # data = "{\"action\":\"%s\", \"flow_name\":\"%s\", \"flow\":%s}" % ("show", flow_name,"{}")
             if data is not None:
-                result = None #requests.post(url, headers=headers, data=data)
+                result = httpx.post(url, data=data, headers=headers) #requests.post(url, headers=headers, data=data)
             else:
-                result = None #requests.get(url, headers=headers)
+                result = httpx.get(url, headers=headers) #requests.get(url, headers=headers) # nao lembro mais o que eh isso --> dava erro de importacao ciclica ! (???? pqqq)
             
             print('send_request', result.status_code)
             if result.status_code == 404:
@@ -164,12 +165,13 @@ class QoSClient:
                 raise QoSException("Error {}: {}".format(
                     result.status_code, result.reason))
 
-        except BaseException:#requests.ConnectionError as err:
-            raise QoSException(
-                'Failed to connect to {}: {}'.format(url, str(err))) from err
+        except BaseException as err:#requests.ConnectionError as err:
+            'Failed to connect to {}'.format(url)
+            # raise QoSException(err) from err
 
         except BaseException as err:
-            raise QoSException(err) from err
+            'Failed to connect to {}'.format(url)
+            # raise QoSException(err) from err
 
         return result.text
 

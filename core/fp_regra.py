@@ -43,6 +43,7 @@ class Regra:
         self.proto:int = proto
         self.fila:int = fila
         self.qos_mark:int = qos_mark 
+        self.qos_match = None
         self.actions:dict = actions
         self.application_class:str = application_class
         self.monitorando:bool = False

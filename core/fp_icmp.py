@@ -90,29 +90,26 @@ def tratar_icmp_rejeicao(controller, fred_icmp:Fred, ip_ver, eth_src, ip_src, et
     print("[trat_icmp_rej]  init ", initime)
     nohs_rota = controller.rotamanager.get_rota(fred_icmp.ip_src, fred_icmp.ip_dst)
 
-    dominio_borda = False
-    # Se eu sou borda origem E se for o ultimo switch da rota, atualizar regra de monitoramento
-    if controller.souDominioBorda(ip_src):
-        dominio_borda = True
-
     primeiro_switch = 0
     ultimo_switch = len(nohs_rota)
     
     # remover a regra que encaminha fluxo monitorado -- somente se nao tiver outro fluxo utilizando... == remover a regra da instancia, verificar se existe algum fluxo com mesmo ips e mesmo qos_mark, se nao tiver, remover a regra monitoramento e regra qos_mark agrupadas
-    if dominio_borda:
+    if controller.souDominioBorda(ip_src):
         primeiro_switch+=1
-        ultimo_switch-=1
         switchh_first_hop = controller.getSwitchByName(nohs_rota[primeiro_switch].switch_name)
-        switchh_first_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[primeiro_switch].out_port, qos_match=getQOSMark(fred_icmp.classe, fred_icmp.prioridade), tipo_switch=SWITCH_FIRST_HOP)
+        switchh_first_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[primeiro_switch].in_port, porta_saida=nohs_rota[primeiro_switch].out_port, qos_match=getQOSMark(fred_icmp.classe, fred_icmp.prioridade), tipo_switch=SWITCH_FIRST_HOP)
+    if controller.souDominioBorda(ip_dst):
+        ultimo_switch-=1
         switchh_last_hop = controller.getSwitchByName(nohs_rota[ultimo_switch].switch_name)
         switchh_last_hop.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[-1].in_port, porta_saida=nohs_rota[-1].out_port, qos_match=getQOSMark(fred_icmp.classe, fred_icmp.prioridade), tipo_switch=SWITCH_LAST_HOP)
+    
     for i in range(primeiro_switch, ultimo_switch):
         switchh = controller.getSwitchByName(nohs_rota[i].switch_name)
         switchh.delRegraQoS(switchh, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=fred_icmp.src_port, dst_port=fred_icmp.dst_port, proto=fred_icmp.proto, porta_entrada=nohs_rota[i].in_port, porta_saida=nohs_rota[i].out_port,qos_match=getQOSMark(fred_icmp.classe, fred_icmp.prioridade),  tipo_switch=SWITCH_OUTRO)
         # remove_qos_rules(ip_ver=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto)
 
     # criar a regra best-effort
-    if dominio_borda:
+    if controller.souDominioBorda(ip_src):
         controller.create_be_rule_meu_dominio(nohs_rota, fred_icmp.ip_src, fred_icmp.ip_dst, fred_icmp.ip_ver, fred_icmp.src_port, fred_icmp.dst_port, fred_icmp.proto)
     else:    
         controller.create_be_rules(nohs_rota, fred_icmp.ip_src, fred_icmp.ip_dst, fred_icmp.ip_ver, fred_icmp.src_port, fred_icmp.dst_port, fred_icmp.proto)    
@@ -135,7 +132,7 @@ def tratador_icmp_flow_monitoring(controller, flow_monitoring:FlowMonitoring):
     inittime = current_milli_time()
 
     print("[trat_icmp_monitoring] init ", inittime)
-    if tratar_flow_monitoring(flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager):
+    if tratar_flow_monitoring(controller.IPCc, flow_monitoring, controller.qosblockchainmanager, controller.fredmanager, controller.flowmonitoringmanager):
         print("Feito")
         # dar sequencia no icmp - na verdade aqui envia o flowmonitoring via socket para o host management
         # print("comentar se der erro")
@@ -172,8 +169,9 @@ def tratador_icmp_fred(controller, fred:Fred, eth_src, ip_src, eth_dst, ip_dst):
         if controller.souDominioBorda(fred.ip_dst):    
             print("[tratador_icmp_fred]FRED aceito + gbam + souBorda + controller_blockchain_setup + management_host_blockchain_setup")   #eh aqui talvez 
             # salvar ou atualizar fred no dicionario
-            controller.fredmanager.save_fred(fred.getName(),fred) # apenas os dominios participantes da blockchain salvam o fred ? (acho que sim)
-
+            controller.fredmanager.save_fred(fred.getName(),fred) # apenas os dominios participantes da blockchain salvam o fred ? (acho que sim)            
+            
+            print("criando blockchain")       
             if ligar_blockchain:
                 Thread(target=controller.blockchain_setup, args=[nohs_rota, fred, minha_chave_publica, True]).start()
         else:
@@ -218,7 +216,7 @@ def handle_icmps(controller, msg, pkt_icmp, tipo_icmp, ip_ver, eth_src, ip_src, 
         if fred_icmp:
             tratador_icmp_fred(controller, fred_icmp, eth_src, ip_src, eth_dst, ip_dst)
         elif flow_monitoring:
-            tratador_icmp_flow_monitoring(flow_monitoring)
+            tratador_icmp_flow_monitoring(controller, flow_monitoring)
         else:
             print("[request]data = nao identifcado")
 

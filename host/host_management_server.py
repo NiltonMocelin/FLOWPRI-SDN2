@@ -18,8 +18,8 @@ import json
 from host.host_qosblockchain.fp_api_qosblockchain import criar_blockchain_api, BlockchainManager,get_meu_ip, criar_chave_sawadm, enviar_transacao_blockchain
 from host.fp_fred import Fred, fromJsonToFred, FredManager
 from host.host_qosblockchain.processor.qos_state import FlowTransacao, QoSRegister
-from host.host_traffic_monitoring.monitoring_utils import loadFlowMonitoringFromJson, MonitoringManager, calcular_qos
-import time
+from host.host_traffic_monitoring.monitoring_utils import loadFlowMonitoringFromJson, MonitoringManager, calcular_qos, current_milli_time
+# import time
 
 FRED_SERVER_PORT = 9090
 
@@ -57,6 +57,10 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
     chave_publica, chave_privada = criar_chave_sawadm()
     lista_chaves_publicas = fred.getPeersPKeys()
     lista_peers_ip = fred.getPeerIPs() 
+
+    if lista_peers_ip == []:
+        print("Lista Pares vazia == nao deve criar blockchain")
+        return
  
     is_genesis = False
     genesis_node_ip = fred.ip_genesis
@@ -71,55 +75,67 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
     ip_partes = serverip.split('.')
     serverip = '%s.%s.%s.50' % (ip_partes[0],ip_partes[1],ip_partes[2])
 
-    # criar_chave.. adicionar ao fred
-    porta_blockchain = criar_blockchain_api(serverip, nome_blockchain, blockchainManager, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
+    ip_blockchain,porta_network,porta_rest = blockchainManager.get_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst))
 
-    if not is_genesis:
-        fred.lista_peers.append({"nome_peer":serverip, "chave_publica":chave_publica, "ip_porta":serverip+":"+str(porta_blockchain)})
-        # se sou borda destino, enviar a borda origem 
-        enviar_fred(fred_json=fred.toString(), server_ip=genesis_node_ip, server_port=FRED_SERVER_PORT)
+    if ip_blockchain == None or is_genesis:
+        # criar_chave.. adicionar ao fred
+        porta_network, porta_rest = criar_blockchain_api(serverip, nome_blockchain, blockchainManager, chaves_peers=lista_chaves_publicas, PEERS_IP=lista_peers_ip, is_genesis=is_genesis)
+
+        blockchainManager.save_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst), serverip, porta_network, porta_rest)
+        if porta_network:
+            print("[blkc-setup]Blockchain criada: nome: %s, porta_network:%d, porta_rest:%d" % (nome_blockchain, porta_network, porta_rest))
+        else:
+            print("[blkc-setup]Erro ao criar blockchain  nome: %s, porta_network:%d, porta_rest:%d" % (nome_blockchain, porta_network, porta_rest))
+        if not is_genesis:
+            fred.addPeer(serverip, chave_publica, serverip+':'+str(porta_network))
+            # se sou borda destino, enviar a borda origem 
+            enviar_fred(fred_json=fred.toString(), server_ip=genesis_node_ip, server_port=FRED_SERVER_PORT)
+    else:
+        print("Blockchain existente %s->%s %s:%d(network) %d(rest)" %(fred.ip_src, fred.ip_dst, ip_blockchain, porta_network,porta_rest))
 
 
-def tratar_flow_monitoring(meu_ip, flow_monitoring_json, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
+def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
-    initime = time.time()
+    initime = current_milli_time()
     print('[trat-flow-monitoring] init:', initime)
-    flow_monitoring_recebido = loadFlowMonitoringFromJson(flow_monitoring_json)
-
-    nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
+    
+    nome_fred = str(flow_monitoring_recebido.ip_ver) +"_"+ str(flow_monitoring_recebido.proto)+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+str(flow_monitoring_recebido.src_port)+"_"+str(flow_monitoring_recebido.dst_port)
     fred_flow = fredmanager.get_fred(nome_fred)
 
     #calcular as medias para atraso, banda e perda
     flow_monitoring_local = monitoringmanager.getMonitoring(nome_fred)
     
+    print("Aqui 1")
     # precisa receber dois para fazer o calculo
     if flow_monitoring_local == None:
         monitoringmanager.saveMonitoring(nome_fred, flow_monitoring_recebido)
         return
 
+    print("Aqui 2")
     # ja havia recebido um flow monitoring antes
     qos_calculado = calcular_qos(flow_monitoring_local, flow_monitoring_recebido)
 
+    print("Aqui 3")
     #remover monitoramento anterior
     monitoringmanager.delMonitoring(nome_fred)
 
-    blockchain_ip_porta = blockchainManager.get_blockchain(flow_monitoring_recebido.ip_dst)
-    
+    print("Aqui 4")
+    blockchain_ip, porta_network, porta_rest = blockchainManager.get_blockchain(calculate_network_prefix_ipv4(flow_monitoring_recebido.ip_src), calculate_network_prefix_ipv4(flow_monitoring_recebido.ip_dst))
+    print("Aqui 5")
     # criar_transacao_blockchain()
-    if blockchain_ip_porta:
-        blockchain_ip = blockchain_ip_porta.split(':')[0]
-        blockchain_porta = blockchain_ip_porta.split(':')[1]
-
-        qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
+    if blockchain_ip:
+        print('criando qosreg')
+        qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandwidth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
+        print('criando transacao')
         # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
         transacao = FlowTransacao(flow_monitoring_recebido.ip_src, flow_monitoring_recebido.ip_dst, flow_monitoring_recebido.ip_ver, flow_monitoring_recebido.src_port, flow_monitoring_recebido.dst_port, flow_monitoring_recebido.proto, [qosregister])
 
-        print("[trat-flow-monitoring] enviando transacao ", time.time())
-        Thread(target=enviar_transacao_blockchain, args=[nome_fred, blockchain_ip, blockchain_porta, transacao])
-        print("[trat-flow-monitoring] transacao enviada ", time.time())
+        print("[trat-flow-monitoring] enviando transacao ", current_milli_time())
+        Thread(target=enviar_transacao_blockchain, args=[nome_fred, blockchain_ip, porta_rest, transacao]).start()
+        print("[trat-flow-monitoring] transacao enviada ", current_milli_time())
         return True
     
-    endtime = time.time()
+    endtime = current_milli_time()
     print('[trat-flow-monitoring] end:', initime, ' duracao:', endtime - initime)
     return False
 
@@ -136,7 +152,7 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
     while True:
         print("Esperando nova conexao ...")
         conn, addr = tcp.accept()
-        initime = time.time()
+        initime = current_milli_time()
         print("[management-server] init ", initime)
         data_qtd_bytes:int = int.from_bytes(conn.recv(4),'big')
         data = conn.recv(data_qtd_bytes).decode()
@@ -154,17 +170,7 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
             print('[management-server] fred recebido')
             fred = fromJsonToFred(data_json)
           
-            
-            # verificar se ja existe uma blockcahin para este fluxo
-            # se ja existe, fazer nada -> era para dizer que o fluxo esta ativo, mas nao precisa...
-            nome_fred = str(fred.ip_ver) +"_"+ str(fred.proto)+"_"+fred.ip_src+"_"+fred.ip_dst+"_"+str(fred.src_port)+"_"+str(fred.dst_port)
-            fredmanager.save_fred(nome_fred, fred)
-            if blockchainManager.get_blockchain(calculate_network_prefix_ipv4(fred.ip_src), calculate_network_prefix_ipv4(fred.ip_dst)) != None:
-                print("blockchain existente... ignorando")
-                # nao precisa atualizar o fred, pq quando ocorrer um monitoramento, a blockchain vai ser atualizada com os requisitos e obtidos para QoS
-                # logo, vamos apenas ignorar, neste caso
-            else:
-                tratar_blockchain_setup(serverip, fred, blockchainManager)
+            tratar_blockchain_setup(serverip, fred, blockchainManager)
             
             print('[management-server] fred terminado')
             
@@ -172,9 +178,9 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
             print("[management-server] flow monitoring recebido")
             flow_monitoring = loadFlowMonitoringFromJson(data_json)
             # receber o flow monitoring -> armazenar em flowmonitorings, mas caso ja exista um armazenado, fazer o calculo do qos e retornar um dicionario de qos -> caso contrario retornar null
-            tratar_flow_monitoring(flow_monitoring, blockchainManager, fredmanager, monitoringmanager)
+            tratar_flow_monitoring(get_meu_ip(), flow_monitoring, blockchainManager, fredmanager, monitoringmanager)
             print("[management-server] flow monitoring end")
-        endtime= time.time()
+        endtime= current_milli_time()
         print("[management-server]  end:", endtime, ' duracao:',endtime - initime)
 
     

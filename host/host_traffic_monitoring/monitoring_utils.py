@@ -13,6 +13,11 @@ from host.fp_fred import FredManager
 from host.host_qosblockchain.fp_api_qosblockchain import criar_blockchain_api, BlockchainManager,get_meu_ip, criar_chave_sawadm, enviar_transacao_blockchain
 from host.host_qosblockchain.processor.qos_state import FlowTransacao, QoSRegister
 import socket
+import time
+
+
+def current_milli_time():
+    return round(time.time() * 1000)
 
 
 def enviar_msg(msg_str, server_ip, server_port):
@@ -101,6 +106,7 @@ def calcular_qos(flow_monitoring_local:FlowMonitoring, flow_monitoring_recebido:
     #     print("[calcqos] Fluxos diferentes")
     #     return None
     qtd_pacotes_esperada = 20
+    atraso = 0
     qtd_pacotes_obitda = flow_monitoring_recebido.qtd_pacotes
     if flow_monitoring_local.qtd_pacotes < flow_monitoring_recebido.qtd_pacotes:
         qtd_pacotes_obitda = flow_monitoring_local.qtd_pacotes
@@ -129,7 +135,7 @@ def calcular_qos(flow_monitoring_local:FlowMonitoring, flow_monitoring_recebido:
     # jitter soma das diferencas entre |atraso1 e atraso2| / qtd_pacotes_recebido
     jitter = 0
     for i in range(1, qtd_pacotes_obitda):
-        jitter += abs(atraso[i-1]-atraso[i])
+        jitter += abs(atraso_pacotes[i-1]-atraso_pacotes[i])
     jitter = int(jitter / qtd_pacotes_obitda)
     return {'bandwidth':lbanda, 'delay':atraso, 'loss':taxaperda,'jitter': jitter}
 
@@ -249,6 +255,5 @@ def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:st
         flowmonitoring.lista_pkttimestamps.append(t)
         
         if flowmonitoring.qtd_pacotes >= QTD_PACOTES:
-            del local_flowmonitorings_dict[nome_fluxo]
-
             Thread(target=send_flowmonitoring, args=[flowmonitoring, ip_management_host, port_management_host])
+            del local_flowmonitorings_dict[nome_fluxo]

@@ -19,6 +19,10 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
 
 * Agrupamento de fluxos -> Conjunction
 
+* Para testar, utilize o materia em experimentos-NETNS
+
+* QoSBLockchain não está 100% integrada... (problemas inerentes ao tipo de ambiente virtual proporcionado por NETNS)
+
 
 <!-- <!-- <!-- {
 *Virou tudo estático, não vou fazer automático* <--- { Configurar a criação das portas e switches no fp_topology_discovery -- configurar o addporta lá
@@ -61,30 +65,20 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
 
  * Suporte a redes virtuais --- por último.... -->
 
-## Ordem de desenvolvimento{
+## QoSBlockchain:
 
--> conjunctions [ok]
+* Atente-se ao local das chaves criadas /sawtooth_keys/ e "/"+username+"/.sawtooth/keys/"
+
+* Para acessar (ler), as chaves precisam ser chmod 755
+
+* A API criada para o qosblockchain ainda nao esta 100%
 
 
-* --- Algumas coisas já são existentes só colocar para ficar mais funcional
+* Para enviar transações na mão: python3.8 main_qos_cli.py reg_qos --url http://0.0.0.0:13655 2048_6_172.16.2.30_172.16.1.30_42912_5001 '{"action":"reg_qos", "flow_name":"2048_6_172.16.2.30_172.16.1.30_42912_5001", "qosregisters": [{"nodename": "172.16.1.10", "route_nodes": [{"ordem": 1, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "blockchain_nodes": [], "state": 1, "service_label": 1, "application_label": "video", "req_bandwidth": 2000, "req_delay": 1, "req_loss": 10, "req_jitter": 0, "bandwidth": 1514, "delay": 0, "loss": 1, "jitter": 0}]}'
 
-*  #Resolver a parte de configuracao manual
+* Porém, provavelmente está tendo algum erro no transaction processor - quando tiver tempo arrumo...
 
-* #Implementar DHCPv4 (feito) e v6 ()
 
-* #Resolver a parte básica de roteamento.... (descoberta de topologia)
-
-* #Resolver a parte de suporte a IPv6.
-
-* #Resolver a parte de classificacao
-
-* #Resolver a parte de garantia de QoS.
-
-* #Resolver a parte de monitoramento de QoS.
-
-* #Resolver a parte de QoS as a Service.
-
-} -->
 
 ## DHCPv6
 

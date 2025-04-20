@@ -88,7 +88,7 @@ def classificar_pacote(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, pkt_by
 
     qtd_pkts = len(flows_dict[flow_five_tuple]) 
     print("[classificar-pkt] Obtidos %d pacotes para a classificacao" % (qtd_pkts))
-    if qtd_pkts >=10:
+    if qtd_pkts ==10:
 
         # pkts_to_pcap(flows_dict[flow_five_tuple], flow_five_tuple+".pcap")
 

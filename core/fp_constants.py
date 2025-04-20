@@ -56,7 +56,8 @@ IGP = 9
 # O controlador leva 2s para configurar as regras
 QOS_HARD_TIMEOUT   = 10 #15   # 5 antigo
 QOS_IDLE_TIMEOUT   = 5 #10   # 2 antigo
-MONITORING_TIMEOUT = 5 #7  # 2 antigo
+MONITORING_TIMEOUT_ACTION = 5#5 #7  # 2 antigo
+MONITORING_TIMEOUT_FORWARD = 10 # tem que ser +2s ou o dobro do monitoring timeout da acao pq, se nao, quando a regra de monitoramento ativar, a de encaminhamento vai ter expirado...
 BE_HARD_TIMEOUT    = 10 #15   # 5 antigo
 BE_IDLE_TIMEOUT    = 5 #10   # 2 antigo
 

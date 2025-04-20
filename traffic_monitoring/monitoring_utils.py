@@ -30,7 +30,7 @@ class FlowMonitoring:
 
     def toString(self):
 
-        retorno = { "Monitoring": { "ip_src": self.ip_src, "ip_dst": self.ip_dst, "src_port": self.src_port, "dst_port": self.dst_port, "proto": self.proto, "qtd_pacotes": self.qtd_pacotes, "monitor_name": self.monitor_name, "timestamps": self.lista_pkttimestamps, "pktsizes": self.lista_pktsizes}}
+        retorno = { "Monitoring": { "ip_ver":self.ip_ver, "ip_src": self.ip_src, "ip_dst": self.ip_dst, "src_port": self.src_port, "dst_port": self.dst_port, "proto": self.proto, "qtd_pacotes": self.qtd_pacotes, "monitor_name": self.monitor_name, "timestamps": self.lista_pkttimestamps, "pktsizes": self.lista_pktsizes}}
     
         return json.dumps(retorno)
     
@@ -86,6 +86,7 @@ def calcular_qos(flow_monitoring_local:FlowMonitoring, flow_monitoring_recebido:
     #     print("[calcqos] Fluxos diferentes")
     #     return None
     qtd_pacotes_esperada = 20
+    atraso = 0
     qtd_pacotes_obitda = flow_monitoring_recebido.qtd_pacotes
     if flow_monitoring_local.qtd_pacotes < flow_monitoring_recebido.qtd_pacotes:
         qtd_pacotes_obitda = flow_monitoring_local.qtd_pacotes
@@ -114,7 +115,7 @@ def calcular_qos(flow_monitoring_local:FlowMonitoring, flow_monitoring_recebido:
     # jitter soma das diferencas entre |atraso1 e atraso2| / qtd_pacotes_recebido
     jitter = 0
     for i in range(1, qtd_pacotes_obitda):
-        jitter += abs(atraso[i-1]-atraso[i])
+        jitter += abs(atraso_pacotes[i-1]-atraso_pacotes[i])
     jitter = int(jitter / qtd_pacotes_obitda)
     return {'bandwidth':lbanda, 'delay':atraso, 'loss':taxaperda,'jitter': jitter}
 
@@ -126,7 +127,7 @@ def send_flowmonitoring(flowmonitoring:FlowMonitoring, server_ip:str, server_por
 def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
     
-    nome_fred = flow_monitoring_recebido.ip_ver +"_"+ flow_monitoring_recebido.proto+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+flow_monitoring_recebido.src_port+"_"+flow_monitoring_recebido.dst_port
+    nome_fred = str(flow_monitoring_recebido.ip_ver) +"_"+ str(flow_monitoring_recebido.proto)+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+str(flow_monitoring_recebido.src_port)+"_"+str(flow_monitoring_recebido.dst_port)
     fred_flow = fredmanager.get_fred(nome_fred)
 
     #calcular as medias para atraso, banda e perda
@@ -143,11 +144,10 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido:FlowMonitoring, bloc
     #remover monitoramento anterior
     monitoringmanager.delMonitoring(nome_fred)
 
-    blockchain_ip_porta = blockchainManager.get_blockchain(calculate_network_prefix_ipv4(fred_flow.ip_src), calculate_network_prefix_ipv4(fred_flow.ip_dst))
+    blockchain_ip, porta_network, porta_rest = blockchainManager.get_blockchain(calculate_network_prefix_ipv4(fred_flow.ip_src), calculate_network_prefix_ipv4(fred_flow.ip_dst))
 
-    blockchain_ipporta = blockchain_ip_porta.split(':')
-
-    enviar_transacao_blockchain_api(meu_ip, blockchain_ipporta[0], blockchain_ipporta[1], fred_flow.getName(), qos_calculado, fred_flow)
+    print("Enviando transação para blockchain %s:%d", blockchain_ip, porta_rest)
+    enviar_transacao_blockchain_api(meu_ip, blockchain_ip, porta_rest, fred_flow.getName(), qos_calculado, fred_flow)
     return 
 
 
@@ -156,10 +156,12 @@ def enviar_transacao_blockchain_api(meu_ip, blockchain_ip, blockchain_porta, flo
     # criar_transacao_blockchain()
     # qosregister = QoSRegister(nodename=meu_nome, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
     # faltou informacoes para montar o qosreg == req_qoss  -> ou vem do fred, ou vem do proprio flowmonitoring, melhor vir do flowmonitoring
-    qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandiwdth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
+    print("Preparando para enviar transacao")
+    qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandwidth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
     
     transacao = FlowTransacao(fred_flow.ip_src, fred_flow.ip_dst, fred_flow.ip_ver, fred_flow.src_port, fred_flow.dst_port, fred_flow.proto, [qosregister])
-    Thread(target=enviar_transacao_blockchain, args=[blockchain_ip, blockchain_porta, flowname, transacao])
+    print("Chamando api de transacao")
+    Thread(target=enviar_transacao_blockchain, args=[blockchain_ip, blockchain_porta, flowname, transacao]).start()
     return True
 
 

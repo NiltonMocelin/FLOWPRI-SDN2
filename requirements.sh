@@ -74,6 +74,7 @@ sudo pip3.8 install ovs==3.4.1
 sudo apt-get install libpcap-dev -y
 sudo pip3.8 install python-libpcap
 sudo apt-get install iperf -y # para testes
+sudo pip3.8 install httpx
 # sudo pip3.8 install wsgi # deu erro, deixamos fora, só era usado pela GUI, que não sera ativada agora
 
 # wget -o- https://github.com/NiltonMocelin/FLOWPRI-SDN2/archive/refs/heads/main.zip

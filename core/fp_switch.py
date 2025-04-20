@@ -1,7 +1,7 @@
 from fp_acao import Acao
 from fp_porta import Porta
 from fp_constants import TCP_SRC,TCP_DST, UDP_SRC, UDP_DST, ALL_TABLES, CRIAR, REMOVER, FORWARD_TABLE, ANY_PORT, NO_METER, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, BE_HARD_TIMEOUT, BE_IDLE_TIMEOUT, SEMBANDA, EMPRESTANDO, NAOEMPRESTANDO
-from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID, METER_PRIO, CONJUNCTION_PRIO, MONITORING_PRIO, MONITORING_TIMEOUT
+from fp_constants import FILA_C1P1, FILA_C1P2, FILA_C1P3, FILA_C2P1, FILA_C2P2, FILA_C2P3, FILA_BESTEFFORT, FILA_CONTROLE, NO_QOS_MARK, SC_REAL, SC_NONREAL, SC_BEST_EFFORT, SC_CONTROL, CONJUNCTION_ID, METER_PRIO, CONJUNCTION_PRIO, MONITORING_PRIO, MONITORING_TIMEOUT_ACTION, MONITORING_TIMEOUT_FORWARD
 from fp_constants import PORTA_ENTRADA, PORTA_SAIDA, BE_PRIO, MARKING_PRIO, ligar_monitoring
 from fp_regra import Regra, getRegrasExpiradas
 import sys
@@ -203,7 +203,8 @@ class Switch:
 
         # a regra ainda está ativa na instancia do switch, entao nao precisa mexer la, e a regra meter ainda está ativa tbm.
         #  apenas criar a regra na tabela de fluxos novamente
-        print("Criando regra monitoramento  %s:%d->%s:%d porta_saida:%d meter:%d fila:%d qos_match:%d qos_mark:%d" % (ip_src, src_port, ip_dst, dst_port, porta_saida, meter_id, fila, qos_mark_matching, qos_mark_matching))
+
+        print("Criando regra monitoramento  %s:%d->%s:%d porta_saida:%d meter:%d fila:%d qos_match:%d qos_mark:%d" % (ip_src, src_port, ip_dst, dst_port, porta_saida, meter_id, fila, qos_mark_matching if qos_mark_matching else -1, qos_mark_action if qos_mark_action else -1))
         addRegraMonitoring(switch=self, ip_ver=ip_ver, ip_src=ip_src, ip_dst= ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=fila, qos_mark_matching=qos_mark_matching, qos_mark_action=qos_mark_action,flow_removed=True, meter_id=meter_id)
         return
     
@@ -217,12 +218,12 @@ class Switch:
         BE_MARK = getQOSMark(SC_BEST_EFFORT, 1)
         if primeiroSaltoOrigem:
             print("addBE_soOF primeiro salto")
-            addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_action=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade = MARKING_PRIO, toController=toController)
+            addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_action=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=False, prioridade = MARKING_PRIO, toController=toController)
             
         else:
             print("addBE_soOF backbone") # nessa topologia nao pode aparecer isso pq so tem um salto
             # addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=qos_mark, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True)#, toController=True) 
-            addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade=CONJUNCTION_PRIO)
+            addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=False, prioridade=CONJUNCTION_PRIO)
         return
 
 
@@ -235,12 +236,12 @@ class Switch:
         self.getPorta(porta_saida).addRegra(Regra(ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, src_port=src_port, dst_port=dst_port, proto=proto, porta_entrada=ANY_PORT, porta_saida= porta_saida,meter_id= NO_METER,banda= 0, prioridade=BE_PRIO,classe= SC_BEST_EFFORT,fila= FILA_BESTEFFORT, application_class="be", qos_mark=BE_MARK, actions={"qos_mark":BE_MARK, "out_port":porta_saida, "meter_id":NO_METER}, emprestando=False, classificado=classificado))
         if primeiroSaltoBorda:
             print("addBE primeiro salto")
-            addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_action=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade = MARKING_PRIO, toController=toController)
+            addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_action=BE_MARK, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=False, prioridade = MARKING_PRIO, toController=toController)
             
         else:
             print("addBE backbone") # nessa topologia nao pode aparecer isso pq so tem um salto
             # addRegraForwarding2(datapath=self.datapath, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst, out_port=porta_saida,src_port=src_port,dst_port=dst_port,proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=qos_mark, idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True)#, toController=True) 
-            addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=getQOSMark(SC_BEST_EFFORT, 1), idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=True, prioridade=CONJUNCTION_PRIO)
+            addRegraForwarding_com_Conjunction(self, ip_ver=ip_ver, ip_src=ip_src, ip_dst=ip_dst,out_port= porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_BESTEFFORT, qos_mark_maching=getQOSMark(SC_BEST_EFFORT, 1), idle_timeout=BE_IDLE_TIMEOUT, hard_timeout=BE_HARD_TIMEOUT, flow_removed=False, prioridade=CONJUNCTION_PRIO)
 
         return True
 
@@ -261,10 +262,10 @@ class Switch:
                 meter_id = addRegraMeter(self, banda)
 
                 #armazenar meter
-                saveMeterID_from_Flow(self.meter_dict, ip_ver, ip_src,ip_dst,src_port,dst_port, proto, qos_mark, meter_id)
+                saveMeterID_from_Flow(self.meter_dict, ip_ver, ip_src,ip_dst,src_port,dst_port, proto, meter_id)
                 # Dando erro aqui
                 # print("add-switchfirsthop") # comentado aqui
-                addRegraForwarding2(datapath=self.datapath,ip_ver=ip_ver,ip_src=ip_src, ip_dst=ip_dst, src_port=src_port,dst_port=dst_port, proto=proto, out_port=porta_saida, fila=fila, qos_mark_action=qos_mark, hard_timeout=MONITORING_TIMEOUT, idle_timeout=MONITORING_TIMEOUT, meter_id=meter_id, prioridade=MARKING_PRIO,flow_removed=True)
+                addRegraForwarding2(datapath=self.datapath,ip_ver=ip_ver,ip_src=ip_src, ip_dst=ip_dst, src_port=src_port,dst_port=dst_port, proto=proto, out_port=porta_saida, fila=fila, qos_mark_action=qos_mark, hard_timeout=MONITORING_TIMEOUT_ACTION, idle_timeout=MONITORING_TIMEOUT_ACTION, meter_id=meter_id, prioridade=MARKING_PRIO,flow_removed=True)
                 
             # porta de entrada, apenas cria regra na instancia
             # SE TIVER REGRA COM METER_ID = NULL -> EH PQ A REGRA EH NO BACKBONE, O SO NA BORDA SE ASSOCIA METERS
@@ -274,11 +275,11 @@ class Switch:
         elif tipo_switch == Switch.SWITCH_LAST_HOP: # obs ip_dst deve ser do meu dominio e este deve ser o ultimo switch
             
             if tipo_porta == PORTA_SAIDA:              # print("add-switch backbone")
-                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO)
+                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO, flow_removed=True)
 
                 if ligar_monitoring:
                    
-                    addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark_maching=getEquivalentMonitoringMark(classe, prioridade), idle_timeout=QOS_IDLE_TIMEOUT, hard_timeout=QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO, toController=True)
+                    addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark_maching=getEquivalentMonitoringMark(classe, prioridade), idle_timeout=MONITORING_TIMEOUT_FORWARD, hard_timeout=MONITORING_TIMEOUT_FORWARD, prioridade=CONJUNCTION_PRIO, toController=True)
                    
 
             # rotina monitoring
@@ -289,7 +290,11 @@ class Switch:
 
             if tipo_porta == PORTA_SAIDA:
                 # regra matching qos_mark e regra matching monitoring_markw
-                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark_maching=getEquivalentMonitoringMark(classe, prioridade), idle_timeout=QOS_IDLE_TIMEOUT, hard_timeout=QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO)
+                addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark, QOS_IDLE_TIMEOUT, QOS_HARD_TIMEOUT, prioridade=CONJUNCTION_PRIO, flow_removed=True)
+
+                if ligar_monitoring:
+                   
+                    addRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, porta_saida, src_port, dst_port, proto, fila, qos_mark_maching=getEquivalentMonitoringMark(classe, prioridade), idle_timeout=MONITORING_TIMEOUT_FORWARD, hard_timeout=MONITORING_TIMEOUT_FORWARD, prioridade=CONJUNCTION_PRIO, toController=False)
 
             self.getPorta(porta_nome_armazenar_regra).addRegra(Regra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_entrada, porta_saida, meter_id, banda, prioridade, classe, fila, flow_label, qos_mark,{"qos_mark":qos_mark, "out_port":porta_saida, "meter_id":meter_id}, emprestando,classificado=True))
 
@@ -303,6 +308,11 @@ class Switch:
 
         # tipo_switch = Switch.SWITCH_FIRST_HOP (utiliza addforwarding)        
         regra = self.getPorta(porta_saida).delRegra(ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
+
+        if not regra:
+            print("Regra nao encontrada em switch:%d porta:%d" %(self.nome, porta_saida))
+            return
+
         if regra:
             print("[del-qos] saida s%d-%d" % (self.nome, porta_saida))
         else:
@@ -311,17 +321,14 @@ class Switch:
             print("[del-qos] entrada de s%d-%d" % (self.nome, porta_entrada))
         else:
             print("[del-qos] Regra nao encontrada em PORTA-ENTRADA de s%d-%d" % (self.nome, porta_entrada))
-        
-        if not regra:
-            return
-        
+                
         # remover da porta de saida
-        if tipo_switch == Switch.SWITCH_FIRST_HOP or tipo_switch == Switch.SWITCH_FIRST_E_LAST_HOP:
+        if tipo_switch == Switch.SWITCH_FIRST_HOP:
+            delRegraForwarding(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
             if regra.meter_id:
                 delRegraMeter(self,regra.meter_id)
-                delMeter(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, qos_match)
+                delMeter(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
             print("[del-qos] rm forwdng firsthp %s:%d -> %s:%d" %(ip_src, src_port, ip_dst, dst_port))
-            delRegraForwarding(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto)
         else: # tipo_switch = Switch.SWITCH_LAST_HOP + Switch.SWITCH_OUTRO (utiliza addforwarding_conjunction) # qual dos dois da erro...
             print("[del-qos] rm conjnctn %s:%d -> %s:%d" %(ip_src, src_port, ip_dst,dst_port))
             delRegraForwarding_com_Conjunction(self, ip_ver, ip_src, ip_dst, src_port, dst_port, proto, porta_saida, qos_match) # checando se eu der um remover com matching que pega duas regras, ele remove as duas ou so uma
@@ -348,7 +355,7 @@ class Switch:
 
         #controle
         if classe == SC_CONTROL:
-            addRegraForwarding2(datapath=self.datapath, qos_mark_maching=getQOSMark(classe, prioridade), prioridade=100, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE, meter_id=None)
+            addRegraForwarding2(datapath=self.datapath, qos_mark_maching=getQOSMark(classe, prioridade), prioridade=CONJUNCTION_PRIO, hard_timeout=BE_HARD_TIMEOUT, idle_timeout=BE_IDLE_TIMEOUT, flow_removed=False, ip_ver=ip_ver, ip_src=ip_src,ip_dst=ip_dst, out_port=porta_saida, src_port=src_port, dst_port=dst_port, proto=proto, fila=FILA_CONTROLE, meter_id=None)
             return []
  
         # tipo_switch==Switch.SWITCH_OUTRO

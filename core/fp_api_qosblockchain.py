@@ -48,7 +48,7 @@ def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transa
     print("[qosblchn] Enviando transacao para: ", ip_blockchain,':',port_blockchain)
 # python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
     # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao.toString(), username='controller_key')
-    QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).reg_flowqos('reg_qos', flowname, transacao.toString())
+    print(QoSClient("%s:%d" % (ip_blockchain,port_blockchain), CAMINHO_CHAVE_PRIVADA+"validator.priv").reg_flowqos('reg_qos', flowname, transacao.toString()))
     print("[qosblchn] Transacao enviada")
     return True
 
@@ -56,27 +56,28 @@ def show_bloco_blockchain(ip_blockchain, port_blockchain, flowname):
 # python main_qos_cli.py show '192.168.0.0-192.168.0.1-5000-5002-tcp'
     # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, username='controller_key')
     # flow = do_show(args)
-    flow = QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).show(flowname)
+    flow = QoSClient("%s:%d" % (ip_blockchain,port_blockchain), CAMINHO_CHAVE_PRIVADA+"validator.priv").show(flowname)
     return
 
 def listar_todos_blocos_blockchain(ip_blockchain,port_blockchain):
     # python main_qos_cli.py list
     # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, username='controller_key')
     # flows = do_list(args)
-    flows = QoSClient(ip_blockchain+":"+port_blockchain, CAMINHO_CHAVE_PRIVADA).list()
+    flows = QoSClient("%s:%d" % (ip_blockchain,port_blockchain), CAMINHO_CHAVE_PRIVADA+"validator.priv").list()
     return
 
 
 class BlockchainManager:
-    def __init__(self): # tinha que por um thread lock aqui 
+    def __init__(self):
         self.blockchain_table = {}
     def get_blockchain(self, src_prefix, dst_prefix):
-        print('procurando blockchain: ', src_prefix+"-"+dst_prefix, ' ou ', dst_prefix+"-"+src_prefix)
-        return self.blockchain_table.get(src_prefix+"-"+dst_prefix, self.blockchain_table.get(dst_prefix+"-"+src_prefix, None))
+        result = self.blockchain_table.get(src_prefix+"-"+dst_prefix, self.blockchain_table.get(dst_prefix+"-"+src_prefix, None))
+        if result:
+            return result[0], result[1], result[2]
+        return None, None,None
         
-
-    def save_blockchain(self, src_prefix, dst_prefix, endpoint_ip, porta):
-        self.blockchain_table[src_prefix + "-"+ dst_prefix]= "%s:%d"%(endpoint_ip,porta)
+    def save_blockchain(self, src_prefix, dst_prefix, endpoint_ip, porta_network, porta_rest):
+        self.blockchain_table[src_prefix + "-"+ dst_prefix]= (endpoint_ip,porta_network, porta_rest)
         return True
 
 
@@ -102,7 +103,7 @@ def criar_blockchain_api(meu_ip, nome_blockchain, blockchain_manager:BlockchainM
     while(VALIDATOR_PORT in portas_em_uso):
         VALIDATOR_PORT+=1
     ipss= nome_blockchain.split('-')
-    blockchain_manager.save_blockchain(ipss[0], ipss[1], meu_ip, NETWORK_PORT)
+    blockchain_manager.save_blockchain(ipss[0], ipss[1], meu_ip, NETWORK_PORT, REST_API_PORT)
     
     print("net:", meu_ip, ':',NETWORK_PORT)
     print("rest:",  meu_ip, ':',REST_API_PORT)
@@ -111,7 +112,7 @@ def criar_blockchain_api(meu_ip, nome_blockchain, blockchain_manager:BlockchainM
     chave_publica, chave_privada = criar_chave_sawadm()
 
     criar_blockchain(nome_blockchain, meu_ip, chave_publica, chave_privada, CONSENSUS_PORT,VALIDATOR_PORT, REST_API_PORT, NETWORK_PORT, PEERS_IP, chaves_peers, is_genesis)
-    return NETWORK_PORT
+    return NETWORK_PORT, REST_API_PORT
 
 def tratar_blockchain_setup(serverip:str, fred:Fred, blockchain_manager:BlockchainManager):
     nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)

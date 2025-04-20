@@ -1,1 +1,1 @@
-ryu-manager core/main_controller.py --verbose
+ryu-manager core/main_controller.py --verbose --log-file=ryu.log

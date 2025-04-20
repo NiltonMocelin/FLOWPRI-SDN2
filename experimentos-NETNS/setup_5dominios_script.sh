@@ -548,13 +548,13 @@ cp -r ../../FLOWPRI-SDN2 ../../host5/ # criar uma pasta para cada host
 
 # sudo ip netns exec VRF1 xterm -e sh run_management_host.sh &
 sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-main-term -e "cd ../../host1 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-qos-manag -e "cd ../../host1 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-fredEbkchain-serv -e "cd ../../host1 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-qos-manag -e "cd ../../host1 && sh run_conventional_host.sh  && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-fredEbkchain-serv -e "cd ../../host1 && sh run_management_host.sh > h1.log && /bin/bash" &
 
 
 sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-main-term -e "cd ../../host2 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-qos-manag -e "cd ../../host2 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-fredEbkchain-serv -e "cd ../../host2 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-qos-manag -e "cd ../../host2 && sh run_conventional_host.sh  && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-fredEbkchain-serv -e "cd ../../host2 && sh run_management_host.sh > h2.log && /bin/bash" &
 
 # sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-main-term -e "cd ../../host3 && /bin/bash" & # subir os hosts
 # sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-qos-manag -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background

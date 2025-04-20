@@ -132,7 +132,7 @@ class QoSState:
         Returns:
             (Game): All the information specifying a game.
         """
-
+        print("get qos")
         return self._load_qos(flow_name=flow_name)#.get(endpair_name)
 
     ####################################
@@ -182,7 +182,7 @@ class QoSState:
         """A partir de um nome fluxo, recupera-lo"""
         # a ideia eh ser um flow por endereco, mas no XO, em um endereco são armazenados varios games... por isso usa dicionario
         # por enquanto vamos deixar o dicionario, pois não sei como está funcionando exatamente.. (modificar após analise)
-
+        print("load qos")
         address = _make_qos_address(flow_name)
 
         if address in self._address_cache:
@@ -251,13 +251,14 @@ class QoSState:
 
 
 
-def fromJsonToFlow(json)->FlowTransacao:
-    lista_flowfields = json['name'].split("_")
-    ip_src = lista_flowfields[0]
-    ip_dst = lista_flowfields[1]
-    ip_ver = lista_flowfields[2]
-    proto = lista_flowfields[3]
+def fromJsonToFlow(_json)->FlowTransacao:
+    data_loaded = json.loads(_json)
+    lista_flowfields = data_loaded['name'].split("_")
+    ip_ver = lista_flowfields[0]
+    proto = lista_flowfields[1]
+    ip_src = lista_flowfields[2]
+    ip_dst = lista_flowfields[3]
     src_port = lista_flowfields[4]
     dst_port = lista_flowfields[5]
-    f = FlowTransacao(ip_src=ip_src, ip_dst=ip_dst, ip_ver=ip_ver, src_port=src_port, dst_port=dst_port, proto=proto, qosregister=json['qosregisters'])
+    f = FlowTransacao(ip_src=ip_src, ip_dst=ip_dst, ip_ver=ip_ver, src_port=src_port, dst_port=dst_port, proto=proto, qosregister=data_loaded['qosregisters'])
     return f
