@@ -2,6 +2,8 @@
 import os
 import sys
 from threading import Thread
+import pickle
+import struct
 
 current = os.path.dirname(os.path.realpath(__file__))
 
@@ -35,11 +37,7 @@ def enviar_fred(fred_json, server_ip, server_port):
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp.connect((server_ip, server_port))
 
-    print(fred_json)
-    vetorbytes = fred_json.encode("utf-8")
-    tcp.send(len(vetorbytes).to_bytes(4, 'big'))
-    print(tcp.send(vetorbytes))
-    print('len: ', len(vetorbytes))    
+    send_data(tcp, fred_json)
     
     tcp.close()
     return 
@@ -51,7 +49,7 @@ def meu_dominio(ip_addrs:str, meu_ip:str):
     return False
 
 
-def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager ):
+def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:BlockchainManager, fredmanager:FredManager ):
     nome_blockchain = calculate_network_prefix_ipv4(fred.ip_src) + "-" +  calculate_network_prefix_ipv4(fred.ip_dst)
                 
     chave_publica, chave_privada = criar_chave_sawadm()
@@ -60,6 +58,7 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
 
     if lista_peers_ip == []:
         print("Lista Pares vazia == nao deve criar blockchain")
+        fredmanager.save_fred(fred.getName(), fred)
         return
  
     is_genesis = False
@@ -93,6 +92,7 @@ def tratar_blockchain_setup(serverip:str, fred:Fred, blockchainManager:Blockchai
     else:
         print("Blockchain existente %s->%s %s:%d(network) %d(rest)" %(fred.ip_src, fred.ip_dst, ip_blockchain, porta_network,porta_rest))
 
+    fredmanager.save_fred(fred.getName(), fred)
 
 def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
 # tratar o flow monitoring recebido + criar transação para a blockchain
@@ -102,9 +102,14 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido, blockchainManager:B
     nome_fred = str(flow_monitoring_recebido.ip_ver) +"_"+ str(flow_monitoring_recebido.proto)+"_"+flow_monitoring_recebido.ip_src+"_"+flow_monitoring_recebido.ip_dst+"_"+str(flow_monitoring_recebido.src_port)+"_"+str(flow_monitoring_recebido.dst_port)
     fred_flow = fredmanager.get_fred(nome_fred)
 
+
+    if fred_flow == None:
+        print("[trat-flow-monitoring] Nao foi recebido fred para esse fluxo = abort")
+        return
+
     #calcular as medias para atraso, banda e perda
     flow_monitoring_local = monitoringmanager.getMonitoring(nome_fred)
-    
+        
     print("Aqui 1")
     # precisa receber dois para fazer o calculo
     if flow_monitoring_local == None:
@@ -119,6 +124,7 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido, blockchainManager:B
     #remover monitoramento anterior
     monitoringmanager.delMonitoring(nome_fred)
 
+    
     print("Aqui 4")
     blockchain_ip, porta_network, porta_rest = blockchainManager.get_blockchain(calculate_network_prefix_ipv4(flow_monitoring_recebido.ip_src), calculate_network_prefix_ipv4(flow_monitoring_recebido.ip_dst))
     print("Aqui 5")
@@ -139,6 +145,22 @@ def tratar_flow_monitoring(meu_ip, flow_monitoring_recebido, blockchainManager:B
     print('[trat-flow-monitoring] end:', initime, ' duracao:', endtime - initime)
     return False
 
+def send_data(conn, data):
+    serialized_data = pickle.dumps(data)
+    conn.sendall(struct.pack('>I', len(serialized_data)))
+    conn.sendall(serialized_data)
+
+def receive_data(conn):
+    data_size = struct.unpack('>I', conn.recv(4))[0]
+    received_payload = b""
+    reamining_payload_size = data_size
+    while reamining_payload_size != 0:
+        received_payload += conn.recv(reamining_payload_size)
+        reamining_payload_size = data_size - len(received_payload)
+    data = pickle.loads(received_payload)
+
+    return data
+
 def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredmanager:FredManager, monitoringmanager:MonitoringManager):
     print("Iniciando servidor de Freds (%s:%d)....\n" % (serverip, serverport))
 
@@ -154,14 +176,11 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
         conn, addr = tcp.accept()
         initime = current_milli_time()
         print("[management-server] init ", initime)
-        data_qtd_bytes:int = int.from_bytes(conn.recv(4),'big')
-        data = conn.recv(data_qtd_bytes).decode()
-        
-        conn.close()
 
+        data = receive_data(conn)
         
         print('Recebido de ', addr)
-        print('qtd bytes data:',data_qtd_bytes)
+        print('qtd bytes data:',len(data))
         print('json:',data)
         # continue
 
@@ -170,7 +189,7 @@ def host_server(serverip, serverport, blockchainManager:BlockchainManager, fredm
             print('[management-server] fred recebido')
             fred = fromJsonToFred(data_json)
           
-            tratar_blockchain_setup(serverip, fred, blockchainManager)
+            tratar_blockchain_setup(serverip, fred, blockchainManager, fredmanager)
             
             print('[management-server] fred terminado')
             

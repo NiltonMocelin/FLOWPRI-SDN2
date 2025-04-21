@@ -14,11 +14,17 @@ from host.host_qosblockchain.fp_api_qosblockchain import criar_blockchain_api, B
 from host.host_qosblockchain.processor.qos_state import FlowTransacao, QoSRegister
 import socket
 import time
+import pickle
+import struct
 
 
 def current_milli_time():
     return round(time.time() * 1000)
 
+def send_data(conn, data):
+    serialized_data = pickle.dumps(data)
+    conn.sendall(struct.pack('>I', len(serialized_data)))
+    conn.sendall(serialized_data)
 
 def enviar_msg(msg_str, server_ip, server_port):
     print("Enviando msg_str para -> %s:%s\n" % (server_ip,server_port))
@@ -27,11 +33,9 @@ def enviar_msg(msg_str, server_ip, server_port):
     tcp.connect((server_ip, server_port))
 
     print(msg_str)
-    vetorbytes = msg_str.encode("utf-8")
-    tcp.send(len(vetorbytes).to_bytes(4, 'big'))
-    print(tcp.send(vetorbytes))
-    print('len: ', len(vetorbytes))    
-    
+
+    send_data(tcp, msg_str)
+        
     tcp.close()
     return 
 
@@ -241,11 +245,10 @@ def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:st
         nome_fluxo = str(ip_pkt.version) + "_"+ str(ip_pkt.proto) + "_"+ ip_pkt.src + "_"+ ip_pkt.dst + "_"+ str(ip_pkt.sport) + "_"+str(ip_pkt.dport)
         print(nome_fluxo, t, plen)
 
-        flowmonitoring = None
-        try:
-            flowmonitoring = local_flowmonitorings_dict[nome_fluxo]
-        except:
+        flowmonitoring = local_flowmonitorings_dict.get(nome_fluxo, None)
+        if not flowmonitoring:
             flowmonitoring = FlowMonitoring(ip_ver=ip_pkt.version, ip_src=ip_pkt.src, ip_dst=ip_pkt.dst, src_port=ip_pkt.sport, dst_port=ip_pkt.dport, proto=ip_pkt.proto, qtd_pacotes=0, monitor_name=meu_ip, lista_pktsizes=[], lista_pkttimestamps=[])
+            local_flowmonitorings_dict[nome_fluxo] = flowmonitoring
 
         #adiciona os dados
         # verifica se ja possui 20 pkts
@@ -255,5 +258,6 @@ def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:st
         flowmonitoring.lista_pkttimestamps.append(t)
         
         if flowmonitoring.qtd_pacotes >= QTD_PACOTES:
-            Thread(target=send_flowmonitoring, args=[flowmonitoring, ip_management_host, port_management_host])
+            print("enviando monitoring tempo: ", current_milli_time())
+            send_flowmonitoring(flowmonitoring, ip_management_host, port_management_host)
             del local_flowmonitorings_dict[nome_fluxo]

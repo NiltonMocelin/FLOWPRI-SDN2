@@ -5,6 +5,8 @@ from fp_constants import class_prio_to_queue_id, class_prio_to_monitoring_mark
 import subprocess
 import time
 import socket
+import pickle
+import struct
 
 from ryu.lib.ovs import vsctl
 from ryu.lib.ovs.bridge import OVSBridge
@@ -27,6 +29,23 @@ from ryu.lib.ovs.bridge import OVSBridge
 #     return False
 
 
+def send_data(conn, data):
+    serialized_data = pickle.dumps(data)
+    conn.sendall(struct.pack('>I', len(serialized_data)))
+    conn.sendall(serialized_data)
+
+
+def receive_data(conn):
+    data_size = struct.unpack('>I', conn.recv(4))[0]
+    received_payload = b""
+    reamining_payload_size = data_size
+    while reamining_payload_size != 0:
+        received_payload += conn.recv(reamining_payload_size)
+        reamining_payload_size = data_size - len(received_payload)
+    data = pickle.loads(received_payload)
+
+    return data
+
 
 def enviar_msg(msg_str, server_ip, server_port):
     print("Enviando msg_str para -> %s:%s\n" % (server_ip,server_port))
@@ -34,11 +53,7 @@ def enviar_msg(msg_str, server_ip, server_port):
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp.connect((server_ip, server_port))
 
-    print(msg_str)
-    vetorbytes = msg_str.encode("utf-8")
-    tcp.send(len(vetorbytes).to_bytes(4, 'big'))
-    print(tcp.send(vetorbytes))
-    print('len: ', len(vetorbytes))    
+    send_data(tcp, msg_str)
     
     tcp.close()
     return 
@@ -60,7 +75,8 @@ def send_fred_socket(fred_obj, ip_host_dst, PORTA_HOST_FRED_SERVER):
 
     try:
         # tcp.send(len(dados))
-        tcp.send(fred_obj.encode())
+        send_data(tcp, fred_obj)
+        # tcp.send(fred_obj.encode())
 
         tcp.close()
 

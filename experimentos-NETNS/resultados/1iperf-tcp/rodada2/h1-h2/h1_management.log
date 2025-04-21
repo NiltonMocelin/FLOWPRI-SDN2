@@ -1,0 +1,211 @@
+Management host iniciado: host 172.16.1.30!
+Iniciando servidor de Freds (172.16.1.30:9090)....
+
+Esperando nova conexao ...
+[management-server] init  1745259088774
+Recebido de  ('172.16.1.10', 33432)
+qtd bytes data: 752
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 48034, "dst_port": 5001, "mac_src": "3e:83:ff:19:81:bb", "mac_dst": "26:e7:12:39:2b:2e", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.2.0"], "ip_genesis": "172.16.2.30", "list_peers": [], "list_route": [{"ordem": 1, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.2.30', 'ip_dst': '172.16.1.30', 'src_port': 48034, 'dst_port': 5001, 'mac_src': '3e:83:ff:19:81:bb', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.2.0'], 'ip_genesis': '172.16.2.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+Lista Pares vazia == nao deve criar blockchain
+[management-server] fred terminado
+[management-server]  end: 1745259088774  duracao: 0
+Esperando nova conexao ...
+[management-server] init  1745259092798
+Recebido de  ('172.16.2.30', 50910)
+qtd bytes data: 1200
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.1.30", "ip_dst": "172.16.2.30", "src_port": 5001, "dst_port": 48034, "mac_src": "26:e7:12:39:2b:2e", "mac_dst": "3e:83:ff:19:81:bb", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.1.0"], "ip_genesis": "172.16.1.30", "list_peers": [{"nome_peer": "172.16.1.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.1.50:18064"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:27336"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:19419"}], "list_route": [{"ordem": 1, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.2.30', 'src_port': 5001, 'dst_port': 48034, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': '3e:83:ff:19:81:bb', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [{'nome_peer': '172.16.1.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.1.50:18064'}, {'nome_peer': '172.16.2.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.2.50:27336'}, {'nome_peer': '172.16.2.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.2.50:19419'}], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+para os experimentos com virt namespaces
+net: 172.16.1.50 : 10208
+rest: 172.16.1.50 : 10899
+val: 172.16.1.50 : 22553
+lista_nos:  ['172.16.1.50:18064', '172.16.2.50:27336', '172.16.2.50:19419']
+Criar nova blockchain (containers: rest,settings,validador,consenso):
+IS GENESIS:  True
+Creating veth1-qosblockchain-172.16.1.0-172.16.2.0 ... 
+Creating veth1-validator-172.16.1.0-172.16.2.0     ... 
+Creating veth1-settings-tp-172.16.1.0-172.16.2.0   ... 
+Creating veth1-pbft-172.16.1.0-172.16.2.0          ... 
+Creating veth1-rest-api-172.16.1.0-172.16.2.0      ... 
+[3A[2KCreating veth1-settings-tp-172.16.1.0-172.16.2.0   ... [32mdone[0m[3B[4A[2KCreating veth1-validator-172.16.1.0-172.16.2.0     ... [32mdone[0m[4B[2A[2KCreating veth1-pbft-172.16.1.0-172.16.2.0          ... [32mdone[0m[2B[5A[2KCreating veth1-qosblockchain-172.16.1.0-172.16.2.0 ... [32mdone[0m[5B[1A[2KCreating veth1-rest-api-172.16.1.0-172.16.2.0      ... [32mdone[0m[1BCompletedProcess(args=['sudo', 'docker-compose', 'up', '-d'], returncode=0)
+[blkc-setup]Blockchain criada: nome: 172.16.1.0-172.16.2.0, porta_network:10208, porta_rest:10899
+[management-server] fred terminado
+[management-server]  end: 1745259093383  duracao: 585
+Esperando nova conexao ...
+[management-server] init  1745259094582
+Recebido de  ('172.16.1.10', 33438)
+qtd bytes data: 724
+json: {"Monitoring": {"ip_ver": 2048, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 48034, "dst_port": 5001, "proto": 6, "qtd_pacotes": 20, "monitor_name": "172.16.1.10", "timestamps": [1745259094.252031, 1745259094.252571, 1745259094.2528296, 1745259094.2616305, 1745259094.261917, 1745259094.2621794, 1745259094.2624757, 1745259094.2638853, 1745259094.264192, 1745259094.264665, 1745259094.264908, 1745259094.2651823, 1745259094.265426, 1745259094.2672067, 1745259094.2674627, 1745259094.2679453, 1745259094.2682269, 1745259094.2684696, 1745259094.2687485, 1745259094.2690647], "pktsizes": [1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514]}}
+[management-server] flow monitoring recebido
+[trat-flow-monitoring] init: 1745259094585
+Aqui 1
+[management-server] flow monitoring end
+[management-server]  end: 1745259094585  duracao: 3
+Esperando nova conexao ...
+[management-server] init  1745259094585
+Recebido de  ('172.16.1.10', 33442)
+qtd bytes data: 727
+json: {"Monitoring": {"ip_ver": 2048, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 48034, "dst_port": 5001, "proto": 6, "qtd_pacotes": 20, "monitor_name": "172.16.1.10", "timestamps": [1745259094.3561044, 1745259094.356349, 1745259094.3566227, 1745259094.3568811, 1745259094.3571289, 1745259094.3573906, 1745259094.3576283, 1745259094.3578908, 1745259094.3581328, 1745259094.3583925, 1745259094.358626, 1745259094.3590693, 1745259094.359298, 1745259094.3595579, 1745259094.359809, 1745259094.3602185, 1745259094.3604753, 1745259094.3606997, 1745259094.3609598, 1745259094.3613997], "pktsizes": [1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514]}}
+[management-server] flow monitoring recebido
+[trat-flow-monitoring] init: 1745259094585
+Aqui 1
+Aqui 2
+Aqui 3
+Aqui 4
+Aqui 5
+criando qosreg
+Traceback (most recent call last):
+  File "host/host_management_server.py", line 205, in <module>
+    host_server(SERVER_IP, FRED_SERVER_PORT, blockchainManager, fredmanager, monitoringmanager)
+  File "host/host_management_server.py", line 192, in host_server
+    tratar_flow_monitoring(get_meu_ip(), flow_monitoring, blockchainManager, fredmanager, monitoringmanager)
+  File "host/host_management_server.py", line 126, in tratar_flow_monitoring
+    qosregister = QoSRegister(nodename=meu_ip, route_nodes=fred_flow.lista_rota, blockchain_nodes=fred_flow.lista_peers, state=1, service_label=fred_flow.classe,application_label=fred_flow.label, req_bandwidth=fred_flow.bandwidth, req_delay=fred_flow.delay, req_loss=fred_flow.loss, req_jitter=fred_flow.jitter, bandwidth=qos_calculado['bandwidth'], delay=qos_calculado['delay'], loss=qos_calculado['loss'], jitter=qos_calculado['jitter'])
+AttributeError: 'NoneType' object has no attribute 'lista_rota'
+Management host iniciado: host 172.16.1.30!
+Iniciando servidor de Freds (172.16.1.30:9090)....
+
+Esperando nova conexao ...
+[management-server] init  1745259635782
+Recebido de  ('172.16.1.10', 40342)
+qtd bytes data: 752
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 40192, "dst_port": 5001, "mac_src": "3e:83:ff:19:81:bb", "mac_dst": "26:e7:12:39:2b:2e", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.2.0"], "ip_genesis": "172.16.2.30", "list_peers": [], "list_route": [{"ordem": 1, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.2.30', 'ip_dst': '172.16.1.30', 'src_port': 40192, 'dst_port': 5001, 'mac_src': '3e:83:ff:19:81:bb', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.2.0'], 'ip_genesis': '172.16.2.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+Lista Pares vazia == nao deve criar blockchain
+[management-server] fred terminado
+[management-server]  end: 1745259635782  duracao: 0
+Esperando nova conexao ...
+[management-server] init  1745259637570
+Recebido de  ('172.16.2.30', 43510)
+qtd bytes data: 1200
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.1.30", "ip_dst": "172.16.2.30", "src_port": 5001, "dst_port": 40192, "mac_src": "26:e7:12:39:2b:2e", "mac_dst": "3e:83:ff:19:81:bb", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.1.0"], "ip_genesis": "172.16.1.30", "list_peers": [{"nome_peer": "172.16.1.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.1.50:25883"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:12161"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:14954"}], "list_route": [{"ordem": 1, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.2.30', 'src_port': 5001, 'dst_port': 40192, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': '3e:83:ff:19:81:bb', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [{'nome_peer': '172.16.1.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.1.50:25883'}, {'nome_peer': '172.16.2.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.2.50:12161'}, {'nome_peer': '172.16.2.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.2.50:14954'}], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+para os experimentos com virt namespaces
+net: 172.16.1.50 : 22726
+rest: 172.16.1.50 : 23732
+val: 172.16.1.50 : 9466
+lista_nos:  ['172.16.1.50:25883', '172.16.2.50:12161', '172.16.2.50:14954']
+Criar nova blockchain (containers: rest,settings,validador,consenso):
+IS GENESIS:  True
+Creating veth1-qosblockchain-172.16.1.0-172.16.2.0 ... 
+Creating veth1-pbft-172.16.1.0-172.16.2.0          ... 
+Creating veth1-rest-api-172.16.1.0-172.16.2.0      ... 
+Creating veth1-settings-tp-172.16.1.0-172.16.2.0   ... 
+Creating veth1-validator-172.16.1.0-172.16.2.0     ... 
+[4A[2KCreating veth1-pbft-172.16.1.0-172.16.2.0          ... [32mdone[0m[4B[5A[2KCreating veth1-qosblockchain-172.16.1.0-172.16.2.0 ... [32mdone[0m[5B[2A[2KCreating veth1-settings-tp-172.16.1.0-172.16.2.0   ... [32mdone[0m[2B[3A[2KCreating veth1-rest-api-172.16.1.0-172.16.2.0      ... [32mdone[0m[3B[1A[2KCreating veth1-validator-172.16.1.0-172.16.2.0     ... [32mdone[0m[1BCompletedProcess(args=['sudo', 'docker-compose', 'up', '-d'], returncode=0)
+[blkc-setup]Blockchain criada: nome: 172.16.1.0-172.16.2.0, porta_network:22726, porta_rest:23732
+[management-server] fred terminado
+[management-server]  end: 1745259638144  duracao: 574
+Esperando nova conexao ...
+[management-server] init  1745259641368
+Recebido de  ('172.16.1.10', 35130)
+qtd bytes data: 724
+json: {"Monitoring": {"ip_ver": 2048, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 40192, "dst_port": 5001, "proto": 6, "qtd_pacotes": 20, "monitor_name": "172.16.1.10", "timestamps": [1745259641.2513142, 1745259641.25175, 1745259641.2524428, 1745259641.2614439, 1745259641.261641, 1745259641.261967, 1745259641.2621543, 1745259641.2629943, 1745259641.2631817, 1745259641.2634525, 1745259641.2635906, 1745259641.2643068, 1745259641.2644978, 1745259641.264769, 1745259641.2656698, 1745259641.265958, 1745259641.2661052, 1745259641.2663734, 1745259641.2671628, 1745259641.267451], "pktsizes": [1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514]}}
+[management-server] flow monitoring recebido
+[trat-flow-monitoring] init: 1745259641369
+Aqui 1
+[management-server] flow monitoring end
+[management-server]  end: 1745259641369  duracao: 1
+Esperando nova conexao ...
+[management-server] init  1745259641370
+Recebido de  ('172.16.1.10', 35140)
+qtd bytes data: 724
+json: {"Monitoring": {"ip_ver": 2048, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 40192, "dst_port": 5001, "proto": 6, "qtd_pacotes": 20, "monitor_name": "172.16.1.10", "timestamps": [1745259641.3205345, 1745259641.3208559, 1745259641.321022, 1745259641.321316, 1745259641.321463, 1745259641.321731, 1745259641.321868, 1745259641.3221402, 1745259641.3223028, 1745259641.3225622, 1745259641.322701, 1745259641.3229625, 1745259641.3231142, 1745259641.3232799, 1745259641.3235397, 1745259641.323675, 1745259641.3238308, 1745259641.3240988, 1745259641.3242414, 1745259641.3248422], "pktsizes": [1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514]}}
+[management-server] flow monitoring recebido
+[trat-flow-monitoring] init: 1745259641370
+Aqui 1
+Aqui 2
+Aqui 3
+Aqui 4
+Aqui 5
+criando qosreg
+criando transacao
+[trat-flow-monitoring] enviando transacao  1745259641370
+[qosblchn] Enviando transacao para:  2048_6_172.16.2.30_172.16.1.30_40192_5001 : 172.16.1.50
+modificando ip pq a blockchain sobe no parent do domínio
+[trat-flow-monitoring] transacao enviada  1745259641371
+[management-server] flow monitoring end
+[management-server]  end: 1745259641371  duracao: 1
+Esperando nova conexao ...
+enviando transação para blockchain 2048_6_172.16.2.30_172.16.1.30_40192_5001
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    self.run()
+  File "/usr/local/lib/python3.8/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/nnmoc/host1/host/host_qosblockchain/fp_api_qosblockchain.py", line 69, in enviar_transacao_blockchain
+    print(QoSClient("%s:%d" % (ip_blockchain,port_blockchain), CAMINHO_CHAVE_PRIVADA+"validator.priv").reg_flowqos('reg_qos', flowname, transacao.toString()))
+TypeError: %d format: a number is required, not str
+[management-server] init  1745259646552
+Recebido de  ('172.16.1.10', 41582)
+qtd bytes data: 752
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 40192, "dst_port": 5001, "mac_src": "3e:83:ff:19:81:bb", "mac_dst": "26:e7:12:39:2b:2e", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.2.0"], "ip_genesis": "172.16.2.30", "list_peers": [], "list_route": [{"ordem": 1, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.2.30', 'ip_dst': '172.16.1.30', 'src_port': 40192, 'dst_port': 5001, 'mac_src': '3e:83:ff:19:81:bb', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.2.0'], 'ip_genesis': '172.16.2.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+Lista Pares vazia == nao deve criar blockchain
+[management-server] fred terminado
+[management-server]  end: 1745259646553  duracao: 1
+Esperando nova conexao ...
+Management host iniciado: host 172.16.1.30!
+Iniciando servidor de Freds (172.16.1.30:9090)....
+
+Esperando nova conexao ...
+[management-server] init  1745259807196
+Recebido de  ('172.16.1.10', 48654)
+qtd bytes data: 752
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 60116, "dst_port": 5001, "mac_src": "3e:83:ff:19:81:bb", "mac_dst": "26:e7:12:39:2b:2e", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.2.0"], "ip_genesis": "172.16.2.30", "list_peers": [], "list_route": [{"ordem": 1, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.2.30', 'ip_dst': '172.16.1.30', 'src_port': 60116, 'dst_port': 5001, 'mac_src': '3e:83:ff:19:81:bb', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.2.0'], 'ip_genesis': '172.16.2.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+Lista Pares vazia == nao deve criar blockchain
+[management-server] fred terminado
+[management-server]  end: 1745259807196  duracao: 0
+Esperando nova conexao ...
+[management-server] init  1745259808978
+Recebido de  ('172.16.2.30', 33386)
+qtd bytes data: 1199
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.1.30", "ip_dst": "172.16.2.30", "src_port": 5001, "dst_port": 60116, "mac_src": "26:e7:12:39:2b:2e", "mac_dst": "3e:83:ff:19:81:bb", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.1.0"], "ip_genesis": "172.16.1.30", "list_peers": [{"nome_peer": "172.16.1.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.1.50:9245"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:13482"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:10102"}], "list_route": [{"ordem": 1, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.2.30', 'src_port': 5001, 'dst_port': 60116, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': '3e:83:ff:19:81:bb', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [{'nome_peer': '172.16.1.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.1.50:9245'}, {'nome_peer': '172.16.2.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.2.50:13482'}, {'nome_peer': '172.16.2.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.2.50:10102'}], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+para os experimentos com virt namespaces
+net: 172.16.1.50 : 24017
+rest: 172.16.1.50 : 16783
+val: 172.16.1.50 : 18512
+lista_nos:  ['172.16.1.50:9245', '172.16.2.50:13482', '172.16.2.50:10102']
+Criar nova blockchain (containers: rest,settings,validador,consenso):
+IS GENESIS:  True
+Creating veth1-qosblockchain-172.16.1.0-172.16.2.0 ... 
+Creating veth1-pbft-172.16.1.0-172.16.2.0          ... 
+Creating veth1-rest-api-172.16.1.0-172.16.2.0      ... 
+Creating veth1-validator-172.16.1.0-172.16.2.0     ... 
+Creating veth1-settings-tp-172.16.1.0-172.16.2.0   ... 
+[3A[2KCreating veth1-rest-api-172.16.1.0-172.16.2.0      ... [32mdone[0m[3B[1A[2KCreating veth1-settings-tp-172.16.1.0-172.16.2.0   ... [32mdone[0m[1B[5A[2KCreating veth1-qosblockchain-172.16.1.0-172.16.2.0 ... [32mdone[0m[5B[4A[2KCreating veth1-pbft-172.16.1.0-172.16.2.0          ... [32mdone[0m[4B[2A[2KCreating veth1-validator-172.16.1.0-172.16.2.0     ... [32mdone[0m[2BCompletedProcess(args=['sudo', 'docker-compose', 'up', '-d'], returncode=0)
+[blkc-setup]Blockchain criada: nome: 172.16.1.0-172.16.2.0, porta_network:24017, porta_rest:16783
+[management-server] fred terminado
+[management-server]  end: 1745259809546  duracao: 568
+Esperando nova conexao ...
+[management-server] init  1745259812812
+Recebido de  ('172.16.1.10', 48670)
+qtd bytes data: 724
+json: {"Monitoring": {"ip_ver": 2048, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 60116, "dst_port": 5001, "proto": 6, "qtd_pacotes": 20, "monitor_name": "172.16.1.10", "timestamps": [1745259812.7003813, 1745259812.70178, 1745259812.7023723, 1745259812.7096295, 1745259812.7100263, 1745259812.710638, 1745259812.7110116, 1745259812.7130642, 1745259812.713431, 1745259812.7140856, 1745259812.7144384, 1745259812.7150471, 1745259812.7154362, 1745259812.7161012, 1745259812.716485, 1745259812.717139, 1745259812.7184696, 1745259812.7191546, 1745259812.7195425, 1745259812.720225], "pktsizes": [1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514]}}
+[management-server] flow monitoring recebido
+[trat-flow-monitoring] init: 1745259812813
+Aqui 1
+[management-server] flow monitoring end
+[management-server]  end: 1745259812813  duracao: 1
+Esperando nova conexao ...
+[management-server] init  1745259818006
+Recebido de  ('172.16.1.10', 37734)
+qtd bytes data: 752
+json: {"FRED": {"ip_ver": 2048, "proto": 6, "ip_src": "172.16.2.30", "ip_dst": "172.16.1.30", "src_port": 60116, "dst_port": 5001, "mac_src": "3e:83:ff:19:81:bb", "mac_dst": "26:e7:12:39:2b:2e", "priority": 1, "class": 1, "bandwidth": 2000, "loss": 10, "delay": 1, "jitter": 0, "label": "video", "blockchain_name": "blockchain_name", "AS_src_ip_range": [], "AS_dst_ip_range": ["172.16.2.0"], "ip_genesis": "172.16.2.30", "list_peers": [], "list_route": [{"ordem": 1, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "code": 0}}
+[management-server] fred recebido
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.2.30', 'ip_dst': '172.16.1.30', 'src_port': 60116, 'dst_port': 5001, 'mac_src': '3e:83:ff:19:81:bb', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.2.0'], 'ip_genesis': '172.16.2.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+Lista Pares vazia == nao deve criar blockchain
+[management-server] fred terminado
+[management-server]  end: 1745259818007  duracao: 1
+Esperando nova conexao ...

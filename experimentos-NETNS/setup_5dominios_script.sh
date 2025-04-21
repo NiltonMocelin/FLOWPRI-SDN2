@@ -547,41 +547,34 @@ cp -r ../../FLOWPRI-SDN2 ../../host5/ # criar uma pasta para cada host
 ###
 
 # sudo ip netns exec VRF1 xterm -e sh run_management_host.sh &
-sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-main-term -e "cd ../../host1 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-qos-manag -e "cd ../../host1 && sh run_conventional_host.sh  && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-fredEbkchain-serv -e "cd ../../host1 && sh run_management_host.sh > h1.log && /bin/bash" &
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-main-term -hold -e "cd ../../host1 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-qos-manag -hold -l -lf ../../h1_conventional.log -e "cd ../../host1 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF1 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host1-fredEbkchain-serv -hold -l -lf ../../h1_management.log -e "cd ../../host1 && sh run_management_host.sh && /bin/bash" &
 
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-main-term -hold -e "cd ../../host2 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-qos-manag -hold -l -lf ../../h2_convencional.log -e "cd ../../host2 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-fredEbkchain-serv -hold -l -lf ../../h2_management.log -e "cd ../../host2 && sh run_management_host.sh && /bin/bash" &
 
-sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-main-term -e "cd ../../host2 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-qos-manag -e "cd ../../host2 && sh run_conventional_host.sh  && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF3 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host2-fredEbkchain-serv -e "cd ../../host2 && sh run_management_host.sh > h2.log && /bin/bash" &
+sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-main-term -hold -e "cd ../../host3 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-qos-manag -hold -l -lf ../../h3_convencional.log -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-fredEbkchain-serv -hold -l -lf ../../h3_management.log -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
 
-sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-main-term -e "cd ../../host3 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-qos-manag -e "cd ../../host3 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF5 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host3-fredEbkchain-serv -e "cd ../../host3 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-main-term -hold -e "cd ../../host4 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-qos-manag -hold -l -lf ../../h4_convencional.log -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-fredEbkchain-serv -hold -l -lf ../../h4_management.log -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
 
-sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-main-term -e "cd ../../host4 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-qos-manag -e "cd ../../host4 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF7 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host4-fredEbkchain-serv -e "cd ../../host4 && sh run_management_host.sh && /bin/bash" &
-
-sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-main-term -e "cd ../../host5 && /bin/bash" & # subir os hosts
-sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-qos-manag -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
-sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-fredEbkchain-serv -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
+sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-main-term -hold -e "cd ../../host5 && /bin/bash" & # subir os hosts
+sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-qos-manag -hold -l -lf ../../h5_convencional.log -e "cd ../../host5 && sh run_conventional_host.sh && /bin/bash" & # ver se roda em background
+sudo ip netns exec VRF9 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T host5-fredEbkchain-serv -hold -l -lf ../../h5_management.log -e "cd ../../host5 && sh run_management_host.sh && /bin/bash" &
 
 
 # sudo ip netns exec VRF2 xterm -e sh run_flowpri2.sh &
-sudo ip netns exec VRF2 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller1-flowpri2 -e "cd ../../controlador1  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF4 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller2-flowpri2 -e "cd ../../controlador2  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF6 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller3-flowpri2 -e "cd ../../controlador3  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF8 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller4-flowpri2 -e "cd ../../controlador4  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
-sudo ip netns exec VRF10 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller5-flowpri2 -e "cd ../../controlador5 && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF2 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller1-flowpri2 -hold -l -lf ../../c1.log -e "cd ../../controlador1 && sh run_flowpri2.sh && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF4 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller2-flowpri2 -hold -l -lf ../../c2.log -e "cd ../../controlador2  && sh run_flowpri2.sh  && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF6 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller3-flowpri2 -hold -l -lf ../../c3.log -e "cd ../../controlador3  && sh run_flowpri2.sh && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF8 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller4-flowpri2 -hold -l -lf ../../c4.log -e "cd ../../controlador4  && sh run_flowpri2.sh && /bin/bash" & #&& sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
+sudo ip netns exec VRF10 xterm -xrm 'XTerm.vt100.allowTitleOps: false' -T controller5-flowpri2 -hold -l -lf ../../c5.log -e "cd ../../controlador5 && sh run_flowpri2.sh && /bin/bash" & # && sh run_flowpri2.sh && /bin/bash" & # subir os hosts servers
 
-# forcar re-sync
-#sudo ovs-vsctl set-controller switch1 tcp:172.16.1.10:6653 
-#sudo ovs-vsctl set-controller switch2 tcp:172.16.2.10:6653 
-#sudo ovs-vsctl set-controller switch3 tcp:172.16.3.10:6653 
-#sudo ovs-vsctl set-controller switch4 tcp:172.16.4.10:6653 
-#sudo ovs-vsctl set-controller switch5 tcp:172.16.5.10:6653 
 
 # criar o qosblockchainv1
 echo "Montando imagens docker"

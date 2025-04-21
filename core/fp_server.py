@@ -2,6 +2,8 @@
 
 import socket
 from fp_constants import PORTAC_C, PORTAC_H, PORTAC_X, CRIAR
+import pickle
+import struct
 # from fp_constants import freds
 
 # from fp_switch import Switch
@@ -24,6 +26,24 @@ from fp_switch import tratador_delSwitches, tratador_addSwitches
 
 # Criar a configuracao para resetar as regras -> poder refazer os testes
 
+def send_data(conn, data):
+    serialized_data = pickle.dumps(data)
+    conn.sendall(struct.pack('>I', len(serialized_data)))
+    conn.sendall(serialized_data)
+
+
+def receive_data(conn):
+    data_size = struct.unpack('>I', conn.recv(4))[0]
+    received_payload = b""
+    reamining_payload_size = data_size
+    while reamining_payload_size != 0:
+        received_payload += conn.recv(reamining_payload_size)
+        reamining_payload_size = data_size - len(received_payload)
+    data = pickle.loads(received_payload)
+
+    return data
+
+
 def servidor_configuracoes(controller, ip_server):
 
     
@@ -40,16 +60,14 @@ def servidor_configuracoes(controller, ip_server):
         print("Esperando nova conexao ...")
         conn, addr = tcp.accept()
 
-        data_qtd_bytes:int = int.from_bytes(conn.recv(4),'big')
-        data = conn.recv(data_qtd_bytes).decode()
+        data = receive_data(conn)
         
         conn.close()
 
         print('Recebido de ', addr)
-        print('qtd bytes data:',data_qtd_bytes)
+        print('qtd bytes data:',len(data))
         print('json:',data)
-        # continue
-
+        
         cfg = json.loads(data)
 
         #descobrir qual o tipo de operacao da configuracao
@@ -83,42 +101,3 @@ def servidor_configuracoes(controller, ip_server):
         print('Configuração realizada')
 
     return
-
-##aqui
-def enviar_contratos(ip_ver, ip_dst, dst_port, contrato_obj):
-    #print]("[enviar-contratos] p/ ip_dst: %s, port_dst: %s" %(host_ip, host_port))
-    tempo_i = round(time.monotonic()*1000)
-    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp.connect((ip_dst, dst_port))
- 
-    print("[%s] enviar contrato p/ %s\n" % (datetime.datetime.now().time(), ip_dst))
-
-    #teste envio [ok]
-    #tcp.connect(("10.123.123.2", host_port))
-
-    # contratos_contador = 0
-    # #contar quantos contratos enviar
-    # for i in contratos:
-    #     if i.ip_dst == ip_dst_contrato:
-    #         contratos_contador = contratos_contador+1
-    
-    #enviar apenas um contrato
-    contratos_contador = 1
-    
-    #enviar quantos contratos serao enviados
-    tcp.send(struct.pack('<i',contratos_contador))
-
-    #para cada contrato, antes de enviar, verificar o size e enviar o size do vetor de bytes a ser enviado
-    #encontrar os contratos que se referem ao ip_dst informado e enviar para o host_ip:host_port
-
-    vetorbytes = json.dumps(contrato_obj.toJSON()).encode('utf-8')
-    qtdBytes = struct.pack('<i',len(vetorbytes))
-    tcp.send(qtdBytes)
-    tcp.send(vetorbytes)
-    print(contrato_obj.toString())
-
-    #fechando a conexao
-    #print]("\n")
-    tcp.close()
-    print("[%s] enviar contrato p/ %s - fim\n" % (datetime.datetime.now().time(), ip_dst))
-    # logging.info('[Packet_In] icmp 16 - enviar_contrato - fim - tempo: %d\n' % (round(time.monotonic()*1000) - tempo_i))
