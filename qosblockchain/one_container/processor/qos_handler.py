@@ -53,20 +53,19 @@ class QoSTransactionHandler(TransactionHandler):
 
         qos_payload = QoSPayload.from_bytes(transaction.payload)
 
-        print('header ', header, '; signer ', signer, '; ',qos_payload)
+        print('header ', header)
+        print(' signer ', signer)
+        print( 'payload' ,qos_payload)
 
-        print('flow_str: ', str(qos_payload.flow_str))
+        print('flow_str: ', qos_payload.flow_str)
 
-        flow_json = qos_payload.flow_str
-        flow = fromJsonToFlow(flow_json)
+        flow_json = qos_payload.flow_str # dict
 
-        print("FLOW to string: ", flow.toString())
-
-        action = qos_payload.action
-        flow_name = qos_payload.flow_name
+        action = qos_payload.action # dict
+        flow_name = qos_payload.flow_name # str
 
         qos_state = QoSState(context)
-
+        print("M")
         if action == 'reg_qos':
             
             if flow_json == None:
@@ -74,7 +73,7 @@ class QoSTransactionHandler(TransactionHandler):
                 return
             print('registrando qos')
 
-            qos_state.reg_qos(flow_name, flow)
+            qos_state.reg_qos(flow_name, flow_json)
         else:
             raise InvalidTransaction('Invalid action')
 

@@ -161,7 +161,7 @@ def enviar_transacao_blockchain_api(meu_ip, blockchain_ip, blockchain_porta, flo
     
     transacao = FlowTransacao(fred_flow.ip_src, fred_flow.ip_dst, fred_flow.ip_ver, fred_flow.src_port, fred_flow.dst_port, fred_flow.proto, [qosregister])
     print("Chamando api de transacao")
-    Thread(target=enviar_transacao_blockchain, args=[blockchain_ip, blockchain_porta, flowname, transacao]).start()
+    Thread(target=enviar_transacao_blockchain, args=[blockchain_ip, blockchain_porta, flowname, transacao.toString()]).start()
     return True
 
 

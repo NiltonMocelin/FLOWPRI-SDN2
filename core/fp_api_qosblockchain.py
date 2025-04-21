@@ -44,11 +44,11 @@ def criar_chave_sawtooth_keygen():
 def criar_chave_sawadm():
     return criar_par_chaves_sawadm(CAMINHO_CHAVE_PRIVADA)
 
-def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname, transacao:FlowTransacao):
+def enviar_transacao_blockchain(ip_blockchain, port_blockchain, flowname_str, transacao_str):
     print("[qosblchn] Enviando transacao para: ", ip_blockchain,':',port_blockchain)
 # python main_qos_cli.py reg_qos '192.168.0.0-192.168.0.1-5000-5002-tcp' '{"name":"192.168.0.0-192.168.0.1-5000-5002-tcp","state":"Stopped","src_port":"5000","dst_port":"5000","proto":"udp","qos":[],"freds":[]}' --username hostqos
     # args = BlockchainArgs(command="reg_qos", url=ip_blockchain+":"+port_blockchain, flowname=flowname, flowjson=transacao.toString(), username='controller_key')
-    print(QoSClient("%s:%d" % (ip_blockchain,port_blockchain), CAMINHO_CHAVE_PRIVADA+"validator.priv").reg_flowqos('reg_qos', flowname, transacao.toString()))
+    print(QoSClient("%s:%d" % (ip_blockchain,port_blockchain), CAMINHO_CHAVE_PRIVADA+"validator.priv").reg_flowqos('reg_qos', transacao_str, flowname_str))
     print("[qosblchn] Transacao enviada")
     return True
 

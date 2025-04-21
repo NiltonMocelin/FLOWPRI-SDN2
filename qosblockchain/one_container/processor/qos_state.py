@@ -21,6 +21,7 @@ import hashlib
 
 from sawtooth_sdk.processor.exceptions import InternalError
 import json
+import time
 
 #ledger para a comunicação entre AS A e AS B
 QOS_NAMESPACE = hashlib.sha512('qos'.encode("utf-8")).hexdigest()[0:6]
@@ -51,6 +52,9 @@ class QoSRegister:
         self.jitter:int = jitter
 
     def toString(self):
+        return json.dumps(self.toJson())
+    
+    def toJson(self):
         qos_json = {"nodename":self.nodename, 
         "route_nodes":self.route_nodes, 
         "blockchain_nodes":self.blockchain_nodes, 
@@ -65,8 +69,7 @@ class QoSRegister:
         "delay":self.delay, 
         "loss":self.loss,  
         "jitter": self.jitter}
-
-        return json.dumps(qos_json)
+        return qos_json
 
 class FlowTransacao:
     # dissecar o FRED aqui
@@ -75,9 +78,8 @@ class FlowTransacao:
         self.qosregisters:list = qosregisters # class QoS # lista de registros de qos para um fluxo
 
     def toString(self):
-        flow_json = {"name": self.name, "qosregisters":[qosreg.toString() for qosreg in self.qosregisters]}
+        flow_json = {"flow_name": self.name, "qosregisters":[qosreg.toJson() for qosreg in self.qosregisters]}
         return json.dumps(flow_json)
-    
     
 class QoSState:
 
@@ -94,7 +96,7 @@ class QoSState:
         self._context = context
         self._address_cache = {}
 
-    def reg_qos(self, flow_name, flow:FlowTransacao):
+    def reg_qos(self, flow_name, flow_json):
         """Register (store) qos of a flow in the validator state.
 
         Args:
@@ -103,24 +105,23 @@ class QoSState:
         """
 
         ### aqui
-        flow_recuperado = self._load_qos(flow_name=flow_name)
-        print('flow_recuperado: flowname:', flow_name, ' --> flow:', flow_recuperado)
-
-        flow_existente:FlowTransacao = None 
+        flow_recuperado = self._load_qos(flow_name=flow_name) # json.loads
         
-        if flow_recuperado!=None:
-            flow_existente = fromJsonToFlow(flow_recuperado)
 
+# {"action":"reg_qos", "flow_name":"2048_6_172.16.1.30_172.16.2.30_5001_58994", "flow":{"flow_name": "2048_6_172.16.1.30_172.16.2.30_5001_58994", "qosregisters": [{"nodename": "172.16.2.10", "route_nodes": [{"ordem": 1, "nome_peer": "172.16.1.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}, {"ordem": 2, "nome_peer": "172.16.2.10", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "nro_saltos": 1}], "blockchain_nodes": [{"nome_peer": "172.16.1.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.1.50:7711"}, {"nome_peer": "172.16.2.50", "chave_publica": "03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1", "ip_porta": "172.16.2.50:28821"}], "state": 1, "service_label": 1, "application_label": "video", "req_bandwidth": 2000, "req_delay": 1, "req_loss": 10, "req_jitter": 0, "bandwidth": 68, "delay": 0, "loss": 0, "jitter": 0}]}}
+
+        print("Aqui")
         # se ja existe, entao, adicionar as informacoes do fluxo no existente (eh um update de estado)
-        if flow_existente != None:
-
+        if flow_recuperado != None:
+            print('flow_recuperado: flowname:', flow_name, ' --> flow:', flow_recuperado)
             #adicionar os qoss calculados --> deve conter apenas um calculo na transação recebida
-            for qos in flow.qosregisters:
-                flow_existente.qosregisters.append(qos)
+            for qos in flow_json['qosregisters']:
+                flow_recuperado['qosregisters'].append(qos)
         else:
-            flow_existente = flow
-
-        self._store_qos(flow_name=flow_name, flow=flow_existente)
+            flow_recuperado = flow_json
+        print("armazenando")
+        # print(type(flow_recuperado))
+        self._store_qos(flow_name=flow_name, flow=json.dumps(flow_recuperado))
         return
     
     def get_qos(self,flow_name):
@@ -168,7 +169,7 @@ class QoSState:
         self._context.set_state(
             {address: state_data},
             timeout=self.TIMEOUT)
-
+        print("transacao salva: ", time.time())
     def _delete_qos(self, flow_name):
         address = _make_qos_address(flow_name)
 
@@ -208,7 +209,7 @@ class QoSState:
             else:
                 self._address_cache[address] = None
                 flow = None
-
+        print("loaded")
         return flow
 
     def _deserialize(self, data):
@@ -228,13 +229,13 @@ class QoSState:
             #     # naendpair_qos_histme, board, state, player1, player2 = endpair_qos.split(",")
 
             #     endpair_qos_hist[endpair_name] = json.loads(endpair_qos_str)
-            flow = json.loads(data)
+            flow = json.loads(data.decode()) # dict
         except ValueError as e:
             raise InternalError("Failed to deserialize flow data") from e
 
         return flow
 
-    def _serialize(self, flow:FlowTransacao):
+    def _serialize(self, flow):
         """Takes a dict of game objects and serializes them into bytes.
 
         Args:
@@ -247,13 +248,13 @@ class QoSState:
         # duvida: usar json ou usar pickle?
         # a principio, json
         
-        return flow.toString().encode()
+        return flow.encode()
 
 
 
 def fromJsonToFlow(_json)->FlowTransacao:
     data_loaded = json.loads(_json)
-    lista_flowfields = data_loaded['name'].split("_")
+    lista_flowfields = data_loaded['flow_name'].split("_")
     ip_ver = lista_flowfields[0]
     proto = lista_flowfields[1]
     ip_src = lista_flowfields[2]
