@@ -1,0 +1,41 @@
+Neste caso o management host eh esse aqui: se nao for, alterar o ip management host aqui!
+Monitoramento iniciado: host 172.16.2.30!
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 78
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 78
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 78
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 66
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 78
+4_6_172.16.1.30_172.16.2.30_5001_54546 1745278416 78
+enviando monitoring tempo:  1745278416054
+Enviando flowmonitoring para %s:%d 172.16.2.30 9090
+Enviando msg_str para -> 172.16.2.30:9090
+
+Exception in thread Thread-1:
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "host/host_normal_server.py", line 48, in <module>
+  File "/usr/local/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    start_monitoring(ip_management_host=ip_management_host,port_management_host=PORT_MANAGEMENT_HOST,meu_ip=ip_management_host, interface=get_minha_interface())
+  File "/home/nnmoc/host2/host/host_traffic_monitoring/monitoring_utils.py", line 245, in start_monitoring
+    self.run()
+  File "/usr/local/lib/python3.8/threading.py", line 870, in run
+    nome_fluxo = str(ip_pkt.version) + "_"+ str(ip_pkt.proto) + "_"+ ip_pkt.src + "_"+ ip_pkt.dst + "_"+ str(ip_pkt.sport) + "_"+str(ip_pkt.dport)
+    self._target(*self._args, **self._kwargs)
+AttributeError: 'NoneType' object has no attribute 'version'
+  File "/home/nnmoc/host2/host/host_traffic_monitoring/monitoring_utils.py", line 33, in enviar_msg
+    tcp.connect((server_ip, server_port))
+OSError: [Errno 101] Network is unreachable

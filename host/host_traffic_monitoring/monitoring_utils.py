@@ -237,7 +237,8 @@ def start_monitoring(ip_management_host:str, port_management_host:int, meu_ip:st
         # se tiver 20 pacotes --> enviar o local_flowmonitorings_dict[*] para o management_host usando thread
         
         ip_pkt = Ether(buf).getlayer(IP)
-
+        if not ip_pkt:
+            continue
         # print(ip_pkt.src, ip_pkt.dst, ip_pkt.version, ip_pkt.proto)
         # print("[+]: Payload len=", plen)
         # print("[+]: Time", t)

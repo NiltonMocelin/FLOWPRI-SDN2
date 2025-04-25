@@ -982,20 +982,20 @@
     </mxGraphModel>
   </diagram>
   <diagram id="rTPhyLAhTh2cVcwFYtZS" name="Diagramas_comunicacao">
-    <mxGraphModel dx="1877" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2261" dy="838" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="DP9WUFka6WA4USUQD0_f-18" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="3530" y="796" width="999" height="790" as="geometry" />
+        <mxCell id="WwsVuBD4awLSNW4-bDXS-8" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3404" y="797" width="1180" height="790" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-6" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-6" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="2290" y="787.5" width="1180" height="790" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="820" y="780" width="1260" height="790" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="-770" y="575" width="1080" height="815" as="geometry" />
         </mxCell>
         <mxCell id="wRJQR5XvGe3gycmCcVVx-1" value="Diagramas explicando a comunicacao host-host: todos os processos envolvidos durante o envio de pacotes de um fluxo:&lt;div&gt;* Com base Nesses diagramas, contabilizar o overhead.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
@@ -1514,32 +1514,32 @@
         <mxCell id="1L-dFdye4u1Uikkd51U5-232" value="Packet copy" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="3709" y="1092" width="91" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="1L-dFdye4u1Uikkd51U5-233" value="0. Packet-in: packet classified: QoS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
-          <mxGeometry x="3777" y="1131" width="153" height="37" as="geometry" />
+        <mxCell id="1L-dFdye4u1Uikkd51U5-233" value="0. Packet-in: packet classified: QoS + QoSBlockchain start" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="3777" y="1131" width="158" height="55" as="geometry" />
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-234" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="3840" y="1195.5" as="sourcePoint" />
-            <mxPoint x="4020" y="1195.5" as="targetPoint" />
+            <mxPoint x="3840" y="1209" as="sourcePoint" />
+            <mxPoint x="4020" y="1209" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-235" value="Creates QoS rules" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="3868" y="1166" width="142" height="30" as="geometry" />
+          <mxGeometry x="3869" y="1182.75" width="142" height="30" as="geometry" />
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-236" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="3840" y="1228" as="sourcePoint" />
-            <mxPoint x="4230" y="1230" as="targetPoint" />
+            <mxPoint x="3840" y="1241" as="sourcePoint" />
+            <mxPoint x="4230" y="1241" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-239" value="" style="endArrow=none;html=1;rounded=0;startFill=1;startArrow=block;fontSize=16;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="3659" y="1203" as="sourcePoint" />
-            <mxPoint x="3839" y="1203" as="targetPoint" />
+            <mxPoint x="3659" y="1218.25" as="sourcePoint" />
+            <mxPoint x="3839" y="1218.25" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-240" value="Creates QoS rules" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;rotation=0;" parent="1" vertex="1">
-          <mxGeometry x="3660" y="1176" width="150.5" height="30" as="geometry" />
+          <mxGeometry x="3660" y="1191.25" width="150.5" height="30" as="geometry" />
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-241" value="0. Configured with best-effort default rule + copy to controller&lt;div&gt;1. Configured to intercept any marked packet destinated to this domain&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
           <mxGeometry x="3882" y="939" width="229" height="91" as="geometry" />
@@ -1552,9 +1552,6 @@
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-242" value="0. Configured with best-effort rule + copy to controller&lt;div&gt;1. Configured to intercept any marked packet destinated to this domain&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
           <mxGeometry x="4128" y="943" width="226" height="87" as="geometry" />
-        </mxCell>
-        <mxCell id="1L-dFdye4u1Uikkd51U5-244" value="Creates Monitoring rule (QoS rules)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="3921" y="1201" width="274" height="30" as="geometry" />
         </mxCell>
         <mxCell id="1L-dFdye4u1Uikkd51U5-248" value="Diagrama como ocorre a criação de um QoSBLockchain ?" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="5242" y="770" width="120" height="60" as="geometry" />
@@ -1595,38 +1592,191 @@
             <mxPoint x="5402.839524517088" y="1079" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-9" value="Para esclarecer, os hosts também poderiam interceptar o ICMP, porem, apenas o host destino receberia o icmp, e neste caso, o host de gerenciamento e de destino devem receber. Neste caso, o controlador consegue enviar para ambos via socket..." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-9" value="Para esclarecer, os hosts também poderiam interceptar o ICMP, porem, apenas o host destino receberia o icmp, e neste caso, o host de gerenciamento e de destino devem receber. Neste caso, o controlador consegue enviar para ambos via socket..." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="2938" y="662" width="362" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-10" value="&lt;font color=&quot;#000000&quot;&gt;First switch of the route&lt;/font&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" vertex="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-10" value="&lt;font color=&quot;#000000&quot;&gt;First switch of the route&lt;/font&gt;" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.switch;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="3609" y="855" width="100" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-11" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-11" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="3660" y="1086.82" as="sourcePoint" />
-            <mxPoint x="4320" y="1089" as="targetPoint" />
+            <mxPoint x="4412" y="1089" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-12" value="Forwards packet as best-effort" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-12" value="Forwards packet as best-effort" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="3670" y="1057.32" width="510" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-14" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-14" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="3660" y="1260.82" as="sourcePoint" />
-            <mxPoint x="4320" y="1263" as="targetPoint" />
+            <mxPoint x="3660" y="1276.07" as="sourcePoint" />
+            <mxPoint x="4426" y="1278.25" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-15" value="Forwards packet as QoS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="3670" y="1231.32" width="510" height="30" as="geometry" />
+        <mxCell id="DP9WUFka6WA4USUQD0_f-15" value="Forwards packet as QoS + forwards ICMP with FRED" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3724" y="1246.25" width="510" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-16" value="Packet" style="shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#4495D1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.letter;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="3584" y="1202.6000000000001" width="46.4" height="34.8" as="geometry" />
+        <mxCell id="DP9WUFka6WA4USUQD0_f-16" value="Packet" style="shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#4495D1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.letter;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3584" y="1217.8500000000001" width="46.4" height="34.8" as="geometry" />
         </mxCell>
-        <mxCell id="DP9WUFka6WA4USUQD0_f-17" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+        <mxCell id="DP9WUFka6WA4USUQD0_f-17" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="3555" y="1260" as="sourcePoint" />
-            <mxPoint x="3655" y="1260" as="targetPoint" />
+            <mxPoint x="3555" y="1275.25" as="sourcePoint" />
+            <mxPoint x="3655" y="1275.25" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-2" value="Diagrama Todos os passos a partir de um pacote : fluxo novo" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-240" y="1870" width="140" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-3" value="host&lt;div&gt;src/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="1945" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-4" value="First-Edge Controller" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-450" y="1947" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-5" value="Intermediate&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-240" y="1947" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-6" value="last-edge&lt;div&gt;Controller&lt;/div&gt;" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.mscae.enterprise.domain_controller;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="-33" y="1947" width="36" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-7" value="host&lt;div&gt;dst/manager&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.servers.physical_host;fillColor=#2072B8;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="161" y="1950" width="27" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-8" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-620" y="2635" as="sourcePoint" />
+            <mxPoint x="-620" y="2046" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-9" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="ROnbo4lrgTKIz1hkX7zK-20" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-438" y="2604.800048828125" as="sourcePoint" />
+            <mxPoint x="-430" y="2040" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-10" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;exitX=0.433;exitY=0.029;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="ROnbo4lrgTKIz1hkX7zK-22" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-230" y="2606.800048828125" as="sourcePoint" />
+            <mxPoint x="-222" y="2046" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-11" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="ROnbo4lrgTKIz1hkX7zK-25" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-13" y="2606.800048828125" as="sourcePoint" />
+            <mxPoint x="-13" y="2046" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-12" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="ROnbo4lrgTKIz1hkX7zK-29" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="196" y="2506" as="sourcePoint" />
+            <mxPoint x="196" y="2045" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-13" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-622" y="2137" as="sourcePoint" />
+            <mxPoint x="-530" y="2137" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-14" value="Sends packet" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;" parent="1" vertex="1">
+          <mxGeometry x="-620" y="2149" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-15" value="&lt;div&gt;Forwards packet as&lt;/div&gt;&lt;div&gt;best-effort&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="-466" y="2184" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-16" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" target="ROnbo4lrgTKIz1hkX7zK-22" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-424" y="2221" as="sourcePoint" />
+            <mxPoint x="-128" y="2230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-17" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-219.85" y="2286" as="sourcePoint" />
+            <mxPoint x="-100" y="2286" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-18" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-17" y="2354" as="sourcePoint" />
+            <mxPoint x="119" y="2354" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-19" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-429.4" y="2577" as="sourcePoint" />
+            <mxPoint x="-429.4000000000002" y="2188" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-20" value="&lt;div&gt;0. Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (Yes)&lt;/div&gt;&lt;div&gt;2. Begin classification&lt;/div&gt;&lt;div&gt;3. Create best-effort rules&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="-524" y="2081" width="190" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-21" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-222.4" y="2500" as="sourcePoint" />
+            <mxPoint x="-222.00691144708426" y="2251" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-22" value="&lt;div&gt;0. Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (No)&lt;/div&gt;&lt;div&gt;2. Create best-effort rules&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="-303" y="2153" width="187" height="91" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-23" value="&lt;div&gt;Forwards packet as&lt;/div&gt;&lt;div&gt;best-effort&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="-230" y="2245.5" width="145" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-24" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-14.64" y="2431" as="sourcePoint" />
+            <mxPoint x="-14.996223175965625" y="2313" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-25" value="&lt;div&gt;0. Packet intercepted&lt;/div&gt;&lt;div&gt;1. Checks if its from his domain (No)&lt;/div&gt;&lt;div&gt;2. Create best-effort rules&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="-95" y="2226" width="165" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-26" value="&lt;div&gt;Forwards packet as&amp;nbsp;&lt;/div&gt;&lt;div&gt;best-effort&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="-45" y="2313" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-27" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="-730" y="2040" width="186.5" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-28" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" source="ROnbo4lrgTKIz1hkX7zK-30" target="ROnbo4lrgTKIz1hkX7zK-29" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="196" y="2715" as="sourcePoint" />
+            <mxPoint x="196" y="2088" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-29" value="0. Runs QoSBlockchain server (manager host)&lt;div&gt;1. Runs traffic monitoring server/process&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="84" y="2049" width="199.5" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-31" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" parent="1" target="ROnbo4lrgTKIz1hkX7zK-30" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="196" y="2715" as="sourcePoint" />
+            <mxPoint x="196" y="2149" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ROnbo4lrgTKIz1hkX7zK-30" value="&lt;div&gt;Packet received&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="127" y="2338" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="WwsVuBD4awLSNW4-bDXS-1" value="Next Domain" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="4393" y="873" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="WwsVuBD4awLSNW4-bDXS-3" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="4366" y="1605" as="sourcePoint" />
+            <mxPoint x="4366" y="877" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WwsVuBD4awLSNW4-bDXS-4" value="" style="endArrow=classic;html=1;rounded=0;fontSize=16;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="4022" y="1211.25" as="sourcePoint" />
+            <mxPoint x="4232" y="1211.25" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1L-dFdye4u1Uikkd51U5-244" value="Creates Monitoring rule (QoS rules)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="3923" y="1209" width="274" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="WwsVuBD4awLSNW4-bDXS-7" value="Creates QoS rules" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="4062" y="1184" width="142" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

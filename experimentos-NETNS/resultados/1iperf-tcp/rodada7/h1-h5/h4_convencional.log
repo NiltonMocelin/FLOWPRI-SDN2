@@ -1,0 +1,8 @@
+Neste caso o management host eh esse aqui: se nao for, alterar o ip management host aqui!
+Monitoramento iniciado: host 172.16.4.30!
+Traceback (most recent call last):
+  File "host/host_normal_server.py", line 48, in <module>
+    start_monitoring(ip_management_host=ip_management_host,port_management_host=PORT_MANAGEMENT_HOST,meu_ip=ip_management_host, interface=get_minha_interface())
+  File "/home/nnmoc/host4/host/host_traffic_monitoring/monitoring_utils.py", line 245, in start_monitoring
+    nome_fluxo = str(ip_pkt.version) + "_"+ str(ip_pkt.proto) + "_"+ ip_pkt.src + "_"+ ip_pkt.dst + "_"+ str(ip_pkt.sport) + "_"+str(ip_pkt.dport)
+AttributeError: 'NoneType' object has no attribute 'version'

@@ -1,0 +1,1944 @@
+loading app core/main_controller.py
+loading app ryu.controller.ofp_handler
+instantiating app core/main_controller.py of FLOWPRI2
+CONTROLADOR - 
+ Init Start
+
+Controlador ID - 172.16.4.10
+Controlador IPv4 - 172.16.4.10
+Controlador IPv6 - fe80::a0a0:8eff:fe5e:79a8
+Controlador MAC - a2:a0:8e:5e:79:a8
+Lading cfg...
+{'ManagementHost': '172.16.4.30', 'addSwitches': [{'nome_switch': 4, 'ovsdb_addr': 'tcp:172.16.4.10:6633', 'port_to_controller': 17, 'portas': [{'nome_porta': 15, 'nome_interface': 'veth24', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 16, 'nome_interface': 'veth26', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 17, 'nome_interface': 'veth28', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 18, 'nome_interface': 'veth30', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 19, 'nome_interface': 'veth31', 'banda_total': 50000000, 'proxSwitch': -1}]}], 'addRotas': [{'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.4.10', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 16, 'porta_saida': 17, 'ordem': 0}]}, {'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.2.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 16, 'porta_saida': 15, 'ordem': 0}]}, {'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 16, 'porta_saida': 15, 'ordem': 0}]}, {'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.1.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 16, 'porta_saida': 15, 'ordem': 0}]}, {'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.5.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 16, 'porta_saida': 19, 'ordem': 0}]}, {'src_prefix': '172.16.4.10', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 17, 'porta_saida': 16, 'ordem': 0}]}, {'src_prefix': '172.16.2.30', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 15, 'porta_saida': 16, 'ordem': 0}]}, {'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 15, 'porta_saida': 16, 'ordem': 0}]}, {'src_prefix': '172.16.1.30', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 15, 'porta_saida': 16, 'ordem': 0}]}, {'src_prefix': '172.16.5.30', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 19, 'porta_saida': 16, 'ordem': 0}]}, {'src_prefix': '172.16.4.10', 'dst_prefix': '172.16.4.50', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 17, 'porta_saida': 18, 'ordem': 0}]}, {'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.4.50', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 16, 'porta_saida': 18, 'ordem': 0}]}, {'src_prefix': '172.16.4.50', 'dst_prefix': '172.16.4.10', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 18, 'porta_saida': 17, 'ordem': 0}]}, {'src_prefix': '172.16.4.50', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 18, 'porta_saida': 16, 'ordem': 0}]}, {'src_prefix': '172.16.1.0', 'dst_prefix': '172.16.5.0', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 15, 'porta_saida': 19, 'ordem': 0}]}, {'src_prefix': '172.16.5.0', 'dst_prefix': '172.16.1.0', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 19, 'porta_saida': 15, 'ordem': 0}]}, {'src_prefix': '172.16.2.0', 'dst_prefix': '172.16.5.0', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 15, 'porta_saida': 19, 'ordem': 0}]}, {'src_prefix': '172.16.5.0', 'dst_prefix': '172.16.2.0', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 19, 'porta_saida': 15, 'ordem': 0}]}, {'src_prefix': '172.16.3.0', 'dst_prefix': '172.16.5.0', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 15, 'porta_saida': 19, 'ordem': 0}]}, {'src_prefix': '172.16.5.0', 'dst_prefix': '172.16.3.0', 'switches_rota': [{'nome_switch': 4, 'porta_entrada': 19, 'porta_saida': 15, 'ordem': 0}]}], 'addDominioPrefix': [{'ip': '172.16.4.0'}], 'ipsDHCP': [{'ip': '172.16.4.1'}, {'ip': '172.16.4.2'}, {'ip': '172.16.4.3'}, {'ip': '172.16.4.4'}, {'ip': '172.16.4.5'}]}
+Adicionando configuracao de switch
+{'nome_switch': 4, 'ovsdb_addr': 'tcp:172.16.4.10:6633', 'port_to_controller': 17, 'portas': [{'nome_porta': 15, 'nome_interface': 'veth24', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 16, 'nome_interface': 'veth26', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 17, 'nome_interface': 'veth28', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 18, 'nome_interface': 'veth30', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 19, 'nome_interface': 'veth31', 'banda_total': 50000000, 'proxSwitch': -1}]}
+Novo switch: nome = S4
+{'nome_porta': 15, 'nome_interface': 'veth24', 'banda_total': 50000000, 'proxSwitch': -1}
+[S4] Nova porta: porta=15, banda=50000000, proximoSalto=-1
+
+{'nome_porta': 16, 'nome_interface': 'veth26', 'banda_total': 50000000, 'proxSwitch': -1}
+[S4] Nova porta: porta=16, banda=50000000, proximoSalto=-1
+
+{'nome_porta': 17, 'nome_interface': 'veth28', 'banda_total': 50000000, 'proxSwitch': -1}
+[S4] Nova porta: porta=17, banda=50000000, proximoSalto=-1
+
+{'nome_porta': 18, 'nome_interface': 'veth30', 'banda_total': 50000000, 'proxSwitch': -1}
+[S4] Nova porta: porta=18, banda=50000000, proximoSalto=-1
+
+{'nome_porta': 19, 'nome_interface': 'veth31', 'banda_total': 50000000, 'proxSwitch': -1}
+[S4] Nova porta: porta=19, banda=50000000, proximoSalto=-1
+
+Adicionando novas rotas:
+rotas adicionadas
+config loaded....
+Iniciando o tratador de arquivos de config....
+
+Esperando nova conexao ...
+instantiating app ryu.controller.ofp_handler of OFPHandler
+BRICK FLOWPRI2
+  CONSUMES EventOFPFlowRemoved
+  CONSUMES EventOFPPacketIn
+  CONSUMES EventOFPPortStatus
+  CONSUMES EventOFPSwitchFeatures
+BRICK ofp_event
+  PROVIDES EventOFPFlowRemoved TO {'FLOWPRI2': {'main'}}
+  PROVIDES EventOFPPacketIn TO {'FLOWPRI2': {'main'}}
+  PROVIDES EventOFPPortStatus TO {'FLOWPRI2': {'main'}}
+  PROVIDES EventOFPSwitchFeatures TO {'FLOWPRI2': {'config'}}
+  CONSUMES EventOFPEchoReply
+  CONSUMES EventOFPEchoRequest
+  CONSUMES EventOFPErrorMsg
+  CONSUMES EventOFPHello
+  CONSUMES EventOFPPortDescStatsReply
+  CONSUMES EventOFPPortStatus
+  CONSUMES EventOFPSwitchFeatures
+connected socket:<eventlet.greenio.base.GreenSocket object at 0x71fa34331c70> address:('172.16.4.50', 46004)
+hello ev <ryu.controller.ofp_event.EventOFPHello object at 0x71fa33fc01c0>
+move onto config mode
+EVENT ofp_event->FLOWPRI2 EventOFPSwitchFeatures
+switch features ev version=0x4,msg_type=0x6,msg_len=0x20,xid=0x3f03b447,OFPSwitchFeatures(auxiliary_id=0,capabilities=79,datapath_id=4,n_buffers=0,n_tables=254)
+Novo switch anunciado.... tempoAtivo: 4797 
+
+[20:24:33.075190] switch_features - setup de S4 
+
+Switch name:  4
+nome-switch: 4 porta: 15  interface: veth24
+[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth24
+[new_switch_handler] SUCESSO - filas anteriores removidas veth24
+[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth24
+echo 214336414 | sudo -S ovs-vsctl -- set port veth24 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
+nome-switch: 4 porta: 16  interface: veth26
+[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth26
+[new_switch_handler] SUCESSO - filas anteriores removidas veth26
+[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth26
+echo 214336414 | sudo -S ovs-vsctl -- set port veth26 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
+nome-switch: 4 porta: 17  interface: veth28
+[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth28
+[new_switch_handler] SUCESSO - filas anteriores removidas veth28
+[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth28
+echo 214336414 | sudo -S ovs-vsctl -- set port veth28 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
+nome-switch: 4 porta: 18  interface: veth30
+[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth30
+[new_switch_handler] SUCESSO - filas anteriores removidas veth30
+[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth30
+echo 214336414 | sudo -S ovs-vsctl -- set port veth30 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
+nome-switch: 4 porta: 19  interface: veth31
+[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth31
+[new_switch_handler] SUCESSO - filas anteriores removidas veth31
+[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth31
+echo 214336414 | sudo -S ovs-vsctl -- set port veth31 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
+Switch table:
+{"nome": 4, "port_to_controller": 17, "ovsdb_addr": "tcp:172.16.4.10:6633", "qtd_portas": 5, "datapath": true}
+[switch_features] fim settage - tempo_decorrido: 75
+
+move onto main mode
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277884153  ---- tempo em funcionamento:  15875
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277884157  ---- tempo em funcionamento:  15879
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277885688  ---- tempo em funcionamento:  17410
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277886829  ---- tempo em funcionamento:  18551
+Tamanho do pacote:  87    ou seria:    87
+tem header ipv4
+tem header udp
+calculate_prefix de:  172.16.4.50
+calculate_prefix de:  224.0.0.251
+[pkt-in]Não ha rota para este fluxo ! abort
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277887224  ---- tempo em funcionamento:  18946
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277887810  ---- tempo em funcionamento:  19532
+Tamanho do pacote:  107    ou seria:    107
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277887993  ---- tempo em funcionamento:  19715
+Tamanho do pacote:  107    ou seria:    107
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277888248  ---- tempo em funcionamento:  19970
+Tamanho do pacote:  107    ou seria:    107
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277888258  ---- tempo em funcionamento:  19980
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277891142  ---- tempo em funcionamento:  22864
+Tamanho do pacote:  42    ou seria:    42
+[packet-in]Tratando ARP 172.16.5.30->172.16.1.30
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+getting switch 4
+[inj-pkt] fila:7 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277891220  ---- tempo em funcionamento:  22942
+Tamanho do pacote:  42    ou seria:    42
+[packet-in]Tratando ARP 172.16.1.30->172.16.5.30
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+getting switch 4
+[inj-pkt] fila:7 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277891254  ---- tempo em funcionamento:  22976
+Tamanho do pacote:  74    ou seria:    74
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.5.30; ip_dst: 172.16.1.30; src_port: 50032; dst_port: 5001; proto: 6; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+[pkt-in] Parte 2
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[packet-in] nao sou borda
+[pkt-in] comportamento não esperado no backbone: pacote nao marcado nem BE nem QOS (erro na borda) == tratado como BE
+Criando [BE] backbone
+addBE_soOF backbone
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 50032}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 5001}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 31, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30', 'ip_dscp': 31}  ; actions{qos_match: 31 , fila: 6 , outport: 15
+[inj-pkt] fila:6 porta:15 marcar:0
+[packet_in] finish  1745277891255  - decorrido: 1
+
+[s4-p15] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+pkt-in finish (monotonic) :  1
+[packet_in] finish  1745277891255  - decorrido: 1
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277891337  ---- tempo em funcionamento:  23059
+Tamanho do pacote:  74    ou seria:    74
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.1.30; ip_dst: 172.16.5.30; src_port: 5001; dst_port: 50032; proto: 6; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+[pkt-in] Parte 2
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[packet-in] nao sou borda
+[pkt-in] comportamento não esperado no backbone: pacote nao marcado nem BE nem QOS (erro na borda) == tratado como BE
+Criando [BE] backbone
+addBE_soOF backbone
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 5001}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 50032}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 31, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30', 'ip_dscp': 31}  ; actions{qos_match: 31 , fila: 6 , outport: 19
+[inj-pkt] fila:6 porta:19 marcar:0
+[packet_in] finish  1745277891338  - decorrido: 1
+
+[s4-p15] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+pkt-in finish (monotonic) :  0
+[packet_in] finish  1745277891338  - decorrido: 1
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277891413  ---- tempo em funcionamento:  23135
+Tamanho do pacote:  644    ou seria:    644
+tem header ipv4
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.5.30; ip_dst: 172.16.1.30; src_port: -1; dst_port: -1; proto: -1; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+[packet-in]tratando imcpv4
+[handle_icmps] init:  1745277891414
+ICMP recebido data -> {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.5.30', 'ip_dst': '172.16.1.30', 'src_port': 50032, 'dst_port': 5001, 'mac_src': 'fe:4b:82:3f:19:88', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.5.0'], 'ip_genesis': '172.16.5.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.5.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[hand_icmp]eh um ICMP anuncio
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.5.30', 'ip_dst': '172.16.1.30', 'src_port': 50032, 'dst_port': 5001, 'mac_src': 'fe:4b:82:3f:19:88', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.5.0'], 'ip_genesis': '172.16.5.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.5.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[trat-icmp-fred] init  1745277891414
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[fred-anunc]s->172.16.5.30:50032, d->172.16.1.30:5001 , proto:6
+calculate_prefix de:  172.16.1.30
+[create-qos-rules]-in
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[alocarGBAM-S4] porta 19->15, src: 172.16.5.30, dst: 172.16.1.30, banda: 2000, prioridade: 1, classe: 1 
+
+porta: 19 classe: 1 DisponivelC1:165000 DisponivelC2:175000 bandaRequisitada:2000
+A
+porta: 15 classe: 1 DisponivelC1:165000 DisponivelC2:175000 bandaRequisitada:2000
+A
+criar regra na propria classe
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277891414}
+
+[addRQoS] porta:15 s:172.16.5.30:50032 d:172.16.1.30:5001
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 50032}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 5001}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 11, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30', 'ip_dscp': 11}  ; actions{qos_match: 11 , fila: 0 , outport: 15
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 50032}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 5001}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 50, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30', 'ip_dscp': 50}  ; actions{qos_match: 50 , fila: 0 , outport: 15
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277891414}
+
+[addRQoS] porta:19 s:172.16.5.30:50032 d:172.16.1.30:5001
+[create-qos-rules]-out
+[tratador_icmp_fred]FRED aceito + gbam
+calculate_prefix de:  172.16.1.30
+[send_icmpv4] init (obs data=json.dumps())
+[send_icmpv4] end
+[tratador_icmp_fred] fim  1745277891415  duracao  1
+[handle_icmps] end:  1745277891415  duracao: 1
+[pktin] icmpv4 finish (monotonic) 2
+[packet_in] icmpv4 finish  1745277891415  - decorrido: 2
+
+
+###################################################################################
+[packet_in] init  1745277891415  ---- tempo em funcionamento:  23137
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:11 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:2000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:2000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277892146  ---- tempo em funcionamento:  23868
+Tamanho do pacote:  1083    ou seria:    1083
+tem header ipv4
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.1.30; ip_dst: 172.16.5.30; src_port: -1; dst_port: -1; proto: -1; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:2000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:2000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+[packet-in]tratando imcpv4
+[handle_icmps] init:  1745277892146
+ICMP recebido data -> {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.5.30', 'src_port': 5001, 'dst_port': 50032, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': 'fe:4b:82:3f:19:88', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [{'nome_peer': '172.16.1.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.1.50:5269'}], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 3, 'nome_peer': '172.16.3.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[hand_icmp]eh um ICMP anuncio
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.5.30', 'src_port': 5001, 'dst_port': 50032, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': 'fe:4b:82:3f:19:88', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [{'nome_peer': '172.16.1.50', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'ip_porta': '172.16.1.50:5269'}], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 3, 'nome_peer': '172.16.3.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[trat-icmp-fred] init  1745277892146
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[fred-anunc]s->172.16.1.30:5001, d->172.16.5.30:50032 , proto:6
+calculate_prefix de:  172.16.5.30
+[create-qos-rules]-in
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[alocarGBAM-S4] porta 15->19, src: 172.16.1.30, dst: 172.16.5.30, banda: 2000, prioridade: 1, classe: 1 
+
+porta: 15 classe: 1 DisponivelC1:164980 DisponivelC2:175000 bandaRequisitada:2000
+A
+porta: 19 classe: 1 DisponivelC1:164980 DisponivelC2:175000 bandaRequisitada:2000
+A
+criar regra na propria classe
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277892146}
+
+[addRQoS] porta:19 s:172.16.1.30:5001 d:172.16.5.30:50032
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 5001}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 50032}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 11, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30', 'ip_dscp': 11}  ; actions{qos_match: 11 , fila: 0 , outport: 19
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 5001}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 50032}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 50, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30', 'ip_dscp': 50}  ; actions{qos_match: 50 , fila: 0 , outport: 19
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277892146}
+
+[addRQoS] porta:15 s:172.16.1.30:5001 d:172.16.5.30:50032
+[create-qos-rules]-out
+[tratador_icmp_fred]FRED aceito + gbam
+calculate_prefix de:  172.16.5.30
+[send_icmpv4] init (obs data=json.dumps())
+[send_icmpv4] end
+[tratador_icmp_fred] fim  1745277892147  duracao  1
+[handle_icmps] end:  1745277892147  duracao: 1
+[pktin] icmpv4 finish (monotonic) 2
+[packet_in] icmpv4 finish  1745277892147  - decorrido: 1
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277892753  ---- tempo em funcionamento:  24475
+Tamanho do pacote:  42    ou seria:    42
+[packet-in]Tratando ARP 172.16.5.10->172.16.5.30
+calculate_prefix de:  172.16.5.10
+calculate_prefix de:  172.16.5.30
+[creat_be]Error: no route found for this flow: s:172.16.5.10 d:172.16.5.30 qos_mark:-1
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277893384  ---- tempo em funcionamento:  25106
+Tamanho do pacote:  74    ou seria:    74
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.5.30; ip_dst: 172.16.1.30; src_port: 43790; dst_port: 9090; proto: 6; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[pkt-in] Parte 2
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[packet-in] nao sou borda
+[pkt-in] comportamento não esperado no backbone: pacote nao marcado nem BE nem QOS (erro na borda) == tratado como BE
+Criando [BE] backbone
+addBE_soOF backbone
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 43790}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 9090}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 31, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30', 'ip_dscp': 31}  ; actions{qos_match: 31 , fila: 6 , outport: 15
+[inj-pkt] fila:6 porta:15 marcar:0
+[packet_in] finish  1745277893384  - decorrido: 0
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+pkt-in finish (monotonic) :  1
+[packet_in] finish  1745277893384  - decorrido: 0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277893467  ---- tempo em funcionamento:  25189
+Tamanho do pacote:  74    ou seria:    74
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.1.30; ip_dst: 172.16.5.30; src_port: 9090; dst_port: 43790; proto: 6; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[pkt-in] Parte 2
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[packet-in] nao sou borda
+[pkt-in] comportamento não esperado no backbone: pacote nao marcado nem BE nem QOS (erro na borda) == tratado como BE
+Criando [BE] backbone
+addBE_soOF backbone
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 9090}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 43790}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 31, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30', 'ip_dscp': 31}  ; actions{qos_match: 31 , fila: 6 , outport: 19
+[inj-pkt] fila:6 porta:19 marcar:0
+[packet_in] finish  1745277893468  - decorrido: 1
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+pkt-in finish (monotonic) :  1
+[packet_in] finish  1745277893468  - decorrido: 1
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277896673  ---- tempo em funcionamento:  28395
+Tamanho do pacote:  764    ou seria:    764
+tem header ipv4
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.5.30; ip_dst: 172.16.1.30; src_port: -1; dst_port: -1; proto: -1; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[packet-in]tratando imcpv4
+[handle_icmps] init:  1745277896673
+ICMP recebido data -> {'Monitoring': {'ip_ver': 2048, 'ip_src': '172.16.5.30', 'ip_dst': '172.16.1.30', 'src_port': 50032, 'dst_port': 5001, 'proto': 6, 'qtd_pacotes': 20, 'monitor_name': '172.16.5.10', 'timestamps': [1745277896.641005, 1745277896.6435885, 1745277896.6440432, 1745277896.6505682, 1745277896.650883, 1745277896.6522734, 1745277896.6525307, 1745277896.6531587, 1745277896.6534066, 1745277896.6540062, 1745277896.6542673, 1745277896.6565092, 1745277896.6567934, 1745277896.6573799, 1745277896.6576283, 1745277896.6582131, 1745277896.6584764, 1745277896.659072, 1745277896.659336, 1745277896.659937], 'pktsizes': [1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514, 1514]}}
+[hand_icmp]eh um ICMP anuncio
+[trat_icmp_monitoring] init  1745277896673
+Ainda nao ... esperando mais pacotes
+[trat_icmp_monitoring] end  1745277896673  duracao: 0
+[handle_icmps] end:  1745277896673  duracao: 0
+[pktin] icmpv4 finish (monotonic) 1
+[packet_in] icmpv4 finish  1745277896673  - decorrido: 0
+EVENT ofp_event->FLOWPRI2 EventOFPFlowRemoved
+###################################################################################
+[flow-removed] init  1745277901764  -- tempo em funcionamento: 33486
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[flow-removed]Regra conj expirou
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901779  ---- tempo em funcionamento:  33501
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:0 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901857  ---- tempo em funcionamento:  33579
+Tamanho do pacote:  78    ou seria:    78
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:0 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901880  ---- tempo em funcionamento:  33602
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901880  ---- tempo em funcionamento:  33602
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901947  ---- tempo em funcionamento:  33669
+Tamanho do pacote:  78    ou seria:    78
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277901948  ---- tempo em funcionamento:  33670
+Tamanho do pacote:  78    ou seria:    78
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901970  ---- tempo em funcionamento:  33692
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277901971  ---- tempo em funcionamento:  33693
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277901972  ---- tempo em funcionamento:  33694
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277901973  ---- tempo em funcionamento:  33695
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902044  ---- tempo em funcionamento:  33766
+Tamanho do pacote:  78    ou seria:    78
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902044  ---- tempo em funcionamento:  33766
+Tamanho do pacote:  78    ou seria:    78
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902045  ---- tempo em funcionamento:  33767
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902045  ---- tempo em funcionamento:  33767
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902067  ---- tempo em funcionamento:  33789
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902067  ---- tempo em funcionamento:  33789
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902068  ---- tempo em funcionamento:  33790
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902068  ---- tempo em funcionamento:  33790
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902100  ---- tempo em funcionamento:  33822
+Tamanho do pacote:  644    ou seria:    644
+tem header ipv4
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.5.30; ip_dst: 172.16.1.30; src_port: -1; dst_port: -1; proto: -1; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:4000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+[packet-in]tratando imcpv4
+[handle_icmps] init:  1745277902101
+ICMP recebido data -> {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.5.30', 'ip_dst': '172.16.1.30', 'src_port': 50032, 'dst_port': 5001, 'mac_src': 'fe:4b:82:3f:19:88', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.5.0'], 'ip_genesis': '172.16.5.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.5.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[hand_icmp]eh um ICMP anuncio
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.5.30', 'ip_dst': '172.16.1.30', 'src_port': 50032, 'dst_port': 5001, 'mac_src': 'fe:4b:82:3f:19:88', 'mac_dst': '26:e7:12:39:2b:2e', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.5.0'], 'ip_genesis': '172.16.5.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.5.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[trat-icmp-fred] init  1745277902101
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[fred-anunc]s->172.16.5.30:50032, d->172.16.1.30:5001 , proto:6
+calculate_prefix de:  172.16.1.30
+[create-qos-rules]-in
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[alocarGBAM-S4] porta 19->15, src: 172.16.5.30, dst: 172.16.1.30, banda: 2000, prioridade: 1, classe: 1 
+
+porta: 19 classe: 1 DisponivelC1:164960 DisponivelC2:175000 bandaRequisitada:2000
+A
+porta: 15 classe: 1 DisponivelC1:164960 DisponivelC2:175000 bandaRequisitada:2000
+A
+criar regra na propria classe
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277902101}
+
+[addRQoS] porta:15 s:172.16.5.30:50032 d:172.16.1.30:5001
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 50032}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 5001}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 11, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30', 'ip_dscp': 11}  ; actions{qos_match: 11 , fila: 0 , outport: 15
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 50032}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 5001}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 50, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.5.30', 'ipv4_dst': '172.16.1.30', 'ip_dscp': 50}  ; actions{qos_match: 50 , fila: 0 , outport: 15
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277902101}
+
+[addRQoS] porta:19 s:172.16.5.30:50032 d:172.16.1.30:5001
+[create-qos-rules]-out
+[tratador_icmp_fred]FRED aceito + gbam
+calculate_prefix de:  172.16.1.30
+[send_icmpv4] init (obs data=json.dumps())
+[send_icmpv4] end
+[tratador_icmp_fred] fim  1745277902102  duracao  1
+[handle_icmps] end:  1745277902102  duracao: 1
+[pktin] icmpv4 finish (monotonic) 1
+[packet_in] icmpv4 finish  1745277902102  - decorrido: 2
+
+
+###################################################################################
+[packet_in] init  1745277902102  ---- tempo em funcionamento:  33824
+Tamanho do pacote:  1514    ou seria:    1514
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[pkt-in] 172.16.5.30:50032->172.16.1.30:5001 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[inj-pkt] fila:6 porta:15 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902140  ---- tempo em funcionamento:  33862
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902141  ---- tempo em funcionamento:  33863
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902141  ---- tempo em funcionamento:  33863
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902142  ---- tempo em funcionamento:  33864
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPFlowRemoved
+###################################################################################
+[flow-removed] init  1745277902159  -- tempo em funcionamento: 33881
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[flow-removed]Regra conj expirou
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902168  ---- tempo em funcionamento:  33890
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:31 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902168  ---- tempo em funcionamento:  33890
+Tamanho do pacote:  936    ou seria:    936
+tem header ipv4
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] Parte 1
+[packet-in] switch_name: 4, eth_type: 2048, pkt_in ip_src: 172.16.1.30; ip_dst: 172.16.5.30; src_port: -1; dst_port: -1; proto: -1; qos_mark: 0
+
+
+[s4-p15] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:6000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+[packet-in]tratando imcpv4
+[handle_icmps] init:  1745277902168
+ICMP recebido data -> {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.5.30', 'src_port': 5001, 'dst_port': 50032, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': 'fe:4b:82:3f:19:88', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 3, 'nome_peer': '172.16.3.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[hand_icmp]eh um ICMP anuncio
+loading fred from json: {'FRED': {'ip_ver': 2048, 'proto': 6, 'ip_src': '172.16.1.30', 'ip_dst': '172.16.5.30', 'src_port': 5001, 'dst_port': 50032, 'mac_src': '26:e7:12:39:2b:2e', 'mac_dst': 'fe:4b:82:3f:19:88', 'priority': 1, 'class': 1, 'bandwidth': 2000, 'loss': 10, 'delay': 1, 'jitter': 0, 'label': 'video', 'blockchain_name': 'blockchain_name', 'AS_src_ip_range': [], 'AS_dst_ip_range': ['172.16.1.0'], 'ip_genesis': '172.16.1.30', 'list_peers': [], 'list_route': [{'ordem': 1, 'nome_peer': '172.16.1.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 2, 'nome_peer': '172.16.2.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}, {'ordem': 3, 'nome_peer': '172.16.3.10', 'chave_publica': '03724d8dff744fc5caa33a7c4f8eca29b8d37601b197a763f7d3d363672817f1b1', 'nro_saltos': 1}], 'code': 0}}
+[trat-icmp-fred] init  1745277902168
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[fred-anunc]s->172.16.1.30:5001, d->172.16.5.30:50032 , proto:6
+calculate_prefix de:  172.16.5.30
+[create-qos-rules]-in
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[alocarGBAM-S4] porta 15->19, src: 172.16.1.30, dst: 172.16.5.30, banda: 2000, prioridade: 1, classe: 1 
+
+porta: 15 classe: 1 DisponivelC1:164940 DisponivelC2:175000 bandaRequisitada:2000
+A
+porta: 19 classe: 1 DisponivelC1:164940 DisponivelC2:175000 bandaRequisitada:2000
+A
+criar regra na propria classe
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277902168}
+
+[addRQoS] porta:19 s:172.16.1.30:5001 d:172.16.5.30:50032
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 5001}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 50032}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 11, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30', 'ip_dscp': 11}  ; actions{qos_match: 11 , fila: 0 , outport: 19
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_src': 5001}
+criando conjunction:  {'eth_type': 2048, 'ip_proto': 6, 'tcp_dst': 50032}
+params: OFPMatch(oxm_fields={'conj_id': 10, 'eth_type': 2048, 'ip_dscp': 50, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30'})
+[addRegraConj] match: {'conj_id': 10, 'eth_type': 2048, 'ipv4_src': '172.16.1.30', 'ipv4_dst': '172.16.5.30', 'ip_dscp': 50}  ; actions{qos_match: 50 , fila: 0 , outport: 19
+[Acao] switch: 4 Criar: {"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {}, "application_class": "video", "timestamp": 1745277902168}
+
+[addRQoS] porta:15 s:172.16.1.30:5001 d:172.16.5.30:50032
+[create-qos-rules]-out
+[tratador_icmp_fred]FRED aceito + gbam
+calculate_prefix de:  172.16.5.30
+[send_icmpv4] init (obs data=json.dumps())
+[send_icmpv4] end
+[tratador_icmp_fred] fim  1745277902169  duracao  1
+[handle_icmps] end:  1745277902169  duracao: 1
+[pktin] icmpv4 finish (monotonic) 2
+[packet_in] icmpv4 finish  1745277902169  - decorrido: 1
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902171  ---- tempo em funcionamento:  33893
+Tamanho do pacote:  78    ou seria:    78
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:11 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902177  ---- tempo em funcionamento:  33899
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:11 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+
+
+###################################################################################
+[packet_in] init  1745277902178  ---- tempo em funcionamento:  33900
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:11 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277902179  ---- tempo em funcionamento:  33901
+Tamanho do pacote:  66    ou seria:    66
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[pkt-in] 172.16.1.30:5001->172.16.5.30:50032 qos_mark:11 - ja tratado - reinjetar
+
+[s4-p15] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+
+[s4-p16] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p17] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p18] listar regras || C1T:16500000, C1U:0 || C2T:17500000, C2U: 0 ||:
+
+
+[s4-p19] listar regras || C1T:16500000, C1U:8000 || C2T:17500000, C2U: 0 ||:
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277891415}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277892147}
+
+{"ip_ver": 2048, "ip_src": "172.16.5.30", "ip_dst": "172.16.1.30", "src_port": 50032, "dst_port": 5001, "proto": 6, "porta_entrada": 19, "porta_saida": 15, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 15, "meter_id": null}, "application_class": "video", "timestamp": 1745277902102}
+
+{"ip_ver": 2048, "ip_src": "172.16.1.30", "ip_dst": "172.16.5.30", "src_port": 5001, "dst_port": 50032, "proto": 6, "porta_entrada": 15, "porta_saida": 19, "meter_id": null, "emprestando": false, "banda": 2000, "prioridade": 1, "classe": 1, "fila": 0, "qos_mark": 11, "actions": {"qos_mark": 11, "out_port": 19, "meter_id": null}, "application_class": "video", "timestamp": 1745277902169}
+
+[inj-pkt] fila:6 porta:19 marcar:0
+EVENT ofp_event->FLOWPRI2 EventOFPFlowRemoved
+EVENT ofp_event->FLOWPRI2 EventOFPFlowRemoved
+###################################################################################
+[flow-removed] init  1745277907763  -- tempo em funcionamento: 39485
+calculate_prefix de:  172.16.1.30
+calculate_prefix de:  172.16.5.30
+[flow-removed]Regra conj expirou
+###################################################################################
+[flow-removed] init  1745277907763  -- tempo em funcionamento: 39485
+calculate_prefix de:  172.16.5.30
+calculate_prefix de:  172.16.1.30
+[flow-removed]Regra conj expirou
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277913336  ---- tempo em funcionamento:  45058
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277915385  ---- tempo em funcionamento:  47107
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277916920  ---- tempo em funcionamento:  48642
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277918830  ---- tempo em funcionamento:  50552
+Tamanho do pacote:  87    ou seria:    87
+tem header ipv4
+tem header udp
+calculate_prefix de:  172.16.4.50
+calculate_prefix de:  224.0.0.251
+[pkt-in]Não ha rota para este fluxo ! abort
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745277918895  ---- tempo em funcionamento:  50617
+Tamanho do pacote:  146    ou seria:    146
+tem header ipv4
+tem header tcp
+calculate_prefix de:  172.16.3.50
+calculate_prefix de:  172.16.3.10
+[pkt-in]Não ha rota para este fluxo ! abort
+EVENT ofp_event->FLOWPRI2 EventOFPPortStatus
+OFPPortStatus received: reason=DELETE desc=OFPPort(port_no=15,hw_addr='fa:fe:6d:f5:87:46',name=b'veth24',config=0,state=4,curr=2112,advertised=0,supported=0,peer=0,curr_speed=10000000,max_speed=0)
+EVENT ofp_event->FLOWPRI2 EventOFPPortStatus
+OFPPortStatus received: reason=DELETE desc=OFPPort(port_no=16,hw_addr='1e:a5:76:0e:11:ef',name=b'veth26',config=0,state=4,curr=2112,advertised=0,supported=0,peer=0,curr_speed=10000000,max_speed=0)

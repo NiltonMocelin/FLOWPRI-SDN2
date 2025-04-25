@@ -1,147 +1,4 @@
-CONTROLADOR - 
- Init Start
-
-Controlador ID - 172.16.3.10
-Controlador IPv4 - 172.16.3.10
-Controlador IPv6 - fe80::f49c:a6ff:fe53:fa79
-Controlador MAC - f6:9c:a6:53:fa:79
-Lading cfg...
-{'ManagementHost': '172.16.3.30', 'addSwitches': [{'nome_switch': 3, 'ovsdb_addr': 'tcp:172.16.3.10:6633', 'port_to_controller': 12, 'portas': [{'nome_porta': 10, 'nome_interface': 'veth16', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 11, 'nome_interface': 'veth18', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 12, 'nome_interface': 'veth20', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 13, 'nome_interface': 'veth22', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 14, 'nome_interface': 'veth23', 'banda_total': 50000000, 'proxSwitch': -1}]}], 'addRotas': [{'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.3.10', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 11, 'porta_saida': 12, 'ordem': 0}]}, {'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.2.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 11, 'porta_saida': 10, 'ordem': 0}]}, {'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.1.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 11, 'porta_saida': 10, 'ordem': 0}]}, {'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.4.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 11, 'porta_saida': 14, 'ordem': 0}]}, {'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.5.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 11, 'porta_saida': 14, 'ordem': 0}]}, {'src_prefix': '172.16.3.10', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 12, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.2.30', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 10, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.1.30', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 10, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.4.30', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 14, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.5.30', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 14, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.3.10', 'dst_prefix': '172.16.3.50', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 12, 'porta_saida': 13, 'ordem': 0}]}, {'src_prefix': '172.16.3.30', 'dst_prefix': '172.16.3.50', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 11, 'porta_saida': 13, 'ordem': 0}]}, {'src_prefix': '172.16.3.50', 'dst_prefix': '172.16.3.10', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 13, 'porta_saida': 12, 'ordem': 0}]}, {'src_prefix': '172.16.3.50', 'dst_prefix': '172.16.3.30', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 13, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.1.0', 'dst_prefix': '172.16.4.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 10, 'porta_saida': 14, 'ordem': 0}]}, {'src_prefix': '172.16.4.0', 'dst_prefix': '172.16.1.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 14, 'porta_saida': 10, 'ordem': 0}]}, {'src_prefix': '172.16.1.0', 'dst_prefix': '172.16.5.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 10, 'porta_saida': 14, 'ordem': 0}]}, {'src_prefix': '172.16.5.0', 'dst_prefix': '172.16.1.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 14, 'porta_saida': 10, 'ordem': 0}]}, {'src_prefix': '172.16.2.0', 'dst_prefix': '172.16.4.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 10, 'porta_saida': 11, 'ordem': 0}]}, {'src_prefix': '172.16.4.0', 'dst_prefix': '172.16.2.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 14, 'porta_saida': 10, 'ordem': 0}]}, {'src_prefix': '172.16.2.0', 'dst_prefix': '172.16.5.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 10, 'porta_saida': 14, 'ordem': 0}]}, {'src_prefix': '172.16.5.0', 'dst_prefix': '172.16.2.0', 'switches_rota': [{'nome_switch': 3, 'porta_entrada': 14, 'porta_saida': 10, 'ordem': 0}]}], 'addDominioPrefix': [{'ip': '172.16.3.0'}], 'ipsDHCP': [{'ip': '172.16.3.1'}, {'ip': '172.16.3.2'}, {'ip': '172.16.3.3'}, {'ip': '172.16.3.4'}, {'ip': '172.16.3.5'}]}
-Adicionando configuracao de switch
-{'nome_switch': 3, 'ovsdb_addr': 'tcp:172.16.3.10:6633', 'port_to_controller': 12, 'portas': [{'nome_porta': 10, 'nome_interface': 'veth16', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 11, 'nome_interface': 'veth18', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 12, 'nome_interface': 'veth20', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 13, 'nome_interface': 'veth22', 'banda_total': 50000000, 'proxSwitch': -1}, {'nome_porta': 14, 'nome_interface': 'veth23', 'banda_total': 50000000, 'proxSwitch': -1}]}
-Novo switch: nome = S3
-{'nome_porta': 10, 'nome_interface': 'veth16', 'banda_total': 50000000, 'proxSwitch': -1}
-[S3] Nova porta: porta=10, banda=50000000, proximoSalto=-1
-
-{'nome_porta': 11, 'nome_interface': 'veth18', 'banda_total': 50000000, 'proxSwitch': -1}
-[S3] Nova porta: porta=11, banda=50000000, proximoSalto=-1
-
-{'nome_porta': 12, 'nome_interface': 'veth20', 'banda_total': 50000000, 'proxSwitch': -1}
-[S3] Nova porta: porta=12, banda=50000000, proximoSalto=-1
-
-{'nome_porta': 13, 'nome_interface': 'veth22', 'banda_total': 50000000, 'proxSwitch': -1}
-[S3] Nova porta: porta=13, banda=50000000, proximoSalto=-1
-
-{'nome_porta': 14, 'nome_interface': 'veth23', 'banda_total': 50000000, 'proxSwitch': -1}
-[S3] Nova porta: porta=14, banda=50000000, proximoSalto=-1
-
-Adicionando novas rotas:
-rotas adicionadas
-config loaded....
-Iniciando o tratador de arquivos de config....
-
-Esperando nova conexao ...
-Novo switch anunciado.... tempoAtivo: 4248 
-
-[15:19:37.054652] switch_features - setup de S3 
-
-Switch name:  3
-nome-switch: 3 porta: 10  interface: veth16
-[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth16
-[new_switch_handler] SUCESSO - filas anteriores removidas veth16
-[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth16
-echo 214336414 | sudo -S ovs-vsctl -- set port veth16 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
-nome-switch: 3 porta: 11  interface: veth18
-[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth18
-[new_switch_handler] SUCESSO - filas anteriores removidas veth18
-[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth18
-echo 214336414 | sudo -S ovs-vsctl -- set port veth18 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
-nome-switch: 3 porta: 12  interface: veth20
-[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth20
-[new_switch_handler] SUCESSO - filas anteriores removidas veth20
-[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth20
-echo 214336414 | sudo -S ovs-vsctl -- set port veth20 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
-nome-switch: 3 porta: 13  interface: veth22
-[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth22
-[new_switch_handler] SUCESSO - filas anteriores removidas veth22
-[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth22
-echo 214336414 | sudo -S ovs-vsctl -- set port veth22 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
-nome-switch: 3 porta: 14  interface: veth23
-[new_switch_handler]Entradas de qos anteriores foram removidas do ovsdb para a porta veth23
-[new_switch_handler] SUCESSO - filas anteriores removidas veth23
-[new_switch_handler] SUCESSO - Novas configuracoes de filas foram estabelecidas porta veth23
-echo 214336414 | sudo -S ovs-vsctl -- set port veth23 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
-Switch table:
-{"nome": 3, "port_to_controller": 12, "ovsdb_addr": "tcp:172.16.3.10:6633", "qtd_portas": 5, "datapath": true}
-[switch_features] fim settage - tempo_decorrido: 62
-
-
-
-###################################################################################
-[packet_in] init  1745259588341  ---- tempo em funcionamento:  15534
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259589355  ---- tempo em funcionamento:  16548
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259590891  ---- tempo em funcionamento:  18084
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259590892  ---- tempo em funcionamento:  18085
-Tamanho do pacote:  183    ou seria:    183
-tem header ipv4
-tem header udp
-calculate_prefix de:  172.16.3.50
-calculate_prefix de:  224.0.0.251
-[pkt-in]Não ha rota para este fluxo ! abort
-
-
-###################################################################################
-[packet_in] init  1745259591403  ---- tempo em funcionamento:  18596
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259591404  ---- tempo em funcionamento:  18597
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259591852  ---- tempo em funcionamento:  19045
-Tamanho do pacote:  203    ou seria:    203
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259591989  ---- tempo em funcionamento:  19182
-Tamanho do pacote:  203    ou seria:    203
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259592555  ---- tempo em funcionamento:  19748
-Tamanho do pacote:  203    ou seria:    203
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259619574  ---- tempo em funcionamento:  46767
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259621100  ---- tempo em funcionamento:  48293
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259622894  ---- tempo em funcionamento:  50087
-Tamanho do pacote:  183    ou seria:    183
-tem header ipv4
-tem header udploading app core/main_controller.py
+loading app core/main_controller.py
 loading app ryu.controller.ofp_handler
 instantiating app core/main_controller.py of FLOWPRI2
 CONTROLADOR - 
@@ -195,14 +52,14 @@ BRICK ofp_event
   CONSUMES EventOFPPortDescStatsReply
   CONSUMES EventOFPPortStatus
   CONSUMES EventOFPSwitchFeatures
-connected socket:<eventlet.greenio.base.GreenSocket object at 0x7af918283d90> address:('172.16.3.50', 38014)
-hello ev <ryu.controller.ofp_event.EventOFPHello object at 0x7af917bc1310>
+connected socket:<eventlet.greenio.base.GreenSocket object at 0x7f3d8066cd90> address:('172.16.3.50', 44452)
+hello ev <ryu.controller.ofp_event.EventOFPHello object at 0x7f3d80682640>
 move onto config mode
 EVENT ofp_event->FLOWPRI2 EventOFPSwitchFeatures
-switch features ev version=0x4,msg_type=0x6,msg_len=0x20,xid=0xf884fcc5,OFPSwitchFeatures(auxiliary_id=0,capabilities=79,datapath_id=3,n_buffers=0,n_tables=254)
-Novo switch anunciado.... tempoAtivo: 4312 
+switch features ev version=0x4,msg_type=0x6,msg_len=0x20,xid=0x9eeaf1a3,OFPSwitchFeatures(auxiliary_id=0,capabilities=79,datapath_id=3,n_buffers=0,n_tables=254)
+Novo switch anunciado.... tempoAtivo: 3415 
 
-[15:23:11.054780] switch_features - setup de S3 
+[15:42:32.024368] switch_features - setup de S3 
 
 Switch name:  3
 nome-switch: 3 porta: 10  interface: veth16
@@ -232,28 +89,35 @@ nome-switch: 3 porta: 14  interface: veth23
 echo 214336414 | sudo -S ovs-vsctl -- set port veth23 qos=@newqos --                                 --id=@newqos create qos type=linux-htb other-config:max-rate=50000000                                 queues=0=@q0,1=@q1,2=@q2,3=@q3,4=@q4,5=@q5,6=@q6,7=@q7 --                                 --id=@q0 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q1 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q2 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q3 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=10 --                                 --id=@q4 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=5 --                                 --id=@q5 create queue other-config:min-rate=34000000 other-config:max-rate=34000100 other-config:priority=2 --                                 --id=@q6 create queue other-config:min-rate=12500000 other-config:max-rate=50000000 other-config:priority=10 --                                 --id=@q7 create queue other-config:min-rate=3500000 other-config:max-rate=3500100 other-config:priority=2                                 
 Switch table:
 {"nome": 3, "port_to_controller": 12, "ovsdb_addr": "tcp:172.16.3.10:6633", "qtd_portas": 5, "datapath": true}
-[switch_features] fim settage - tempo_decorrido: 76
+[switch_features] fim settage - tempo_decorrido: 72
 
 move onto main mode
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259800299  ---- tempo em funcionamento:  13556
+[packet_in] init  1745347362041  ---- tempo em funcionamento:  13432
 Tamanho do pacote:  70    ou seria:    70
 tem header ipv6 - rejeitado
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259804405  ---- tempo em funcionamento:  17662
+[packet_in] init  1745347363577  ---- tempo em funcionamento:  14968
 Tamanho do pacote:  70    ou seria:    70
 tem header ipv6 - rejeitado
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259804842  ---- tempo em funcionamento:  18099
+[packet_in] init  1745347364088  ---- tempo em funcionamento:  15479
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745347365892  ---- tempo em funcionamento:  17283
 Tamanho do pacote:  183    ou seria:    183
 tem header ipv4
 tem header udp
@@ -264,49 +128,42 @@ EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259804907  ---- tempo em funcionamento:  18164
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
-EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
-
-
-###################################################################################
-[packet_in] init  1745259805419  ---- tempo em funcionamento:  18676
-Tamanho do pacote:  70    ou seria:    70
-tem header ipv6 - rejeitado
-
-
-###################################################################################
-[packet_in] init  1745259805420  ---- tempo em funcionamento:  18677
+[packet_in] init  1745347366658  ---- tempo em funcionamento:  18049
 Tamanho do pacote:  70    ou seria:    70
 tem header ipv6 - rejeitado
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259806057  ---- tempo em funcionamento:  19314
+[packet_in] init  1745347367161  ---- tempo em funcionamento:  18552
+Tamanho do pacote:  70    ou seria:    70
+tem header ipv6 - rejeitado
+EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
+
+
+###################################################################################
+[packet_in] init  1745347367289  ---- tempo em funcionamento:  18680
 Tamanho do pacote:  203    ou seria:    203
 tem header ipv6 - rejeitado
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259806123  ---- tempo em funcionamento:  19380
+[packet_in] init  1745347367427  ---- tempo em funcionamento:  18818
 Tamanho do pacote:  203    ou seria:    203
 tem header ipv6 - rejeitado
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259806328  ---- tempo em funcionamento:  19585
+[packet_in] init  1745347367609  ---- tempo em funcionamento:  19000
 Tamanho do pacote:  203    ou seria:    203
 tem header ipv6 - rejeitado
 EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259808340  ---- tempo em funcionamento:  21597
+[packet_in] init  1745347373575  ---- tempo em funcionamento:  24966
 Tamanho do pacote:  42    ou seria:    42
 [packet-in]Tratando ARP 172.16.2.10->172.16.2.30
 calculate_prefix de:  172.16.2.10
@@ -316,7 +173,7 @@ EVENT ofp_event->FLOWPRI2 EventOFPPacketIn
 
 
 ###################################################################################
-[packet_in] init  1745259822535  ---- tempo em funcionamento:  35792
+[packet_in] init  1745347390397  ---- tempo em funcionamento:  41788
 Tamanho do pacote:  146    ou seria:    146
 tem header ipv4
 tem header tcp
@@ -325,5 +182,3 @@ calculate_prefix de:  172.16.2.10
 [pkt-in]Não ha rota para este fluxo ! abort
 EVENT ofp_event->FLOWPRI2 EventOFPPortStatus
 OFPPortStatus received: reason=DELETE desc=OFPPort(port_no=10,hw_addr='46:8f:17:f2:04:1b',name=b'veth16',config=0,state=4,curr=2112,advertised=0,supported=0,peer=0,curr_speed=10000000,max_speed=0)
-EVENT ofp_event->FLOWPRI2 EventOFPPortStatus
-OFPPortStatus received: reason=DELETE desc=OFPPort(port_no=11,hw_addr='3e:3c:82:8a:1a:3c',name=b'veth18',config=0,state=4,curr=2112,advertised=0,supported=0,peer=0,curr_speed=10000000,max_speed=0)

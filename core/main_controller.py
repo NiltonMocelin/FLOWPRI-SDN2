@@ -621,6 +621,9 @@ class FLOWPRI2(app_manager.RyuApp):
                 print("[trat_meu-domin]Classificacao em andamento -- nao fazer nada")
                 return 
             
+            # if src_port != 6000:
+            #    flow_classificacao.classe_label = "be" 
+
             # flow_classificacao.classe_label = 'be' # testar be
             if flow_classificacao.classe_label == "be":
                 print("Fluxo BE ip_src:%s src_port:%d ip_dst:%s dst_port:%d" %(ip_src, src_port, ip_dst,dst_port))
