@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.15 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.15" pages="10">
   <diagram name="Implementacao" id="WLsayhxia8f3Jut2XycA">
-    <mxGraphModel dx="2514" dy="2155" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2058" dy="1863" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -110,7 +110,7 @@
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-6" target="-aLrSAhBZ-N-OfGElPO0-10" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="-lKtq9Q8VCodktVO8GSg-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-aLrSAhBZ-N-OfGElPO0-12" target="-lKtq9Q8VCodktVO8GSg-1">
+        <mxCell id="-lKtq9Q8VCodktVO8GSg-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-aLrSAhBZ-N-OfGElPO0-12" target="-lKtq9Q8VCodktVO8GSg-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-12" value="Traffic monitoring[OK]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -122,7 +122,7 @@
         <mxCell id="-aLrSAhBZ-N-OfGElPO0-16" value="Criação de regras: G-BAM, criar regras que descontem entrada e saida, salvar regras best-effort também(remover depois tbm) [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="100" y="100" width="120" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;-&amp;gt; nao esta removendo todas as regras e meters no fim - mas deveria, nao entendi ainda pq. -&amp;gt; todas as regras com marcação qos expiram e manda para o controlar -&amp;gt; no flow removed, deveria remover tudo....b&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;6: REvisar o que falta e verificar o funcionamento&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;7: realizar experimentos&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
+        <mxCell id="vzt0ovmq-fzEGRZ91NeD-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Registro Geral&lt;/h1&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;[criacao containers - qosblockchain] {&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;-&amp;gt; mudar a chamada para /usr/local/bin/docker-compose == pq o user root nao encontra o docker algo assim.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;-&amp;gt; nao esta removendo todas as regras e meters no fim - mas deveria, nao entendi ainda pq. -&amp;gt; todas as regras com marcação qos expiram e manda para o controlar -&amp;gt; no flow removed, deveria remover tudo....b&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="290" y="800" width="220" height="800" as="geometry" />
         </mxCell>
         <mxCell id="utfMI5SQkQcTHa897YUp-1" value="GUI simples (swtiches, rotas, regras) -&amp;gt; esquecer isso por enquanto[deixar]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -214,7 +214,7 @@
         <mxCell id="IjuffSL-7oCMiXIas7sZ-1" value="Implementar a extração de features [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1260" y="405" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="-lKtq9Q8VCodktVO8GSg-1" value="Agora ocorre no primeiro switch da rota [ok]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="-lKtq9Q8VCodktVO8GSg-1" value="Agora ocorre no primeiro switch da rota [ok]" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1093" y="403" width="120" height="60" as="geometry" />
         </mxCell>
       </root>

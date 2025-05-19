@@ -225,7 +225,7 @@ Link Profile Cloudlab : https://www.cloudlab.us/p/flowprisdn/teste03
 
 - Em um momento, pensei em tirar o atraso dos enlaces para isolar o tempo de sobrecarga da aplicação para apenas o tempo de processamento.
 
-- Isso foi uma péssima ideia. Os bufferes do controlador recebiam muitos pacotes, pois o atraso da placa de rede era praticamente 0.5ms.
+- Isso foi uma péssima ideia. Os bufferes do controlador recebiam muitos pacotes, pois o atraso da placa de rede era praticamente 0.5ms (menor que o tempo de processamento).
 
 - Com isso, mesmo otimizando o controlador, muitos pacotes eram perdidos.
 
